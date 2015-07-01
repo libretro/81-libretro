@@ -503,7 +503,7 @@ int AccurateInit( CONFIG* cfg, int resize )
   TVFB = NULL;
 
   RasterX = 0;
-  RasterY = random( 256 );
+  RasterY = myrandom( 256 );
 
   BPP = 2;
 
@@ -762,7 +762,7 @@ SHORT GetKeyState( int nVirtKey )
   return 0;
 }
 
-int random( int x )
+int myrandom( int x )
 {
   return rand() % ( x + 1 );
 }

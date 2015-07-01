@@ -561,9 +561,9 @@ void ramwobble(int now)
 
         start=zx81.ROMTOP+1;
         length=zx81.RAMTOP-start;
-        data=random(256);
+        data=myrandom(256);
 
-        if (now || !random(64))
+        if (now || !myrandom(64))
                 for(i=0;i<length;i++) memory[start+i] ^= data;
 }
         /*void ramwobble(void)
@@ -574,15 +574,15 @@ void ramwobble(int now)
 
         start=zx81.ROMTOP+1;
         length=zx81.RAMTOP-start;
-        addr=random(length);
-        data=random(256);
-        if (random(2)) data |= 64;
+        addr=myrandom(length);
+        data=myrandom(256);
+        if (myrandom(2)) data |= 64;
 
         row=addr&127;
         col=(addr>>7)&127;
 
 
-        switch(3)//random(64))
+        switch(3)//myrandom(64))
         {
         case 0:
                 memory[addr+start]=data;

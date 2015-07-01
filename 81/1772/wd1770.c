@@ -306,7 +306,7 @@ void wd1770_cr_write( wd1770_drive *d, BYTE b )
 
                         d->type_III_buffer[0]=d->track;
                         d->type_III_buffer[1]=d->side;
-                        d->type_III_buffer[2]=random(16)+1;
+                        d->type_III_buffer[2]=myrandom(16)+1;
                         switch(d->disk->sectorsize)
                         {
                         case 128: d->type_III_buffer[3]=0; break;

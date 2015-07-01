@@ -53,7 +53,7 @@ int QLTopBorder, QLLeftBorder, QLFlash, QLFlashCount, QLMode=0;
 void ql_initialise(void)
 {
         int i, romlen;
-        for(i=0;i<(1024*1024);i++) memory[i]=random(256);
+        for(i=0;i<(1024*1024);i++) memory[i]=myrandom(256);
         for(i=0;i<0x20000;i++) memory[i]=0;
         for(i=0x40000;i<=0xfffff;i++) memory[i]=0;
         romlen=memory_load(machine.CurRom, 0, 65536);

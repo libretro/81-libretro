@@ -72,7 +72,7 @@ void ace_initialise(void)
         int i, romlen;
         z80_init();
 
-        for(i=0;i<65536;i++) memory[i]=random(255);
+        for(i=0;i<65536;i++) memory[i]=myrandom(255);
 
         romlen=memory_load(machine.CurRom, 0, 65536);
         zx81.romcrc=CRC32Block(memory,romlen);

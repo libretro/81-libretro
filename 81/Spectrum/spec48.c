@@ -251,7 +251,7 @@ void spec48_initialise(void)
         int i, j, romlen, pos, delay;
         z80_init();
 
-        for(i=0;i<sizeof(SpecMem);i++) SpecMem[i]=random(256);
+        for(i=0;i<sizeof(SpecMem);i++) SpecMem[i]=myrandom(256);
         for(i=0;i<sizeof(TimexMem);i++) TimexMem[i]=255;
         for(i=0;i<sizeof(PlusDMem);i++) PlusDMem[i]=255;
 

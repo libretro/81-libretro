@@ -8,7 +8,7 @@ extern "C" {
 #endif
 
 SHORT GetKeyState( int nVirtKey );
-int   random( int x );
+int   myrandom( int x );
 void  DebugUpdate( void );
 
 #define GENERIC_READ 0
