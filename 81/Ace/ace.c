@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 #include <fcntl.h>
-#include <io.h>
 
 #include "zx81.h"
 #include "z80/z80.h"
