@@ -29,7 +29,6 @@
 #include "WavCInterface.h"
 #include "sound.h"
 #include "dev8255.h"
-#include "serialport.h"
 #include "zxprinter_c.h"
 #include "rompatch.h"
 
