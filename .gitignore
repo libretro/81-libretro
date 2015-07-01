@@ -1,0 +1,6 @@
+*.[oa]
+*.dll
+*.so
+*~
+bin/*
+version.c
