@@ -20,7 +20,6 @@
  */
 
 #include <string.h>
-#include <dir.h>
 
 #include "zx81config.h"
 
