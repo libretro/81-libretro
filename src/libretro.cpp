@@ -1,5 +1,7 @@
 #include <libretro.h>
 
+#include <string.h>
+
 #include <eo.h>
 #include <types.h>
 #include <TZXFILE.h>
