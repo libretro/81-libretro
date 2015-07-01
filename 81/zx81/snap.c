@@ -38,7 +38,7 @@
 
 typedef struct
 {
-  unsigned char* buf;
+  const unsigned char* buf;
   int pos, len;
 }
 FILE;
@@ -324,7 +324,6 @@ int load_snap(char *filename)
         DebugUpdate();
         return(1);
 }
-#endif
 
 int save_snap(char *filename)
 {
@@ -472,6 +471,7 @@ int save_snap(char *filename)
         fclose(f);
         return(0);
 }
+#endif
 
 int memory_load(char *filename, int address, int length)
 {
