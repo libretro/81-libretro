@@ -22,7 +22,7 @@
 #ifndef ace_h
 #define ace_h
 
-#include "z80\config.h"
+#include "z80/config.h"
 
 #define kbD0 1
 #define kbD1 2
