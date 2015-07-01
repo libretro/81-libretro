@@ -46,7 +46,6 @@
 #include <stdlib.h>
 
 #include "sound.h"
-#include "dxsound.h"
 #include "zx81config.h"
 
 #ifndef NULL
