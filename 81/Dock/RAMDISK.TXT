@@ -1,0 +1,6 @@
+RAMDISK.DCK
+-----------
+
+This short file emulates 64 Kb of empty RAM located in DOCK bank. Use it on
+Warajevo emulator to get additional 64 Kb of RAM in DOCK bank (some Timex
+users has such hardware cartridge).

@@ -1,0 +1,39 @@
+SHOTZEXR.DCK
+------------
+
+Version of Super Hot Z disassembler by Ray Kingsley stored into EXROM bank. It
+can access to all Timex memory banks. This cartridge file is not auto-boot
+because it is not stored in DOCK bank, so it is not an AROS. To run this
+program, type following instructions:
+
+CLEAR 32767: OUT 255,128: OUT 244,240: RANDOMIZE USR 32776
+
+There are four modes, read, assemble, hexedit and single step. Press Extended
+mode and "H" for help. The read screen is the default screen and its help
+screen will tell you how to access the other screens except for step mode for
+which you need to access the assemble mode help screen to see.
+
+The program always initializes looking at Home bank code in the read mode. The
+bank that is displayed on the screen can be determined by the value displayed
+in the middle of the line of equal signs near the top of the screen. You can
+change the chunk spec for the upper 4 chunks with machine code in the single
+stepper mode or you can change the active chunks for each of the eight chunks
+by specifying a value at the "DISB" variable. To access this variable, just
+type in caps, DISB in the read mode. This will take you to the correct
+address. The first value is the chunk spec with bits for the HOME bank chunks
+set High. You must be very careful which chunk are set low because you can
+page out the machine stack and your program will crash. You won't have to
+worry about where your SHOTZ code is located because it will continue to
+operate no matter which bank of code it is loaded in. Value FC can generally
+be used FC to set the first two chunks to the DOCK bank or EXROM bank. The
+next value will determine which bank of memory you will look at on the screen.
+Enter 00 for DOCK, FE for EXROM or FF for HOME bank. To do this, you should go
+to hex edit mode by pressing the symbol shift key and the "A" key. That will
+take you to assemble mode. Next press the symbol shift key and the "G" key to
+take you to Hex edit mode.
+
+It is possible to change the displayed bank by changing the value in the
+middle of the equal signs but we don't know the series of key strokes to do
+this. It is also possible to transfer code between banks of memory and again,
+we don't remember how without studying it a while.
+

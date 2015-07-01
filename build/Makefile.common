@@ -1,0 +1,43 @@
+INCLUDES += -I$(CORE_DIR) \
+            -I$(CORE_DIR)/src \
+            -I$(CORE_DIR)/81/Ace \
+            -I$(CORE_DIR)/81/ide \
+            -I$(CORE_DIR)/81/peripherals \
+            -I$(CORE_DIR)/81/sound \
+            -I$(CORE_DIR)/81/wavtape \
+            -I$(CORE_DIR)/81/zx81 \
+            -I$(CORE_DIR)/81/z80 \
+            -I$(CORE_DIR)/81/zxprinter \
+            -I$(CORE_DIR)/81/tzx \
+            -I$(CORE_DIR)/81
+
+SOURCES_CXX += $(CORE_DIR)/81/kbstatus.cpp
+SOURCES_CXX += $(CORE_DIR)/81/ide/ide.cpp
+SOURCES_CXX += $(CORE_DIR)/81/Utils.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/TZXFILE.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxadd.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxload.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxevent.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventGeneral.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventTurbo.cpp
+SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventMisc.cpp
+
+SOURCES_C += $(CORE_DIR)/81/zx81config.c
+SOURCES_C += $(CORE_DIR)/81/sound/sound.c
+SOURCES_C += $(CORE_DIR)/81/sp0256.c
+SOURCES_C += $(CORE_DIR)/81/peripherals/dev8255.c
+SOURCES_C += $(CORE_DIR)/81/Ace/ace.c
+SOURCES_C += $(CORE_DIR)/81/zx81/zx81.c
+SOURCES_C += $(CORE_DIR)/81/zx81/rompatch.c
+SOURCES_C += $(CORE_DIR)/81/zx81/snap.c
+SOURCES_C += $(CORE_DIR)/81/z80/z80.c
+SOURCES_C += $(CORE_DIR)/81/z80/z80_ops.c
+
+SOURCES_CXX += $(CORE_DIR)/src/types.cpp
+SOURCES_CXX += $(CORE_DIR)/src/libretro.cpp
+SOURCES_C += $(CORE_DIR)/src/missing.c
+SOURCES_C += $(CORE_DIR)/src/eo.c
+
+ROMS += $(CORE_DIR)/bin/ROM/zx81.rom
+
+SNAPS += $(CORE_DIR)/src/snaps/zx81_48k.z81

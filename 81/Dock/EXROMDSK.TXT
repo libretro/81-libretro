@@ -1,0 +1,7 @@
+EXROMDSK.DCK
+------------
+
+This short file emulates 32 Kb of empty RAM located in EXROM bank mapped at
+address 32768. Use it on Warajevo emulator to get additional 32 Kb of RAM in
+EXROM bank at address space 32768 - 65535 (some Timex users has such hardware
+cartridge).

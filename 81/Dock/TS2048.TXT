@@ -1,0 +1,9 @@
+TS2048.DCK
+----------
+
+Timex Sinclair 2048 emulator. This DCK file is similar like SPECEMU.DCK,
+(Spectrum emulator cartridge in DOCK bank), but TS2048.DCK is loaded into HOME
+bank and it will replace Timex HOME ROM with Spectrum ROM (like in TS2048) so
+you will directly enter Spectrum mode, unlike SPECEMU.DCK which is loaded into
+DOCK bank and must be manually started with OUT 244,3 (so SPECEMU.DCK allows
+both Timex and Spectrum mode).

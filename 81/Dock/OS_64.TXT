@@ -1,0 +1,8 @@
+OS_64.DCK
+---------
+
+LROS ROM extension cartridge which support 64-column writing on the screen.
+Only two screen colors is supported with OS_64 because the attribute file
+locations are not used. The colors can be changed using standard INK or PAPER
+commands. Cartridge is auto-boot, so after Timex initialization you will
+automatically enter 64-column mode.

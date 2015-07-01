@@ -1,0 +1,21 @@
+ETOOLKIT.DCK
+------------
+
+A BASIC toolkit eprom cartridge (AROS). This toolkit has following options:
+Renumber, Hex/Dec loader, Disassembler, 3-base arithmetic, UDG generator,
+Header reader and it can be configured for various printer interfaces. The
+numbers and addresses that user enter should have the prefix "H" for
+hexadecimal, or "D" for decimal in order for the program to know what type of
+format is expected. The renumber routine doesn't renumber GO TO's or GO SUB's.
+A black box will be placed in the listing where ever the user needs to change
+a line number.
+
+If you want to switch between the toolkit and some BASIC program that exists
+in the HOME bank follow these instructions. To load a program from tape, after
+initializing the AROS toolkit program, select number 8 (Return to HOME bank).
+After loading a program when you want to enter toolkit, do
+
+POKE 23750,128: GO TO 1
+
+You can also return to the normal basic by doing: POKE 23750,0.
+

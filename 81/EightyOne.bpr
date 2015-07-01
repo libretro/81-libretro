@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="EightyOne.exe"/>
+    <OBJFILES value="EightyOne.obj z80\z80_ops.obj z80\z80.obj z80thread.obj kbstatus.obj 
+      About_.obj Keyboard_.obj Speed_.obj kb_.obj zx81\snap.obj zx81\zx81.obj 
+      AccDraw_.obj zxprinter\zxprinter.obj wavtape\WavFile.obj 
+      wavtape\wavload_.obj wavtape\WavCInterface.obj DebugWin\Debug.obj 
+      DebugWin\AddBreak_.obj Utils.obj Artifacts_.obj sound\dxsound.obj 
+      sound\sound.obj sound\SoundOP.obj DebugWin\Hist.obj zx81\rompatch.obj 
+      MemSave_.obj zx97Config.obj peripherals\dev8255.obj SerialPort.obj 
+      tzx\tzxevent.obj tzx\tzxEventTurbo.obj tzx\tzxfile.obj tzx\tzxload.obj 
+      tzx\TZXMan.obj tzx\tzxsave.obj tzx\tzxadd.obj tzx\tzxEditPause.obj 
+      tzx\tzxEditArchive.obj tzx\tzxEditText.obj tzx\tzxEditHWInfo.obj 
+      tzx\tzxEditData.obj DebugWin\EditValue_.obj DebugWin\EditFlags.obj 
+      FullScreen.obj zx81config.obj Ace\ace.obj Spectrum\spec48.obj 
+      tzx\tzxEventGeneral.obj tzx\tzxEventMisc.obj tzx\tzxEditGeneral.obj 
+      HW_.obj Interface1.obj Spectrum\spec48snap.obj lib765\765drive.obj 
+      lib765\765dsk.obj lib765\765fdc.obj lib765\765ldsk.obj lib765\error.obj 
+      Plus3Drives.obj libdsk\compbz2.obj libdsk\compgz.obj libdsk\compress.obj 
+      libdsk\compsq.obj libdsk\crc16.obj libdsk\crctable.obj libdsk\drvadisk.obj 
+      libdsk\drvcfi.obj libdsk\drvcpcem.obj libdsk\drvdos16.obj 
+      libdsk\drvdos32.obj libdsk\drvlinux.obj libdsk\drvmyz80.obj 
+      libdsk\drvntwdm.obj libdsk\drvnwasp.obj libdsk\drvposix.obj 
+      libdsk\drvqm.obj libdsk\drvrcpm.obj libdsk\drvwin16.obj 
+      libdsk\drvwin32.obj libdsk\dskcheck.obj libdsk\dskcmt.obj 
+      libdsk\dskdirty.obj libdsk\dskerror.obj libdsk\dskfmt.obj 
+      libdsk\dskgeom.obj libdsk\dskjni.obj libdsk\dsklphys.obj 
+      libdsk\dskopen.obj libdsk\dskpars.obj libdsk\dskread.obj 
+      libdsk\dskreprt.obj libdsk\dskretry.obj libdsk\dskrtrd.obj 
+      libdsk\dsksecid.obj libdsk\dskseek.obj libdsk\dsksgeom.obj 
+      libdsk\dskstat.obj libdsk\dsktread.obj libdsk\dsktrkid.obj 
+      libdsk\dskwrite.obj libdsk\remote.obj libdsk\rpccli.obj libdsk\rpcfork.obj 
+      libdsk\rpcfossl.obj libdsk\rpcmap.obj libdsk\rpcpack.obj 
+      libdsk\rpcserv.obj libdsk\rpctios.obj libdsk\rpcwin32.obj floppy.obj 
+      ide\ide.obj MakeHDF.obj main_.obj 68k\68000.obj ql\ql.obj 68k\op68kadd.obj 
+      68k\op68ksub.obj 68k\op68karith.obj 68k\op68klogop.obj 68k\op68kmisc.obj 
+      68k\op68kmove.obj 68k\op68kshift.obj 1772\1770disk.obj 1772\wd1770.obj 
+      sp0256.obj Parallel.obj sound\midi.obj midifrm.obj zlib\adler32.obj 
+      zlib\crc32.obj zlib\deflate.obj zlib\gzio.obj zlib\infback.obj 
+      zlib\inffast.obj zlib\inflate.obj zlib\inftrees.obj zlib\minigzip.obj 
+      zlib\trees.obj zlib\uncompr.obj zlib\zlcompress.obj zlib\zutil.obj 
+      zlib\minizip\ioapi.obj zlib\minizip\iowin32.obj zlib\minizip\miniunz.obj 
+      zlib\minizip\minizip.obj zlib\minizip\mztools.obj zlib\minizip\unzip.obj 
+      zlib\minizip\zip.obj ZipFile_.obj Debug68k\debug68.obj Debug68k\dis68k.obj"/>
+    <RESFILES value="EightyOne.res WinXP.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) About_.dfm Keyboard_.dfm Speed_.dfm kb_.dfm 
+      zxprinter\zxprinter.dfm wavtape\wavload_.dfm DebugWin\Debug.dfm 
+      DebugWin\AddBreak_.dfm Artifacts_.dfm sound\SoundOP.dfm DebugWin\Hist.dfm 
+      MemSave_.dfm zx97Config.dfm SerialPort.dfm tzx\TZXMan.dfm 
+      tzx\tzxEditPause.dfm tzx\tzxEditArchive.dfm tzx\tzxEditText.dfm 
+      tzx\tzxEditHWInfo.dfm tzx\tzxEditData.dfm DebugWin\EditValue_.dfm 
+      DebugWin\EditFlags.dfm FullScreen.dfm tzx\tzxEditGeneral.dfm HW_.dfm 
+      Interface1.dfm Plus3Drives.dfm MakeHDF.dfm main_.dfm Parallel.dfm 
+      midifrm.dfm ZipFile_.dfm Debug68k\debug68.dfm"/>
+    <LIBFILES value="C:\DXSDK\borland\ddraw.lib"/>
+    <LIBRARIES value="VCLX50.lib VCLDB50.lib THEMEMANAGERC5.lib OffBtn50.lib CPORTLIBCB5.lib 
+      AnimTimer.lib dbits.lib Vcl50.lib"/>
+    <SPARELIBS value="Vcl50.lib dbits.lib AnimTimer.lib CPORTLIBCB5.lib OffBtn50.lib 
+      THEMEMANAGERC5.lib VCLDB50.lib VCLX50.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Qrpt50.bpi Vcldb50.bpi Vclbde50.bpi 
+      ibsmp50.bpi vcldbx50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi TeeQR50.bpi 
+      VCLIB50.bpi bcbie50.bpi vclie50.bpi Inetdb50.bpi Inet50.bpi NMFast50.bpi 
+      dclocx50.bpi bcb2kaxserver50.bpi dbits.bpi"/>
+    <PATHCPP value=".;z80;zx81;zxprinter;wavtape;DebugWin;sound;peripherals;tzx;Ace;Spectrum;lib765;libdsk;ide;68k;ql;1772;zlib;zlib\minizip;Debug68k"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="EightyOne.cpp"/>
+    <INCLUDEPATH value="Debug68k;ql;zlib\minizip;zlib;1772;68k;C:\DXSDK\Include\;&quot;C:\Program Files\Soft Gems\Theme Manager\Source\&quot;;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;&quot;C:\Program Files\Borland\CBuilder5\Projects\&quot;;z80;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="Debug68k;ql;zlib\minizip;zlib;1772;68k;C:\DXSDK\Borland\;&quot;C:\Program Files\Soft Gems\Theme Manager\Source\&quot;;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;&quot;C:\Program Files\Borland\CBuilder5\Projects\&quot;;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;&quot;C:\Program Files\Borland\CBuilder5\Projects\TComport\&quot;"/>
+    <WARNINGS value="-w-ifr -w-rch -w-pch -w-par -w-ccc -w-aus"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -RT- -X- -r- -a8 -6 -b- -k -y -v 
+      -vi- -c -tW -tWM"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$I- -$C- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=0
+MinorVer=0
+Release=0
+Build=1
+Debug=0
+PreRelease=1
+Special=0
+Private=0
+DLL=0
+Locale=2057
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=A simple ZX81 emulator
+FileVersion=0.0.0.1
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=EightyOne
+ProductVersion=0.42
+Comments=Test Build
+
+[Excluded Packages]
+$(BCB)\Projects\Bpl\dclusr50.bpl=Borland User Components
+
+[HistoryLists\hlIncludePath]
+Count=28
+Item0=ql\;zlib\minizip;zlib;ql;1772;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item1=ql;1772;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item2=ql\;ql;1772;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item3=ql\;1772;ql;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item4=ql;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item5=ql\;68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item6=68k;C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item7=C:\DXSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item8=C:\DXSDK\Include\;c:\PKSDK\Include\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item9=C:\DXSDK\Include\;c:\PKSDK\Include;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item10=C:\DXSDK\Include;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item11=C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item12=C:\Program Files\Soft Gems\Theme Manager\Source;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item13=ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item14=lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item15=$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item16=Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item17=tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item18=peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item19=Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item20=sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item21=DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item22=wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item23=zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item24=TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item25=zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item26=C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\include;$(BCB)\include\vcl
+Item27=C:\Program Files\Borland\CBuilder5\Projects;z80;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=29
+Item0=ql\;zlib\minizip;zlib;ql;1772;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item1=ql;1772;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item2=ql\;ql;1772;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item3=ql\;1772;ql;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item4=ql;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item5=ql\;68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item6=68k;C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item7=C:\DXSDK\Borland\;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item8=C:\DXSDK\Borland;C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item9=C:\Program Files\Soft Gems\Theme Manager\Source\;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item10=C:\Program Files\Soft Gems\Theme Manager\Source;ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item11=ide;libdsk;lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item12=lib765;$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item13=$(BCB)\projects\offbtn97;Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item14=Spectrum;Ace;tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item15=tzx;peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item16=peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport\
+Item17=peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib;C:\Program Files\Borland\CBuilder5\Projects\TComport
+Item18=peripherals;Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib
+Item19=Timer;sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib
+Item20=sound;DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib
+Item21=DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\Projects\lib
+Item22=DebugWin;wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item23=wavtape;zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item24=zxprinter;TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item25=TapeMan;zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item26=zx81;C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item27=C:\Program Files\Borland\CBuilder5\Projects\;z80;$(BCB)\lib\obj;$(BCB)\lib
+Item28=C:\Program Files\Borland\CBuilder5\Projects;z80;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=4
+Item0=c:\program files\borland\cbuilder5\source\vcl;C:\dbits\lib\;C:\Documents and Settings\mike.CHUNTEY\My Documents\Programming\Dbits\lib\;C:\Program Files\Soft Gems\Theme Manager\Source\
+Item1=c:\program files\borland\cbuilder5\source\vcl;C:\dbits\lib\;C:\Documents and Settings\mike.CHUNTEY\My Documents\Programming\Dbits\lib\
+Item2=c:\program files\borland\cbuilder5\source\vcl;C:\dbits\lib\
+Item3=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=c:\program files\borland\cbuilder5\source\vcl;C:\dbits\lib\;C:\Documents and Settings\mike.CHUNTEY\My Documents\Programming\Dbits\lib\;C:\Program Files\Soft Gems\Theme Manager\Source\
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>
