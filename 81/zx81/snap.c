@@ -529,6 +529,7 @@ int memory_load(char *filename, int address, int length)
 
 int font_load(char *filename, char *address, int length)
 {
+#if 0
         int fptr;
         char file[256];
         int len;
@@ -553,5 +554,8 @@ int font_load(char *filename, char *address, int length)
         close(fptr);
 
         return(len);
+#endif
+
+  return 0;
 }
 
