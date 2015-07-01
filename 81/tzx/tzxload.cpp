@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "TZXFILE.h"
-#include "utils.h"
+#include "Utils.h"
 //---------------------------------------------------------------------------
 
 char TZX_ID[]="ZXTape!\032";
