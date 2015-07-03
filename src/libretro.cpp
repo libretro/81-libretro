@@ -183,6 +183,7 @@ bool retro_load_game( const struct retro_game_info* info )
 
   bool res = !eo_init( &cfg ) && load_snap( "zx81_48k.z81" );
 
+  zx81.TZXin = 1;
   TZXFile.LoadPFile( const_cast< void* >( info->data ), info->size, false );
   TZXFile.Start();
   
