@@ -1,9 +1,9 @@
 #ifndef EO_H
 #define EO_H
 
-#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include <zx81config.h>
 #include <sound/sound.h>
