@@ -1,6 +1,7 @@
 #ifndef EO_H
 #define EO_H
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 
