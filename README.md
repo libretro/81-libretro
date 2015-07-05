@@ -19,7 +19,7 @@ However, **81-libretro** only emulates the Sinclair ZX81 with 16Kb RAM for now. 
 
 The port correctly loads and runs ~~some~~ many games I have around in the `p` format. `tzx` format is not supported yet.
 
-EightyOne also emulates some ZX Spectrum machines, but those were left out of this core on purpose. For a ZX Spectrum for libretro, see the [Fuse core](https://github.com/libretro/fuse-libretro).
+EightyOne also emulates some ZX Spectrum machines, but those were left out of this core on purpose. For a ZX Spectrum core for libretro, see the [Fuse core](https://github.com/libretro/fuse-libretro).
 
 ## Core Options
 
@@ -57,7 +57,7 @@ See the open issues.
 
 ## Bugs
 
-Many, probably. Open issues or send pull requests.
+Many, probably. Open issues or send push requests.
 
 ## License
 
