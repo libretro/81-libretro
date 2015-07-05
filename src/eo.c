@@ -421,9 +421,9 @@ void eo_snapsave( void* data )
   memcpy( (void*)snap->memory, (void*)memory, zx81.RAMTOP + 1 );
 }
 
-void eo_snapload( void* data, size_t size )
+void eo_snapload( const void* data, size_t size )
 {
-  snapzx81_t* snap = (snapzx81_t*)data;
+  const snapzx81_t* snap = (snapzx81_t*)data;
   
   z80.af.b.h = snap->a;
   z80.af.b.l = snap->f;

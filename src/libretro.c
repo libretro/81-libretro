@@ -23,6 +23,16 @@
   #define RETRO_PERFORMANCE_STOP( name )
 #endif
 
+typedef struct
+{
+  bool   joystate[ 16 ]; // there should be a #define for that
+  bool   keystate[ RETROK_LAST ];
+  CONFIG cfg;
+  void*  data;
+  size_t size;
+}
+state_t;
+
 static void dummy_log( enum retro_log_level level, const char* fmt, ... )
 {
   (void)level;
@@ -37,14 +47,10 @@ retro_audio_sample_batch_t audio_cb;
 static retro_input_state_t input_state_cb;
 struct retro_perf_callback perf_cb;
 
-static bool   joystate[ 16 ]; // there should be a #define for that
-static bool   keystate[ RETROK_LAST ];
-static CONFIG cfg;
-static void*  data;
-static size_t size;
-
 extern int WinR, WinL, WinT, WinB, TVP;
 extern WORD* TVFB;
+
+static state_t state;
 
 static struct retro_input_descriptor input_descriptors[] = {
   // Cursor joystick
@@ -141,58 +147,58 @@ static void update_variables( void )
     switch ( option )
     {
     case 0: // clean
-      cfg.Brightness = 128;
-      cfg.Contrast = 0;
-      cfg.Colour = 0;
-      cfg.Vibrant = 1;
-      cfg.AdvancedEffects = 1;
-      cfg.DotCrawl = 1;
-      cfg.Interlaced = 0;
+      state.cfg.Brightness = 128;
+      state.cfg.Contrast = 0;
+      state.cfg.Colour = 0;
+      state.cfg.Vibrant = 1;
+      state.cfg.AdvancedEffects = 1;
+      state.cfg.DotCrawl = 1;
+      state.cfg.Interlaced = 0;
       
-      cfg.Artifacts = 0;
-      cfg.Noise = -6;
-      cfg.Ghosting = 40;
-      cfg.ScanLines = 40;
-      cfg.SimpleGhosting = 1;
+      state.cfg.Artifacts = 0;
+      state.cfg.Noise = -6;
+      state.cfg.Ghosting = 40;
+      state.cfg.ScanLines = 40;
+      state.cfg.SimpleGhosting = 1;
       
       break;
       
     case 1: // tv
-      cfg.Brightness = 206;
-      cfg.Contrast = 117;
-      cfg.Colour = 0;
-      cfg.Vibrant = 1;
-      cfg.AdvancedEffects = 1;
-      cfg.DotCrawl = 1;
-      cfg.Interlaced = 0;
+      state.cfg.Brightness = 206;
+      state.cfg.Contrast = 117;
+      state.cfg.Colour = 0;
+      state.cfg.Vibrant = 1;
+      state.cfg.AdvancedEffects = 1;
+      state.cfg.DotCrawl = 1;
+      state.cfg.Interlaced = 0;
       
-      cfg.Artifacts = 1;
-      cfg.Noise = -3;
-      cfg.Ghosting = -40;
-      cfg.ScanLines = 40;
-      cfg.SimpleGhosting = 1;
+      state.cfg.Artifacts = 1;
+      state.cfg.Noise = -3;
+      state.cfg.Ghosting = -40;
+      state.cfg.ScanLines = 40;
+      state.cfg.SimpleGhosting = 1;
       
       break;
       
     case 2: // noisy
-      cfg.Brightness = 174;
-      cfg.Contrast = 193;
-      cfg.Colour = 0;
-      cfg.Vibrant = 1;
-      cfg.AdvancedEffects = 1;
-      cfg.DotCrawl = 1;
-      cfg.Interlaced = 0;
+      state.cfg.Brightness = 174;
+      state.cfg.Contrast = 193;
+      state.cfg.Colour = 0;
+      state.cfg.Vibrant = 1;
+      state.cfg.AdvancedEffects = 1;
+      state.cfg.DotCrawl = 1;
+      state.cfg.Interlaced = 0;
       
-      cfg.Artifacts = 1;
-      cfg.Noise = -6;
-      cfg.Ghosting = 40;
-      cfg.ScanLines = 40;
-      cfg.SimpleGhosting = 1;
+      state.cfg.Artifacts = 1;
+      state.cfg.Noise = -6;
+      state.cfg.Ghosting = 40;
+      state.cfg.ScanLines = 40;
+      state.cfg.SimpleGhosting = 1;
       
       break;
     }
     
-    eo_settv( &cfg );
+    eo_settv( &state.cfg );
   }
 }
 
@@ -264,44 +270,44 @@ bool retro_load_game( const struct retro_game_info* info )
     return false;
   }
   
-  size = info->size;
-  data = malloc( size );
+  state.size = info->size;
+  state.data = malloc( state.size );
   
-  if ( !data )
+  if ( !state.data )
   {
     log_cb( RETRO_LOG_ERROR, "Error allocating memory for game data\n" );
     return false;
   }
   
-  memcpy( data, info->data, size );
+  memcpy( state.data, info->data, state.size );
   
-  memset( keystate, 0, sizeof( keystate ) );
-  memset( joystate, 0, sizeof( joystate ) );
+  memset( state.keystate, 0, sizeof( state.keystate ) );
+  memset( state.joystate, 0, sizeof( state.joystate ) );
   
-  cfg.machine = MACHINEZX81;
-  cfg.LambdaColour = COLOURDISABLED;
-  cfg.EnableLowRAM = 0;
-  cfg.ProtectROM = 1;
-  cfg.ZXPrinter = 0;
-  cfg.NTSC = 0;
-  cfg.M1Not = 0;
-  cfg.TS2050 = 0;
-  cfg.ChrGen = CHRGENSINCLAIR;
-  cfg.RamPack = RAMPACK16;
-  cfg.HiRes = HIRESDISABLED;
-  cfg.SoundCard = AY_TYPE_DISABLED;
+  state.cfg.machine = MACHINEZX81;
+  state.cfg.LambdaColour = COLOURDISABLED;
+  state.cfg.EnableLowRAM = 0;
+  state.cfg.ProtectROM = 1;
+  state.cfg.ZXPrinter = 0;
+  state.cfg.NTSC = 0;
+  state.cfg.M1Not = 0;
+  state.cfg.TS2050 = 0;
+  state.cfg.ChrGen = CHRGENSINCLAIR;
+  state.cfg.RamPack = RAMPACK16;
+  state.cfg.HiRes = HIRESDISABLED;
+  state.cfg.SoundCard = AY_TYPE_DISABLED;
   
   update_variables();
 
-  bool res = !eo_init( &cfg );
+  bool res = !eo_init( &state.cfg );
 
   // zx81.TZXin = 1;
   // TZXFile.LoadPFile( const_cast< void* >( info->data ), info->size, false );
   // TZXFile.Start();
   
-  if ( info->size != 0 )
+  if ( state.size != 0 )
   {
-    eo_loadp( data, size );
+    eo_loadp( state.data, state.size );
   }
   
   return res;
@@ -351,6 +357,8 @@ void retro_get_system_av_info( struct retro_system_av_info* info )
   info->geometry.aspect_ratio = 0.0f;
   info->timing.fps = 50.0;
   info->timing.sample_rate = 44100.0;
+  
+  log_cb( RETRO_LOG_INFO, "Resolution: %u x %u\n", info->geometry.base_width, info->geometry.base_height );
 }
 
 void retro_run( void )
@@ -375,17 +383,17 @@ void retro_run( void )
 
     if ( is_down )
     {
-      if ( !keystate[ retro ] )
+      if ( !state.keystate[ retro ] )
       {
-        keystate[ retro ] = true;
+        state.keystate[ retro ] = true;
         PCKeyDown( eo );
       }
     }
     else
     {
-      if ( keystate[ retro ] )
+      if ( state.keystate[ retro ] )
       {
-        keystate[ retro ] = false;
+        state.keystate[ retro ] = false;
         PCKeyUp( eo );
       }
     }
@@ -400,17 +408,17 @@ void retro_run( void )
 
     if ( is_down )
     {
-      if ( !joystate[ retro ] )
+      if ( !state.joystate[ retro ] )
       {
-        joystate[ retro ] = true;
+        state.joystate[ retro ] = true;
         PCKeyDown( eo );
       }
     }
     else
     {
-      if ( joystate[ retro ] )
+      if ( state.joystate[ retro ] )
       {
-        joystate[ retro ] = false;
+        state.joystate[ retro ] = false;
         PCKeyUp( eo );
       }
     }
@@ -438,7 +446,7 @@ void retro_set_controller_port_device( unsigned port, unsigned device )
 void retro_reset( void )
 {
   eo_reset();
-  eo_loadp( data, size );
+  eo_loadp( state.data, state.size );
 }
 
 size_t retro_serialize_size( void )
@@ -479,8 +487,8 @@ bool retro_load_game_special( unsigned a, const struct retro_game_info* b, size_
 
 void retro_unload_game( void )
 {
-  free( data );
-  data = NULL;
+  free( state.data );
+  state.data = NULL;
 }
 
 unsigned retro_get_region( void )

@@ -70,7 +70,7 @@ void eo_deinit( void );
 void   eo_loadp( const void* data, size_t size );
 size_t eo_snapsize( void );
 void   eo_snapsave( void* data );
-void   eo_snapload( void* data, size_t size );
+void   eo_snapload( const void* data, size_t size );
 
 #ifdef __cplusplus
 }
