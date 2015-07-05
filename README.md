@@ -47,7 +47,7 @@ Save states are supported.
 
 ## Versions
 
-Versions that are being used to build and test **fuse-libretro**:
+Versions that are being used to build and test **81-libretro**:
 
 * EightyOne version 1.0 (test a)
 
