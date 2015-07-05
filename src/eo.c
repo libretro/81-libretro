@@ -310,6 +310,11 @@ void eo_tick( void )
   }
 }
 
+void eo_reset( void )
+{
+  machine.initialise();
+}
+
 void eo_deinit( void )
 {
 }
@@ -340,4 +345,126 @@ void eo_loadp( const void* data, size_t size )
   z80.iy.w = 0x4000;
   z80.i = 0x1e;
   z80.r = 0xca;
+}
+
+typedef struct
+{
+  // Z80
+  uint8_t a, f, b, c, d, e, h, l;
+  uint8_t a2, f2, b2, c2, d2, e2, h2, l2;
+  uint8_t ixh, ixl, iyh, iyl, sph, spl, pch, pcl;
+  uint8_t i, r, im, iff1, iff2, halted;
+  
+  // ZX81
+  uint8_t nmi, hsync, rowch, rowcl;
+  
+  // memory
+  uint8_t addr0h, addr0l, addr1h, addr1l;
+  uint8_t memory[ 0 ];
+}
+snapzx81_t;
+
+size_t eo_snapsize( void )
+{
+  return sizeof( snapzx81_t ) + zx81.RAMTOP + 1;
+}
+
+extern int rowcounter;
+
+void eo_snapsave( void* data )
+{
+  snapzx81_t* snap = (snapzx81_t*)data;
+  
+  snap->a = z80.af.b.h;
+  snap->f = z80.af.b.l;
+  snap->b = z80.bc.b.h;
+  snap->c = z80.bc.b.l;
+  snap->d = z80.de.b.h;
+  snap->e = z80.de.b.l;
+  snap->h = z80.hl.b.h;
+  snap->l = z80.hl.b.l;
+  
+  snap->a2 = z80.af_.b.h;
+  snap->f2 = z80.af_.b.l;
+  snap->b2 = z80.bc_.b.h;
+  snap->c2 = z80.bc_.b.l;
+  snap->d2 = z80.de_.b.h;
+  snap->e2 = z80.de_.b.l;
+  snap->h2 = z80.hl_.b.h;
+  snap->l2 = z80.hl_.b.l;
+  
+  snap->ixh = z80.ix.b.h;
+  snap->ixl = z80.ix.b.l;
+  snap->iyh = z80.iy.b.h;
+  snap->iyl = z80.iy.b.l;
+  snap->sph = z80.sp.b.h;
+  snap->spl = z80.sp.b.l;
+  snap->pch = z80.pc.b.h;
+  snap->pcl = z80.pc.b.l;
+  
+  snap->i = z80.i;
+  snap->r = ( z80.r7 & 128 ) | ( z80.r & 127 );
+  snap->im = z80.im;
+  snap->iff1 = z80.iff1;
+  snap->iff2 = z80.iff2;
+  snap->halted = z80.halted;
+  
+  snap->nmi = NMI_generator;
+  snap->hsync = HSYNC_generator;
+  snap->rowch = rowcounter >> 8;
+  snap->rowcl = rowcounter & 255;
+  
+  snap->addr0h = 0;
+  snap->addr0l = 0;
+  snap->addr1h = zx81.RAMTOP >> 8;
+  snap->addr1l = zx81.RAMTOP & 255;
+  memcpy( (void*)snap->memory, (void*)memory, zx81.RAMTOP + 1 );
+}
+
+void eo_snapload( void* data, size_t size )
+{
+  snapzx81_t* snap = (snapzx81_t*)data;
+  
+  z80.af.b.h = snap->a;
+  z80.af.b.l = snap->f;
+  z80.bc.b.h = snap->b;
+  z80.bc.b.l = snap->c;
+  z80.de.b.h = snap->d;
+  z80.de.b.l = snap->e;
+  z80.hl.b.h = snap->h;
+  z80.hl.b.l = snap->l;
+  
+  z80.af_.b.h = snap->a2;
+  z80.af_.b.l = snap->f2;
+  z80.bc_.b.h = snap->b2;
+  z80.bc_.b.l = snap->c2;
+  z80.de_.b.h = snap->d2;
+  z80.de_.b.l = snap->e2;
+  z80.hl_.b.h = snap->h2;
+  z80.hl_.b.l = snap->l2;
+  
+  z80.ix.b.h = snap->ixh;
+  z80.ix.b.l = snap->ixl;
+  z80.iy.b.h = snap->iyh;
+  z80.iy.b.l = snap->iyl;
+  z80.sp.b.h = snap->sph;
+  z80.sp.b.l = snap->spl;
+  z80.pc.b.h = snap->pch;
+  z80.pc.b.l = snap->pcl;
+  
+  z80.i = snap->i;
+  z80.r = snap->r;
+  z80.r7 = snap->r & 128;
+  z80.im = snap->im;
+  z80.iff1 = snap->iff1;
+  z80.iff2 = snap->iff2;
+  z80.halted = snap->halted;
+  
+  NMI_generator = snap->nmi;
+  HSYNC_generator = snap->hsync;
+  rowcounter = snap->rowch << 8 | snap->rowcl;
+  
+  int addr0 = snap->addr0h << 8 | snap->addr0l;
+  int addr1 = snap->addr1h << 8 | snap->addr1l;
+  memcpy( (void*)( &memory[ addr0 ] ), (void*)snap->memory, addr1 - addr0 + 1 );
 }
