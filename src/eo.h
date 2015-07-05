@@ -63,8 +63,13 @@ extern const char* eo_githash;
 int  eo_init( CONFIG* cfg );
 void eo_settv( CONFIG* cfg );
 void eo_tick( void );
+void eo_reset( void );
 void eo_deinit( void );
-void eo_loadp( const void* data, size_t size );
+
+void   eo_loadp( const void* data, size_t size );
+size_t eo_snapsize( void );
+void   eo_snapsave( void* data );
+void   eo_snapload( void* data, size_t size );
 
 #ifdef __cplusplus
 }

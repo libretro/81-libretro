@@ -40,6 +40,8 @@ struct retro_perf_callback perf_cb;
 static bool   joystate[ 16 ]; // there should be a #define for that
 static bool   keystate[ RETROK_LAST ];
 static CONFIG cfg;
+static void*  data;
+static size_t size;
 
 extern int WinR, WinL, WinT, WinB, TVP;
 extern WORD* TVFB;
@@ -230,12 +232,12 @@ void retro_set_environment( retro_environment_t cb )
   cb( RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)ports );
 }
 
-unsigned retro_api_version()
+unsigned retro_api_version( void )
 {
   return RETRO_API_VERSION;
 }
 
-void retro_init()
+void retro_init( void )
 {
   struct retro_log_callback log;
 
@@ -261,6 +263,17 @@ bool retro_load_game( const struct retro_game_info* info )
     log_cb( RETRO_LOG_ERROR, "EightyOne needs RGB565\n" );
     return false;
   }
+  
+  size = info->size;
+  data = malloc( size );
+  
+  if ( !data )
+  {
+    log_cb( RETRO_LOG_ERROR, "Error allocating memory for game data\n" );
+    return false;
+  }
+  
+  memcpy( data, info->data, size );
   
   memset( keystate, 0, sizeof( keystate ) );
   memset( joystate, 0, sizeof( joystate ) );
@@ -288,7 +301,7 @@ bool retro_load_game( const struct retro_game_info* info )
   
   if ( info->size != 0 )
   {
-    eo_loadp( info->data, info->size );
+    eo_loadp( data, size );
   }
   
   return res;
@@ -340,7 +353,7 @@ void retro_get_system_av_info( struct retro_system_av_info* info )
   info->timing.sample_rate = 44100.0;
 }
 
-void retro_run()
+void retro_run( void )
 {
   bool updated = false;
 
@@ -407,7 +420,7 @@ void retro_run()
   video_cb( (void*)( TVFB + WinL + WinT * TVP / 2 ), WinR - WinL, WinB - WinT, TVP );
 }
 
-void retro_deinit()
+void retro_deinit( void )
 {
   eo_deinit();
   
@@ -422,30 +435,30 @@ void retro_set_controller_port_device( unsigned port, unsigned device )
   (void)device;
 }
 
-void retro_reset()
+void retro_reset( void )
 {
-  // TODO
+  eo_reset();
+  eo_loadp( data, size );
 }
 
-size_t retro_serialize_size()
+size_t retro_serialize_size( void )
 {
-  // TODO
-  return 0;
+  return eo_snapsize();
 }
 
 bool retro_serialize( void* data, size_t size )
 {
-  // TODO
-  return false;
+  eo_snapsave( data );
+  return true;
 }
 
 bool retro_unserialize( const void* data, size_t size )
 {
-  // TODO
-  return false;
+  eo_snapload( data, size );
+  return true;
 }
 
-void retro_cheat_reset()
+void retro_cheat_reset( void )
 {
 }
 
@@ -464,11 +477,13 @@ bool retro_load_game_special( unsigned a, const struct retro_game_info* b, size_
   return false;
 }
 
-void retro_unload_game()
+void retro_unload_game( void )
 {
+  free( data );
+  data = NULL;
 }
 
-unsigned retro_get_region(void)
+unsigned retro_get_region( void )
 {
   return RETRO_REGION_PAL;
 }
