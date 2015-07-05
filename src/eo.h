@@ -54,13 +54,20 @@ typedef struct
 CONFIG;
 
 #ifdef __cplusplus
-extern "C" int eo_init( CONFIG* cfg );
-extern "C" void eo_tick( int64_t dt );
-extern "C" void eo_deinit( void );
-#else
-int eo_init( CONFIG* cfg );
-void eo_tick( int64_t dt );
+extern "C" {
+#endif
+
+extern const char* eo_gitstamp;
+extern const char* eo_githash;
+
+int  eo_init( CONFIG* cfg );
+void eo_settv( CONFIG* cfg );
+void eo_tick( void );
 void eo_deinit( void );
+void eo_loadp( const void* data, size_t size );
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* EO_H */

@@ -1,11 +1,11 @@
-TARGET = fuse_libretro$(SOEXT)
+TARGET = 81_libretro$(SOEXT)
 
-DEFINES  += -DGITHASH=\"`git rev-parse HEAD`\"
+DEFINES  +=
 CFLAGS   += -Wall
 CXXFLAGS += -Wall
 LDFLAGS  +=
 
-HEADERS = $(ROMS:.rom=.h) $(SNAPS:.szx=.h) fuse/config.h libspectrum/config.h
+HEADERS = $(ROMS:.rom=.h) $(SNAPS:.z81=.h)
 OBJS    = $(SOURCES_C:.c=$(OBJEXT)) $(SOURCES_CXX:.cpp=$(OBJEXT))
 
 %$(OBJEXT): %.cpp
@@ -20,7 +20,7 @@ OBJS    = $(SOURCES_C:.c=$(OBJEXT)) $(SOURCES_CXX:.cpp=$(OBJEXT))
 %.h: %.rom
 	xxd -i $< | sed "s/unsigned/const unsigned/g" | sed "s/___//g" > $@
 
-%.h: %.szx
+%.h: %.z81
 	xxd -i $< | sed "s/unsigned/const unsigned/g" | sed "s/___//g" > $@
 
 all: $(TARGET)
@@ -28,11 +28,7 @@ all: $(TARGET)
 $(TARGET): $(HEADERS) $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LDFLAGS)
 
-fuse/config.h:
-	cp $(CORE_DIR)/src/config_fuse.h $(CORE_DIR)/fuse/config.h
-
-libspectrum/config.h:
-	cp $(CORE_DIR)/src/config_libspectrum.h $(CORE_DIR)/libspectrum/config.h
+$(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)
 
 $(CORE_DIR)/src/version.c: FORCE
 	cat etc/version.c.templ | sed s/HASH/`git rev-parse HEAD | tr -d "\n"`/g > $@
@@ -45,6 +41,5 @@ clean: clean-objs
 
 dist-clean: clean
 	rm -f $(HEADERS)
-
 
 .PHONY: clean-objs clean dist-clean FORCE

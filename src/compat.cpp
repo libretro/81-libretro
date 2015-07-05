@@ -1,6 +1,10 @@
-#include <funcs.h>
-#include <eo.h>
 #include <zx81config.h>
+#include <TZXFILE.h>
+
+#include <libretro.h>
+#include <eo.h>
+#include <funcs.h>
+#include <types.h>
 
 #define false 0
 #define true  1
@@ -14,106 +18,58 @@
                                                                             |_|   |_|    
 */
 
-int FlashSaveable( void )
+TTZXFile TZXFile;
+
+extern "C" int FlashSaveable( void )
 {
   return 0;
 }
 
-int FlashLoadable( void )
+extern "C" int FlashLoadable( void )
 {
   return 0;
 }
 
-// void WavClockTick( int TStates, int MicState )
-// {
-  // (void)MicState;
+extern "C" void WavClockTick( int TStates, int MicState )
+{
+  sound_beeper( TZXFile.GetEarState() );
   
-  // static bool Previous = true;
+  if ( TZXFile.Playing )
+  {
+    TZXFile.ClockTick( TStates );
+  }
+}
 
-  // //if (ZX81 && WavLoad->IgnoreZX81) return;
-  
-  // // if ( RecTimeOut )
-  // // {
-    // // RecTimeOut -= TStates;
-    
-    // // if ( RecTimeOut < 884 )
-    // // {
-      // // RecTimeOut=RecTimeOut;
-    // // }
-    
-    // // if ( RecTimeOut <= 0 )
-    // // {
-      // // while ( RecState != REC_STOP )
-      // // {
-        // // RecStopCheck();
-      // // }
-    // // }
-  // // }
-
-  // if ( TZXFile.Playing != Previous )
-  // {
-    // Previous = TZXFile.Playing;
-    
-    // // if (Previous)
-    // // {
-      // // TZX->PlayBtn->Down=true;
-      // // TZX->StopBtn->Down=false;
-    // // }
-    // // else
-    // // {
-      // // TZX->PlayBtn->Down=false;
-      // // TZX->StopBtn->Down=true;
-    // // }
-    
-    // // TZX->UpdateButtons();
-  // }
-
-  // if ( !TZXFile.Playing )
-  // {
-    // return;
-  // }
-
-  // //if ( SoundOn->Down )
-  // {
-    // sound_beeper( TZXFile.GetEarState() );
-  // }
-
-  // TZXFile.ClockTick( TStates );
-  // // if (TZXFile.ClockTick(TStates))
-  // // {
-    // // int a;
-    // // a=TZXFile.CurBlock+1;
-    // // if (a>=TZX->Table->RowCount) a=TZX->Table->RowCount-1;
-    // // TZX->Table->Row=a;
-    // // TZXFile.CurBlock=a-1;
-  // // }
-// }
-
-int WavPlaying()
+extern "C" int WavPlaying()
 {
   return 0;
 }
 
-void WavStop( void )
+extern "C" void WavStop( void )
 {
 }
 
-void WavStartRec( void )
+extern "C" void WavStartRec( void )
 {
 }
 
-void WavStart( void )
+extern "C" void WavStart( void )
 {
 }
 
-int WavFlashLoad( void )
+extern "C" int WavFlashLoad( void )
 {
   return 0;
 }
 
-void WavRecordByte( int Byte )
+extern "C" void WavRecordByte( int Byte )
 {
   (void)Byte;
+}
+
+extern "C" int GetEarState()
+{
+  return !TZXFile.GetEarState();
 }
 
 /*
@@ -138,17 +94,17 @@ void DebugUpdate( void )
            |_|                                 |_|   |_|    
 */
 
-void ZXPrinterClockTick( int ts )
+extern "C" void ZXPrinterClockTick( int ts )
 {
   (void)ts;
 }
 
-void ZXPrinterWritePort( unsigned char Data )
+extern "C" void ZXPrinterWritePort( unsigned char Data )
 {
   (void)Data;
 }
 
-unsigned char ZXPrinterReadPort( void )
+extern "C" unsigned char ZXPrinterReadPort( void )
 {
   return 0;
 }
@@ -177,7 +133,7 @@ void SoundOP_Update( unsigned char* data, int len )
                             
 */
 
-void MidiWriteBit( int Bit )
+extern "C" void MidiWriteBit( int Bit )
 {
   (void)Bit;
 }
@@ -191,7 +147,7 @@ void MidiWriteBit( int Bit )
                                                
 */
 
-int sound_lowlevel_init( const char *device, int *freqptr, int *stereoptr )
+extern "C" int sound_lowlevel_init( const char *device, int *freqptr, int *stereoptr )
 {
   (void)device;
   *freqptr = 44100;
@@ -199,17 +155,15 @@ int sound_lowlevel_init( const char *device, int *freqptr, int *stereoptr )
   return 0;
 }
 
-void sound_lowlevel_end( void )
+extern "C" void sound_lowlevel_end( void )
 {
 }
-
-#include <libretro.h>
 
 extern retro_audio_sample_batch_t audio_cb;
 
 static int16_t sbuf[ 1764 ];
 
-void sound_lowlevel_frame( unsigned char *data, unsigned int len )
+extern "C" void sound_lowlevel_frame( unsigned char *data, unsigned int len )
 {
   unsigned int i;
   
@@ -230,38 +184,29 @@ void sound_lowlevel_frame( unsigned char *data, unsigned int len )
                                                      |_|   |_|    
 */
 
-BYTE d8251readCTRL( void )
+extern "C" BYTE d8251readCTRL( void )
 {
   return 133;
 }
 
-BYTE d8251readDATA( void )
+extern "C" BYTE d8251readDATA( void )
 {
   return 0;
 }
 
-void d8251writeCTRL( BYTE data )
+extern "C" void d8251writeCTRL( BYTE data )
 {
   (void)data;
 }
 
-void d8251writeDATA( BYTE data )
+extern "C" void d8251writeDATA( BYTE data )
 {
   (void)data;
 }
 
-void d8251reset( void )
+extern "C" void d8251reset( void )
 {
 }
-
-/*
-  _____ _______  ____  __                               
- |_   _|__  /\ \/ /  \/  | __ _ _ __    ___ _ __  _ __  
-   | |   / /  \  /| |\/| |/ _` | '_ \  / __| '_ \| '_ \ 
-   | |  / /_  /  \| |  | | (_| | | | || (__| |_) | |_) |
-   |_| /____|/_/\_\_|  |_|\__,_|_| |_(_)___| .__/| .__/ 
-                                           |_|   |_|    
-*/
 
 /*
      _            ____                                         
@@ -337,7 +282,7 @@ static DWORD Palette[ 256 ], Colours[ 256 ];
                          | ( ( ( g > 255 ? 255 : ( g < 0 ? 0 : g ) ) & 0xff ) <<  8 ) \
                          |   ( ( r > 255 ? 255 : ( r < 0 ? 0 : r ) ) & 0xff ) )
 
-void add_blank( int tstates, BYTE colour )
+extern "C" void add_blank( int tstates, BYTE colour )
 {
   while ( tstates-- > 0 )
   {
@@ -495,7 +440,7 @@ static void RecalcPalette( CONFIG* cfg )
   }
 }
 
-int AccurateInit( CONFIG* cfg, int resize )
+extern "C" int AccurateInit( CONFIG* cfg, int resize )
 {
   (void)resize;
   
@@ -624,7 +569,7 @@ static void CompleteFrame(void)
   }
 }
 
-void AccurateDraw( void )
+extern "C" void AccurateDraw( void )
 {
   static int FrameNo = 0;
   static int LastVSyncLen = 0, Shade = 0;
@@ -757,12 +702,44 @@ void AccurateDraw( void )
                                        
 */
 
-SHORT GetKeyState( int nVirtKey )
+extern "C" SHORT GetKeyState( int nVirtKey )
 {
   return 0;
 }
 
-int myrandom( int x )
+extern "C" int myrandom( int x )
 {
   return rand() % ( x + 1 );
+}
+
+AnsiString AnsiString::UpperCase() const
+{
+  AnsiString res = *this;
+  int len = Length();
+  
+  for ( int i = 0; i < len; i++ )
+  {
+    res[ i ] = toupper( res[ i ] );
+  }
+  
+  return res;
+}
+
+int AnsiString::AnsiPos( const AnsiString& other ) const
+{
+  size_t pos = str.find( other.c_str() );
+  return pos == std::string::npos ? 0 : pos + 1;
+}
+
+AnsiString operator+ ( const char* lhs, const AnsiString& rhs )
+{
+  AnsiString res = lhs;
+  res += rhs;
+  return res;
+}
+
+int TStrings::Add( const AnsiString str )
+{
+  list.push_back( str );
+  return list.size();
 }

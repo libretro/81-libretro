@@ -6,20 +6,11 @@
 
 #include <ace.h>
 #include <zx81.h>
+#include <z80.h>
 #include <sound.h>
 #include <kbstatus.h>
 #include <ide.h>
 #include <sp0256.h>
-
-/*
-                _       _ _
-   ___  ___    (_)_ __ (_) |_ 
-  / _ \/ _ \   | | '_ \| | __|
- |  __/ (_) |  | | | | | | |_ 
-  \___|\___/___|_|_| |_|_|\__|
-          |_____|
-
-*/
 
 #define ResetRequired 1
 #define nosound 0
@@ -268,7 +259,18 @@ int eo_init( CONFIG* cfg )
   return res;
 }
 
-void eo_tick( int64_t dt )
+void eo_settv( CONFIG* cfg )
+{
+  zx81.dirtydisplay= cfg->Artifacts;
+  zx81.simpleghost = cfg->SimpleGhosting;
+  tv.AdvancedEffects = cfg->AdvancedEffects;
+  tv.DotCrawl = cfg->DotCrawl;
+  tv.Interlaced = cfg->Interlaced;
+  
+  AccurateInit( cfg, false );
+}
+
+void eo_tick( void )
 {
   static int j, borrow;
 
@@ -283,11 +285,6 @@ void eo_tick( int64_t dt )
     return;
   }
   
-  // if ( AutoLoadCount )
-  // {
-    // DoAutoLoad();
-  // }
-
   // mouse.x = Controls::Mouse->CursorPos.x;
   // mouse.y = Screen->Height - Controls::Mouse->CursorPos.y;
 
@@ -315,4 +312,32 @@ void eo_tick( int64_t dt )
 
 void eo_deinit( void )
 {
+}
+
+void eo_loadp( const void* data, size_t size )
+{
+  memcpy( (void*)( memory + 0x4009 ), data, size );
+  
+  z80.sp.w = 0x7ffc;
+  
+  memory[ 0x4000 ] = 0xff;
+  memory[ 0x4001 ] = 0x80;
+  memory[ 0x4002 ] = 0xfc;
+  memory[ 0x4003 ] = 0x7f;
+  memory[ 0x4004 ] = 0x00;
+  memory[ 0x4005 ] = 0x80;
+  memory[ 0x4006 ] = 0x00;
+  memory[ 0x4007 ] = 0xfe;
+  memory[ 0x4008 ] = 0xff;
+  
+  memory[ z80.sp.w + 0 ] = 0x76;
+  memory[ z80.sp.w + 1 ] = 0x06;
+  memory[ z80.sp.w + 2 ] = 0x00;
+  memory[ z80.sp.w + 3 ] = 0x3e;
+  
+  z80.pc.w = 0x0207;
+  z80.ix.w = 0x0281;
+  z80.iy.w = 0x4000;
+  z80.i = 0x1e;
+  z80.r = 0xca;
 }
