@@ -41,8 +41,8 @@ Save states are supported.
 
 ## Setup
 
-1. Compile **fuse-libretro** with `make -f Makefile.libretro`
-1. Copy the resulting `fuse_libretro.dll` or `fuse_libretro.so` into the `cores` folder of your libretro frontend
+1. Compile **81-libretro** with `make -f Makefile.libretro`
+1. Copy the resulting `81_libretro.dll` or `81_libretro.so` into the `cores` folder of your libretro frontend
 1. Profit!
 
 ## Versions
