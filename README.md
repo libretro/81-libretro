@@ -45,6 +45,10 @@ Save states are supported.
 1. Copy the resulting `81_libretro.dll` or `81_libretro.so` into the `cores` folder of your libretro frontend
 1. Profit!
 
+## Thanks
+
+* Erik Olofsen, for the correct values to set the Z80 registers and some memory variables to successfully load .P files
+
 ## Versions
 
 Versions that are being used to build and test **81-libretro**:
