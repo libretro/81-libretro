@@ -1,14 +1,15 @@
 #include <libretro.h>
 #include <coreopt.h>
+#include <keybovl.h>
 
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include <eo.h>
 #include <types.h>
 #include <snap.h>
 #include <zx81.h>
-#include <keys.h>
-#include <kbstatus.h>
 
 #define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_KEYBOARD
 #define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_JOYPAD
@@ -25,116 +26,49 @@
 
 typedef struct
 {
-  bool   joystate[ 16 ]; // there should be a #define for that
-  bool   keystate[ RETROK_LAST ];
-  CONFIG cfg;
-  void*  data;
-  size_t size;
+  bool     joystate[ 16 ]; // there should be a #define for that
+  bool     keystate[ RETROK_LAST ];
+  CONFIG   cfg;
+  void*    data;
+  size_t   size;
+  int      transp;
+  int      ms;
+  unsigned devices[ 2 ];
 }
 state_t;
 
 static void dummy_log( enum retro_log_level level, const char* fmt, ... )
 {
+  va_list args;
+  
   (void)level;
-  (void)fmt;
+  
+  va_start( args, fmt );
+  vfprintf( stderr, fmt, args );
+  va_end( args );
+  
+  fflush( stderr );
 }
 
 static retro_video_refresh_t video_cb;
 static retro_input_poll_t input_poll_cb;
 static retro_environment_t env_cb;
-retro_log_printf_t log_cb = dummy_log;
+static retro_log_printf_t log_cb = dummy_log;
 retro_audio_sample_batch_t audio_cb;
 static retro_input_state_t input_state_cb;
 struct retro_perf_callback perf_cb;
 
 extern int WinR, WinL, WinT, WinB, TVP;
 extern WORD* TVFB;
+extern keybovl_t zx81ovl;
 
 static state_t state;
-
-static struct retro_input_descriptor input_descriptors[] = {
-  // Cursor joystick
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP, "Up" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN, "Down" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT, "Left" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "Right" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A, "Fire" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B, "Up" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X, "Fire" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y, "Fire" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Keyboard overlay" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L, "Enter" },
-  { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R, "Space" },
-  // Terminate
-  { 255, 255, 255, 255, NULL }
-};
-
-struct { unsigned retro; WORD eo; } joymap[] = {
-  { RETRO_DEVICE_ID_JOYPAD_UP,    '7' },
-  { RETRO_DEVICE_ID_JOYPAD_DOWN,  '6' },
-  { RETRO_DEVICE_ID_JOYPAD_LEFT,  '5' },
-  { RETRO_DEVICE_ID_JOYPAD_RIGHT, '8' },
-  { RETRO_DEVICE_ID_JOYPAD_A,     '0' },
-  { RETRO_DEVICE_ID_JOYPAD_X,     '0' },
-  { RETRO_DEVICE_ID_JOYPAD_Y,     '0' },
-  { RETRO_DEVICE_ID_JOYPAD_B,     '7' },
-  { RETRO_DEVICE_ID_JOYPAD_L,     VK_RETURN },
-  { RETRO_DEVICE_ID_JOYPAD_R,     VK_SPACE },
-  { 0, 0 }	// End marker: DO NOT MOVE!
-};
-
-struct { unsigned retro; WORD eo; } keymap[] = {
-  { RETROK_RETURN,    VK_RETURN  },
-  { RETROK_SPACE,     VK_SPACE   },
-  { RETROK_BACKSPACE, VK_BACK    },
-  { RETROK_0,         '0'        },
-  { RETROK_1,         '1'        },
-  { RETROK_2,         '2'        },
-  { RETROK_3,         '3'        },
-  { RETROK_4,         '4'        },
-  { RETROK_5,         '5'        },
-  { RETROK_6,         '6'        },
-  { RETROK_7,         '7'        },
-  { RETROK_8,         '8'        },
-  { RETROK_9,         '9'        },
-  { RETROK_a,         'A'        },
-  { RETROK_b,         'B'        },
-  { RETROK_c,         'C'        },
-  { RETROK_d,         'D'        },
-  { RETROK_e,         'E'        },
-  { RETROK_f,         'F'        },
-  { RETROK_g,         'G'        },
-  { RETROK_h,         'H'        },
-  { RETROK_i,         'I'        },
-  { RETROK_j,         'J'        },
-  { RETROK_k,         'K'        },
-  { RETROK_l,         'L'        },
-  { RETROK_m,         'M'        },
-  { RETROK_n,         'N'        },
-  { RETROK_o,         'O'        },
-  { RETROK_p,         'P'        },
-  { RETROK_q,         'Q'        },
-  { RETROK_r,         'R'        },
-  { RETROK_s,         'S'        },
-  { RETROK_t,         'T'        },
-  { RETROK_u,         'U'        },
-  { RETROK_v,         'V'        },
-  { RETROK_w,         'W'        },
-  { RETROK_x,         'X'        },
-  { RETROK_y,         'Y'        },
-  { RETROK_z,         'Z'        },
-  { RETROK_LSHIFT,    VK_SHIFT   },
-  { RETROK_RSHIFT,    VK_SHIFT   },
-  { RETROK_LCTRL,     VK_CONTROL },
-  { RETROK_RCTRL,     VK_CONTROL },
-  { RETROK_LALT,      VK_MENU    },
-  { RETROK_RALT,      VK_MENU    },
-  { 0, 0 }	// End marker: DO NOT MOVE!
-};
 
 static const struct retro_variable core_vars[] =
 {
   { "81_video_presets", "Video Presets; clean|tv|noisy" },
+  { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
+  { "81_key_hold_time", "Time to Release Key in ms; 500|1000|100|300" },
   { NULL, NULL },
 };
  
@@ -200,6 +134,14 @@ static void update_variables( void )
     
     eo_settv( &state.cfg );
   }
+
+  state.transp = coreopt( env_cb, core_vars, "81_keybovl_transp", NULL ) != 1;
+
+  {
+    const char* value;
+    int option = coreopt( env_cb, core_vars, "81_key_hold_time", &value );
+    state.ms = option >= 0 ? strtoll( value, NULL, 10 ) : 500LL;
+  }
 }
 
 void retro_get_system_info( struct retro_system_info* info )
@@ -249,13 +191,15 @@ void retro_init( void )
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log ) )
   {
-    log_cb = log.log;
+    //log_cb = log.log;
   }
   
   if ( !env_cb( RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb ) )
   {
     perf_cb.get_time_usec = NULL;
   }
+  
+  memset( (void*)&state, 0, sizeof( state ) );
 }
 
 bool retro_load_game( const struct retro_game_info* info )
@@ -284,6 +228,9 @@ bool retro_load_game( const struct retro_game_info* info )
   memset( state.keystate, 0, sizeof( state.keystate ) );
   memset( state.joystate, 0, sizeof( state.joystate ) );
   
+  state.devices[ 0 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
+  state.devices[ 1 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
+  
   state.cfg.machine = MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.EnableLowRAM = 0;
@@ -310,6 +257,7 @@ bool retro_load_game( const struct retro_game_info* info )
     eo_loadp( state.data, state.size );
   }
   
+  keybovl_set( &zx81ovl );
   return res;
 }
 
@@ -357,8 +305,6 @@ void retro_get_system_av_info( struct retro_system_av_info* info )
   info->geometry.aspect_ratio = 0.0f;
   info->timing.fps = 50.0;
   info->timing.sample_rate = 44100.0;
-  
-  log_cb( RETRO_LOG_INFO, "Resolution: %u x %u\n", info->geometry.base_width, info->geometry.base_height );
 }
 
 void retro_run( void )
@@ -371,61 +317,12 @@ void retro_run( void )
   }
   
   input_poll_cb();
-
-  int i;
-
-  for ( i = 0; keymap[ i ].retro; i++ )
-  {
-    unsigned retro = keymap[ i ].retro;
-    WORD     eo    = keymap[ i ].eo;
-    
-    int16_t is_down = input_state_cb( 0, RETRO_DEVICE_KEYBOARD, 0, retro );
-
-    if ( is_down )
-    {
-      if ( !state.keystate[ retro ] )
-      {
-        state.keystate[ retro ] = true;
-        PCKeyDown( eo );
-      }
-    }
-    else
-    {
-      if ( state.keystate[ retro ] )
-      {
-        state.keystate[ retro ] = false;
-        PCKeyUp( eo );
-      }
-    }
-  }
-
-  for ( i = 0; joymap[ i ].retro; i++ )
-  {
-    unsigned retro = joymap[ i ].retro;
-    WORD     eo    = joymap[ i ].eo;
-    
-    int16_t is_down = input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, retro );
-
-    if ( is_down )
-    {
-      if ( !state.joystate[ retro ] )
-      {
-        state.joystate[ retro ] = true;
-        PCKeyDown( eo );
-      }
-    }
-    else
-    {
-      if ( state.joystate[ retro ] )
-      {
-        state.joystate[ retro ] = false;
-        PCKeyUp( eo );
-      }
-    }
-  }
+  
+  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
 
   eo_tick();
-  video_cb( (void*)( TVFB + WinL + WinT * TVP / 2 ), WinR - WinL, WinB - WinT, TVP );
+  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, ( WinR - WinL ) == 640, state.ms, 20 );
+  video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 
 void retro_deinit( void )
@@ -439,14 +336,20 @@ void retro_deinit( void )
 
 void retro_set_controller_port_device( unsigned port, unsigned device )
 {
-  (void)port;
-  (void)device;
+  if ( port < 2 )
+  {
+    state.devices[ port ] = device;
+  }
 }
 
 void retro_reset( void )
 {
   eo_reset();
-  eo_loadp( state.data, state.size );
+  
+  if ( state.size != 0 )
+  {
+    eo_loadp( state.data, state.size );
+  }
 }
 
 size_t retro_serialize_size( void )
