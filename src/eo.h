@@ -37,6 +37,7 @@ typedef struct
   int     RamPack;
   int     HiRes;
   int     SoundCard;
+  bool    Chroma81;
   
   int Brightness; /* 0 -> 255 */
   int Contrast;   /* 0 -> 255 */

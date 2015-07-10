@@ -73,6 +73,8 @@ void load_config(void)
         zx81.zxprinter=1;
         machine.clockspeed=3250000;
         zx81.speedup=0;
+        zx81.chromamode=255;
+        zx81.chromamode=0;
         machine.tperscanline=207;
         machine.tperframe=312*207;
         machine.intposition=0;

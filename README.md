@@ -47,7 +47,7 @@ Save states are supported.
 
 ## Thanks
 
-* Erik Olofsen, for the correct values to set the Z80 registers and some memory variables to successfully load .P files
+* Erik Olofsen, for the correct values to set the Z80 registers and some memory variables to successfully load .P files, and for the Chroma 81 emulation
 
 ## Versions
 

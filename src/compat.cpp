@@ -324,7 +324,8 @@ static void compute_palette( CONFIG* cfg )
   BrightnessLevel  -= ContrastLevel;
   int HiBrightLevel = BrightnessLevel + ( ContrastLevel / 2 ) + 2 * ContrastLevel;
   ContrastLevel     = BrightnessLevel + ContrastLevel + ContrastLevel;
-  
+
+  int r, g, b;
   int i;
 
   for( i = 0; i < 16; i++ )
@@ -336,36 +337,45 @@ static void compute_palette( CONFIG* cfg )
       colour = ( i & 8 ) + ( 7 - ( colour & 7 ) );
     }
 
-    int difference = ( 1000 * ( ( ( colour > 7 ) ? HiBrightLevel : ContrastLevel ) - BrightnessLevel ) ) / 16;
-    int basecolour = ( difference * ( ( colour & 7 ) + 9 ) ) / 1000;
-    
-    if ( colour == 0 || colour == 8)
+    if ( !zx81.Chroma81 )
     {
-      basecolour = BrightnessLevel;
-    }
+      int difference = ( 1000 * ( ( ( colour > 7 ) ? HiBrightLevel : ContrastLevel ) - BrightnessLevel ) ) / 16;
+      int basecolour = ( difference * ( ( colour & 7 ) + 9 ) ) / 1000;
+      
+      if ( colour == 0 || colour == 8)
+      {
+        basecolour = BrightnessLevel;
+      }
 
-    int colr, colg, colb;
-    
-    if ( cfg->Vibrant )
+      int colr, colg, colb;
+      
+      if ( cfg->Vibrant )
+      {
+        colb = ( colour & 1 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
+        colg = ( colour & 4 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
+        colr = ( colour & 2 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
+      }
+      else
+      {
+        colb = BrightnessLevel + ( ( colour & 1 ) ? basecolour :0 );
+        colg = BrightnessLevel + ( ( colour & 4 ) ? basecolour :0 );
+        colr = BrightnessLevel + ( ( colour & 2 ) ? basecolour :0 );
+      }
+
+      int bwb = BrightnessLevel + basecolour;
+      int bwg = BrightnessLevel + basecolour;
+      int bwr = BrightnessLevel + basecolour;
+
+      r = ( ( ( colr - bwr ) * ColourLevel ) / 255 ) + bwr;
+      g = ( ( ( colg - bwg ) * ColourLevel ) / 255 ) + bwg;
+      b = ( ( ( colb - bwb ) * ColourLevel ) / 255 ) + bwb;
+    }
+    else // Chroma
     {
-      colb = ( colour & 1 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
-      colg = ( colour & 4 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
-      colr = ( colour & 2 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
+      r = (colour & 2) ? ((colour & 8) ? 255 : 128) : 0;
+      g = (colour & 4) ? ((colour & 8) ? 255 : 128) : 0;
+      b = (colour & 1) ? ((colour & 8) ? 255 : 128) : 0;
     }
-    else
-    {
-      colb = BrightnessLevel + ( ( colour & 1 ) ? basecolour :0 );
-      colg = BrightnessLevel + ( ( colour & 4 ) ? basecolour :0 );
-      colr = BrightnessLevel + ( ( colour & 2 ) ? basecolour :0 );
-    }
-
-    int bwb = BrightnessLevel + basecolour;
-    int bwg = BrightnessLevel + basecolour;
-    int bwr = BrightnessLevel + basecolour;
-
-    int r = ( ( ( colr - bwr ) * ColourLevel ) / 255 ) + bwr;
-    int g = ( ( ( colg - bwg ) * ColourLevel ) / 255 ) + bwg;
-    int b = ( ( ( colb - bwb ) * ColourLevel ) / 255 ) + bwb;
 
     Palette[     i * 16 ] = DoPal( r, g, b );
     Palette[ 4 + i * 16 ] = DoPal( r + GhostLevel2, g + GhostLevel2, b + GhostLevel2 );

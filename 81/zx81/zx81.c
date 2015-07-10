@@ -55,6 +55,7 @@ extern int scanline_len;
 extern int SelectAYReg;
 
 int border=7, ink=0, paper=7;
+int pink=0, ppaper=7;
 
 int NMI_generator=0;
 int HSYNC_generator=0;
@@ -121,6 +122,7 @@ void zx81_initialise(void)
         if (zx81.truehires==HIRESG007) memory_load("g007hrg.rom",10240,2048);
 
         if (zx81.machine==MACHINELAMBDA) { ink=7; paper=border=0; }
+        else if (zx81.Chroma81)  { ink=0; ppaper=paper=border=15; }
         else { ink=0; paper=border=7; }
 
         NMI_generator=0;
@@ -148,6 +150,12 @@ void zx81_writebyte(int Address, int Data)
         if (zx81.colour==COLOURLAMBDA && Address>=8192 && Address<16384)
         {
                 Address = (Address&1023)+8192;
+                memory[Address]=Data;
+                return;
+        }
+
+        if (zx81.Chroma81 && Address>=49152)
+        {
                 memory[Address]=Data;
                 return;
         }
@@ -201,6 +209,12 @@ BYTE zx81_readbyte(int Address)
                                           || (Address>=49152 && Address<57344)))
         {
                 Address = (Address&1023)+8192;
+                data=memory[Address];
+                return(data);
+        }
+
+        if (zx81.Chroma81 && Address>=49152)
+        {
                 data=memory[Address];
                 return(data);
         }
@@ -335,10 +349,29 @@ BYTE zx81_opcode_fetch(int Address)
                 // character sets are only 64 characters in size.
 
                 if ((zx81.chrgen==CHRGENCHR16 && (z80.i&1))
-                        || (zx81.chrgen==CHRGENQS && zx81.enableqschrgen))
+                        || (zx81.chrgen==CHRGENQS && zx81.enableqschrgen)
+                        || (zx81.chromamode==0x20))
                         data = ((data&128)>>1)|(data&63);
                 else    data = data&63;
 
+
+                if (zx81.colour==COLOURCHROMA)
+                {
+                        int c;
+
+                        // If the Chroma 81 interface is enabled, we had better fetch
+                        // the ink and paper colour from memory too.
+
+                        if (zx81.chromamode&0x10)    // Attribute file
+                                c=memory[Address];
+                        else                         // Character code
+                                c=memory[0xc000 + (data<<3) | rowcounter];
+                                
+                        ink = pink;
+                        paper = ppaper;
+                        pink = c&15;
+                        ppaper = (c>>4) & 15;
+                }
 
                 // If I points to ROM, OR I points to the 8-16k region for
                 // CHR$x16, we'll fetch the bitmap from there.
@@ -384,6 +417,14 @@ BYTE zx81_opcode_fetch(int Address)
                                 setborder=0;
                         }
                 }
+                else if (zx81.colour==COLOURCHROMA)
+                {
+                        if (setborder)
+                        {
+                                border=zx81.chromamode & 15;
+                                setborder=0;
+                        }
+                }
 
                 // Finally load the bitmap we retrieved into the video shift
                 // register, remembering to make some video noise too.
@@ -400,6 +441,8 @@ BYTE zx81_opcode_fetch(int Address)
                 // bit 6 set in the display file.  We actually execute these
                 // opcodes, and generate the noise.
 
+                ppaper = zx81.chromamode & 15;
+
                 noise |= data;
                 return(opcode);
         }
@@ -407,6 +450,12 @@ BYTE zx81_opcode_fetch(int Address)
 
 void zx81_writeport(int Address, int Data, int *tstates)
 {
+        if (Address==0x7fef && zx81.Chroma81) {
+                zx81.colour = Data&0x20 ? COLOURCHROMA : COLOURDISABLED;
+                zx81.chromamode = Data;
+                return; 
+        }
+
         switch(Address&255)
         {
         case 0x01:
@@ -508,6 +557,9 @@ BYTE zx81_readport(int Address, int *tstates)
                 }
 
                 return(~data);
+        }
+        else if (Address==0x7fef) {
+                return zx81.Chroma81 ? 0 : 255;
         }
         else
                 switch(Address&255)

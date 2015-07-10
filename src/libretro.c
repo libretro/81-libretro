@@ -3,8 +3,6 @@
 #include <keybovl.h>
 
 #include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
 
 #include <eo.h>
 #include <types.h>
@@ -26,28 +24,29 @@
 
 typedef struct
 {
-  bool     joystate[ 16 ]; // there should be a #define for that
-  bool     keystate[ RETROK_LAST ];
   CONFIG   cfg;
   void*    data;
   size_t   size;
+  int      scaled;
   int      transp;
   int      ms;
   unsigned devices[ 2 ];
 }
 state_t;
 
+// #include <stdio.h>
+// #include <stdarg.h>
+
 static void dummy_log( enum retro_log_level level, const char* fmt, ... )
 {
-  va_list args;
-  
   (void)level;
+  (void)fmt;
   
-  va_start( args, fmt );
-  vfprintf( stderr, fmt, args );
-  va_end( args );
-  
-  fflush( stderr );
+  // va_list args;
+  // va_start( args, fmt );
+  // vfprintf( stderr, fmt, args );
+  // va_end( args );
+  // fflush( stderr );
 }
 
 static retro_video_refresh_t video_cb;
@@ -66,14 +65,17 @@ static state_t state;
 
 static const struct retro_variable core_vars[] =
 {
-  { "81_video_presets", "Video Presets; clean|tv|noisy" },
+  { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
+  { "81_video_presets",  "Video Presets; clean|tv|noisy" },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
-  { "81_key_hold_time", "Time to Release Key in ms; 500|1000|100|300" },
+  { "81_key_hold_time",  "Time to Release Key in ms; 500|1000|100|300" },
   { NULL, NULL },
 };
  
-static void update_variables( void )
+static int update_variables( void )
 {
+  int old_scaled = state.scaled;
+  
   {
     int option = coreopt( env_cb, core_vars, "81_video_presets", NULL );
     option += option < 0;
@@ -84,16 +86,16 @@ static void update_variables( void )
       state.cfg.Brightness = 128;
       state.cfg.Contrast = 0;
       state.cfg.Colour = 0;
-      state.cfg.Vibrant = 1;
-      state.cfg.AdvancedEffects = 1;
-      state.cfg.DotCrawl = 1;
+      state.cfg.Vibrant = 0;
+      state.cfg.AdvancedEffects = 0;
+      state.cfg.DotCrawl = 0;
       state.cfg.Interlaced = 0;
       
       state.cfg.Artifacts = 0;
-      state.cfg.Noise = -6;
-      state.cfg.Ghosting = 40;
-      state.cfg.ScanLines = 40;
-      state.cfg.SimpleGhosting = 1;
+      state.cfg.Noise = 0;
+      state.cfg.Ghosting = 0;
+      state.cfg.ScanLines = 0;
+      state.cfg.SimpleGhosting = 0;
       
       break;
       
@@ -135,6 +137,41 @@ static void update_variables( void )
     eo_settv( &state.cfg );
   }
 
+  {
+    int option = coreopt( env_cb, core_vars, "81_chroma_81", NULL );
+    option += option < 0;
+    
+    if ( option )
+    {
+      state.cfg.Brightness = 128;
+      state.cfg.Contrast = 0;
+      state.cfg.Colour = 0;
+      state.cfg.Vibrant = 0;
+      state.cfg.AdvancedEffects = 0;
+      state.cfg.DotCrawl = 0;
+      state.cfg.Interlaced = 0;
+      
+      state.cfg.Artifacts = 0;
+      state.cfg.Noise = 0;
+      state.cfg.Ghosting = 0;
+      state.cfg.ScanLines = 0;
+      state.cfg.SimpleGhosting = 0;
+      
+      eo_settv( &state.cfg );
+    }
+    
+    if ( state.cfg.Chroma81 != option )
+    {
+      state.cfg.Chroma81 = option;
+      eo_init( &state.cfg );
+
+      if ( state.size != 0 )
+      {
+        eo_loadp( state.data, state.size );
+      }
+    }
+  }
+  
   state.transp = coreopt( env_cb, core_vars, "81_keybovl_transp", NULL ) != 1;
 
   {
@@ -142,6 +179,9 @@ static void update_variables( void )
     int option = coreopt( env_cb, core_vars, "81_key_hold_time", &value );
     state.ms = option >= 0 ? strtoll( value, NULL, 10 ) : 500LL;
   }
+  
+  state.scaled = ( WinR - WinL ) == 640;
+  return old_scaled != state.scaled;
 }
 
 void retro_get_system_info( struct retro_system_info* info )
@@ -214,6 +254,7 @@ bool retro_load_game( const struct retro_game_info* info )
     return false;
   }
   
+  memset( (void*)&state, 0, sizeof( state ) );
   state.size = info->size;
   state.data = malloc( state.size );
   
@@ -224,9 +265,6 @@ bool retro_load_game( const struct retro_game_info* info )
   }
   
   memcpy( state.data, info->data, state.size );
-  
-  memset( state.keystate, 0, sizeof( state.keystate ) );
-  memset( state.joystate, 0, sizeof( state.joystate ) );
   
   state.devices[ 0 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
   state.devices[ 1 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
@@ -243,6 +281,9 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.RamPack = RAMPACK16;
   state.cfg.HiRes = HIRESDISABLED;
   state.cfg.SoundCard = AY_TYPE_DISABLED;
+  state.cfg.Chroma81 = 0;
+  
+  state.scaled = -1;
   
   update_variables();
 
@@ -313,7 +354,12 @@ void retro_run( void )
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated ) && updated )
   {
-    update_variables();
+    if ( update_variables() )
+    {
+      struct retro_system_av_info info;
+      retro_get_system_av_info( &info );
+      env_cb( RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &info );
+    }
   }
   
   input_poll_cb();
@@ -321,7 +367,7 @@ void retro_run( void )
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
 
   eo_tick();
-  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, ( WinR - WinL ) == 640, state.ms, 20 );
+  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 

@@ -150,6 +150,7 @@ static int internal_init( CONFIG* cfg )
   zx81.aytype = cfg->SoundCard;
   zx81.aysound = cfg->SoundCard != AY_TYPE_DISABLED;
   zx81.m1not = cfg->M1Not ? 49152 : 32768;
+  zx81.Chroma81 = cfg->Chroma81;
 
   if ( zx81.machine == MACHINEZX97LE )
   {
@@ -261,7 +262,7 @@ int eo_init( CONFIG* cfg )
 
 void eo_settv( CONFIG* cfg )
 {
-  zx81.dirtydisplay= cfg->Artifacts;
+  zx81.dirtydisplay = cfg->Artifacts;
   zx81.simpleghost = cfg->SimpleGhosting;
   tv.AdvancedEffects = cfg->AdvancedEffects;
   tv.DotCrawl = cfg->DotCrawl;

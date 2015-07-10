@@ -79,6 +79,7 @@
 #define COLOURDDC       3
 #define COLOURHAVEN     4
 #define COLOURACE       5
+#define COLOURCHROMA    6
 
 #define CRCACE		0x0a09
 #define CRCASZMIC	0xcac9
@@ -159,6 +160,8 @@ typedef struct
         int romcrc;
         int frameskip;
         int speedup;
+        int Chroma81;
+        int chromamode;
 
         char ROM80[256];
         char ROM81[256];
