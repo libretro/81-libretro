@@ -25,7 +25,10 @@ EightyOne also emulates some ZX Spectrum machines, but those were left out of th
 
 The only core option available on the frontend is:
 
-* Video Presets (clean|tv|noisy): Change how the video is emulated
+* Emulate Chroma 81 (disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
+* Video Presets (clean|tv|noisy): Change how the video is emulated (if Chroma 81 is enabled, the video is set to "clean" regardless of this option)
+* Transparent Keyboard Overlay (enabled|disabled): If the keyboard overlay is transparent or opaque
+* Time to Release Key in ms (500|1000|100|300): How many milliseconds to wait before releasing the key pressed using the keyboard overlay
 
 ## Keyboard and Controllers
 
@@ -37,7 +40,7 @@ The only format supported is the `p` format. I wanted to support `tzx` tapes but
 
 ## Save States
 
-Save states are supported.
+Save states are supported, but are likely to change when more machines are emulated.
 
 ## Setup
 
