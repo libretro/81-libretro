@@ -33,7 +33,7 @@ SOURCES_C += $(CORE_DIR)/81/zx81/snap.c
 SOURCES_C += $(CORE_DIR)/81/z80/z80.c
 SOURCES_C += $(CORE_DIR)/81/z80/z80_ops.c
 
-SOURCES_C += $(CORE_DIR)/src/libretro.c
+SOURCES_CXX += $(CORE_DIR)/src/libretro.cpp
 SOURCES_C += $(CORE_DIR)/src/coreopt.c
 SOURCES_C += $(CORE_DIR)/src/keybovl.c
 SOURCES_C += $(CORE_DIR)/src/eo.c

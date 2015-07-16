@@ -8,6 +8,7 @@
 #include <types.h>
 #include <snap.h>
 #include <zx81.h>
+#include <tzx/TZXFILE.h>
 
 #define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_KEYBOARD
 #define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_JOYPAD
@@ -60,11 +61,13 @@ struct retro_perf_callback perf_cb;
 extern int WinR, WinL, WinT, WinB, TVP;
 extern WORD* TVFB;
 extern keybovl_t zx81ovl;
+extern TTZXFile TZXFile;
 
 static state_t state;
 
 static const struct retro_variable core_vars[] =
 {
+  { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
@@ -75,7 +78,9 @@ static const struct retro_variable core_vars[] =
 static int update_variables( void )
 {
   int old_scaled = state.scaled;
-  
+
+  TZXFile.FlashLoad = coreopt( env_cb, core_vars, "81_fast_load", NULL ) != 1;
+
   {
     int option = coreopt( env_cb, core_vars, "81_video_presets", NULL );
     option += option < 0;
@@ -231,7 +236,7 @@ void retro_init( void )
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log ) )
   {
-    //log_cb = log.log;
+    log_cb = log.log;
   }
   
   if ( !env_cb( RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb ) )
@@ -284,19 +289,20 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.Chroma81 = 0;
   
   state.scaled = -1;
+  TZXFile.FlashLoad = true;
   
   update_variables();
 
-  bool res = !eo_init( &state.cfg );
+  bool res = !eo_init( &state.cfg ) && load_snap( "zx81_48k.z81" );
 
-  // zx81.TZXin = 1;
-  // TZXFile.LoadPFile( const_cast< void* >( info->data ), info->size, false );
-  // TZXFile.Start();
+  zx81.TZXin = 1;
+  TZXFile.LoadFile( info->data, info->size, false );
+  TZXFile.Start();
   
-  if ( state.size != 0 )
-  {
-    eo_loadp( state.data, state.size );
-  }
+  // if ( state.size != 0 )
+  // {
+    // eo_loadp( state.data, state.size );
+  // }
   
   keybovl_set( &zx81ovl );
   return res;

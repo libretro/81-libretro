@@ -21,23 +21,103 @@
 
 //---------------------------------------------------------------------------
 
-#include <stdio.h>
 #include <string.h>
 
 #include "TZXFILE.h"
 #include "Utils.h"
+
+//---------------------------------------------------------------------------
+
+struct RWMEM
+{
+  const unsigned char* buf;
+  long pos, len;
+};
+
+#define EOF -1
+
+static void rwmem( RWMEM* f, const void* data, size_t size )
+{
+  f->buf = (const unsigned char*)data;
+  f->pos = 0;
+  f->len = (long)size;
+}
+
+static int fgetc( RWMEM* f )
+{
+  return f->pos < f->len ? f->buf[ f->pos++ ] : EOF;
+}
+
+static int feof( RWMEM* f )
+{
+  return f->pos >= f->len;
+}
+
+static size_t fread( void* ptr, size_t size, size_t nmemb, RWMEM* f )
+{
+  size_t bytes = size * nmemb;
+  size_t avail = f->pos < f->len ? f->len - f->pos : 0;
+  
+  if ( bytes > avail )
+  {
+    bytes = avail;
+  }
+  
+  if ( bytes )
+  {
+    memcpy( ptr, (void*)( f->buf + f->pos ), bytes );
+    f->pos += bytes;
+  }
+  
+  return bytes / size;
+}
+
+static int fseek( RWMEM* f, long offset, int whence )
+{
+  long pos;
+  
+  switch ( whence )
+  {
+  case SEEK_SET: pos = offset;  break;
+  case SEEK_CUR: pos = f->pos + offset; break;
+  case SEEK_END: pos = f->len + offset; break;
+  }
+  
+  if ( pos < 0 )
+  {
+    pos = 0;
+  }
+  else if ( pos > f->len )
+  {
+    pos = f->len;
+  }
+  
+  return 0;
+}
+
+static long ftell( RWMEM* f )
+{
+  return f->pos;
+}
+
+static int fclose( RWMEM* f )
+{
+  (void)f;
+  return 0;
+}
+
 //---------------------------------------------------------------------------
 
 char TZX_ID[]="ZXTape!\032";
 
-unsigned char TTZXFile::ReadByte(FILE *f)
+unsigned char TTZXFile::ReadByte(RWMEM *f)
 {
         unsigned char a=0;
         fread(&a, 1,1, f);
         return(a);
 }
 
-unsigned short TTZXFile::ReadWord(FILE *f)
+unsigned short TTZXFile::ReadWord(RWMEM *f)
 {
         unsigned short a,b;
         a=ReadByte(f);
@@ -45,7 +125,7 @@ unsigned short TTZXFile::ReadWord(FILE *f)
         return(a + b*256);
 }
 
-unsigned int TTZXFile::ReadDWord(FILE *f)
+unsigned int TTZXFile::ReadDWord(RWMEM *f)
 {
         unsigned int a,b;
         a=ReadWord(f);
@@ -53,7 +133,7 @@ unsigned int TTZXFile::ReadDWord(FILE *f)
         return(a + b*65536);
 }
 
-unsigned int TTZXFile::Read3Bytes(FILE *f)
+unsigned int TTZXFile::Read3Bytes(RWMEM *f)
 {
         unsigned int a,b,c;
         a=ReadByte(f);
@@ -62,12 +142,12 @@ unsigned int TTZXFile::Read3Bytes(FILE *f)
         return(a + b*256 + c*65536);
 }
 
-void TTZXFile::ReadBytes(FILE *f, int len, void *buf)
+void TTZXFile::ReadBytes(RWMEM *f, int len, void *buf)
 {
         fread(buf, 1, len, f);
 }
 
-bool TTZXFile::LoadOldGeneralBlock(FILE *f)
+bool TTZXFile::LoadOldGeneralBlock(RWMEM *f)
 {
         int bl, flags, pl, pp, ns, np, as, usedbits, pause;
         int datalen;
@@ -140,7 +220,7 @@ bool TTZXFile::LoadOldGeneralBlock(FILE *f)
         return(false);
 }
 
-bool TTZXFile::LoadGeneralBlock(FILE *f)
+bool TTZXFile::LoadGeneralBlock(RWMEM *f)
 {
         unsigned short *SymDefP, *SymDefD, *PRLE;
         unsigned char *Data;
@@ -252,7 +332,7 @@ bool TTZXFile::LoadGeneralBlock(FILE *f)
 }
 
 
-bool TTZXFile::LoadROMBlock(FILE *f)
+bool TTZXFile::LoadROMBlock(RWMEM *f)
 {
         int length;
         int pause;
@@ -271,7 +351,7 @@ bool TTZXFile::LoadROMBlock(FILE *f)
         return(false);
 }
 
-bool TTZXFile::LoadTurboBlock(FILE *f)
+bool TTZXFile::LoadTurboBlock(RWMEM *f)
 {
         int datalen, lp,ls1,ls2,l0,l1,lpt, usedbits,pause;
         unsigned char *data;
@@ -303,7 +383,7 @@ bool TTZXFile::LoadTurboBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadToneBlock(FILE *f)
+bool TTZXFile::LoadToneBlock(RWMEM *f)
 {
         int pulselen, pulses;
 
@@ -316,7 +396,7 @@ bool TTZXFile::LoadToneBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadPulseBlock(FILE *f)
+bool TTZXFile::LoadPulseBlock(RWMEM *f)
 {
         int nopulses;
         unsigned short *pulses;
@@ -331,7 +411,7 @@ bool TTZXFile::LoadPulseBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadDataBlock(FILE *f)
+bool TTZXFile::LoadDataBlock(RWMEM *f)
 {
         int datalen, len0, len1, usedbits, pause;
         unsigned char *data;
@@ -354,7 +434,7 @@ bool TTZXFile::LoadDataBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadDRecBlock(FILE *f)
+bool TTZXFile::LoadDRecBlock(RWMEM *f)
 {
         int samplelen, pause, usedbits, datalen;
         unsigned char *data;
@@ -376,7 +456,7 @@ bool TTZXFile::LoadDRecBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadCSWBlock(FILE *f)
+bool TTZXFile::LoadCSWBlock(RWMEM *f)
 {
         int datalen, pause, samplerate, compression, flags, nopulses;
         unsigned char *data;
@@ -403,7 +483,7 @@ bool TTZXFile::LoadCSWBlock(FILE *f)
         return(false);
 }
 
-bool TTZXFile::LoadPauseBlock(FILE *f)
+bool TTZXFile::LoadPauseBlock(RWMEM *f)
 {
         int pause;
 
@@ -413,7 +493,7 @@ bool TTZXFile::LoadPauseBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadGStartBlock(FILE *f)
+bool TTZXFile::LoadGStartBlock(RWMEM *f)
 {
         int length;
         unsigned char *data;
@@ -428,12 +508,12 @@ bool TTZXFile::LoadGStartBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadGEndBlock(FILE *f)
+bool TTZXFile::LoadGEndBlock(RWMEM *f)
 {
         Tape[CurBlock].BlockID=TZX_BLOCK_GEND;
         return(false);
 }
-bool TTZXFile::LoadJumpBlock(FILE *f)
+bool TTZXFile::LoadJumpBlock(RWMEM *f)
 {
         int jump;
 
@@ -443,7 +523,7 @@ bool TTZXFile::LoadJumpBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadLStartBlock(FILE *f)
+bool TTZXFile::LoadLStartBlock(RWMEM *f)
 {
         int repeats;
 
@@ -454,12 +534,12 @@ bool TTZXFile::LoadLStartBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadLEndBlock(FILE *f)
+bool TTZXFile::LoadLEndBlock(RWMEM *f)
 {
         Tape[CurBlock].BlockID=TZX_BLOCK_LEND;
         return(false);
 }
-bool TTZXFile::LoadSBlock(FILE *f)
+bool TTZXFile::LoadSBlock(RWMEM *f)
 {
         int length, selections;
         unsigned char *data;
@@ -476,14 +556,14 @@ bool TTZXFile::LoadSBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadStop48KBlock(FILE *f)
+bool TTZXFile::LoadStop48KBlock(RWMEM *f)
 {
         ReadDWord(f);
         Tape[CurBlock].BlockID=TZX_BLOCK_STOP48K;
 
         return(false);
 }
-bool TTZXFile::LoadSetLevelBlock(FILE *f)
+bool TTZXFile::LoadSetLevelBlock(RWMEM *f)
 {
         int level;
 
@@ -495,7 +575,7 @@ bool TTZXFile::LoadSetLevelBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadTextBlock(FILE *f)
+bool TTZXFile::LoadTextBlock(RWMEM *f)
 {
         int length;
         unsigned char *data;
@@ -510,7 +590,7 @@ bool TTZXFile::LoadTextBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadMessageBlock(FILE *f)
+bool TTZXFile::LoadMessageBlock(RWMEM *f)
 {
         int length, time;
         unsigned char *data;
@@ -527,7 +607,7 @@ bool TTZXFile::LoadMessageBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadArchiveBlock(FILE *f)
+bool TTZXFile::LoadArchiveBlock(RWMEM *f)
 {
         int length,strings;
         unsigned char *data;
@@ -544,7 +624,7 @@ bool TTZXFile::LoadArchiveBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadHWTypeBlock(FILE *f)
+bool TTZXFile::LoadHWTypeBlock(RWMEM *f)
 {
         int blocks,i;
         struct TZXHWInfo *data, *p;
@@ -567,7 +647,7 @@ bool TTZXFile::LoadHWTypeBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadCustomBlock(FILE *f)
+bool TTZXFile::LoadCustomBlock(RWMEM *f)
 {
         char *data, id[17];
         int len;
@@ -586,14 +666,14 @@ bool TTZXFile::LoadCustomBlock(FILE *f)
 
         return(false);
 }
-bool TTZXFile::LoadGlueBlock(FILE *f)
+bool TTZXFile::LoadGlueBlock(RWMEM *f)
 {
         Tape[CurBlock].BlockID=TZX_BLOCK_GLUE;
         ReadDWord(f);
         ReadDWord(f);
         return(false);
 }
-bool TTZXFile::LoadUnknownBlock(FILE *f, int BlockID)
+bool TTZXFile::LoadUnknownBlock(RWMEM *f, int BlockID)
 {
         int length;
         unsigned char *data;
@@ -610,9 +690,11 @@ bool TTZXFile::LoadUnknownBlock(FILE *f, int BlockID)
         return(false);
 }
 
-bool TTZXFile::LoadTAPFile(AnsiString FileName, bool Insert)
+bool TTZXFile::LoadTAPFile(const void* buf, size_t size, bool Insert)
 {
-        FILE *f;
+        RWMEM m;
+        RWMEM *f = &m;
+        
         char *p;
         int BlockID, error, i;
         int HeaderLen;
@@ -620,8 +702,7 @@ bool TTZXFile::LoadTAPFile(AnsiString FileName, bool Insert)
         bool FirstBlock, AddSync, AddChecksum;
         char data[65536];
 
-        f=fopen(FileName.c_str(), "rb");
-        if (!f) return(false);
+        rwmem( f, buf, size );
         this->FileName=FileName;
 
         FirstBlock=true;
@@ -678,36 +759,7 @@ bool TTZXFile::LoadTAPFile(AnsiString FileName, bool Insert)
         return(true);
 }
 
-bool TTZXFile::LoadPFile(AnsiString FileName, bool Insert)
-{
-        FILE *f;
-        int len, fnamelen;
-        char tempdata[65536+256];
-
-        f=fopen(FileName.c_str(), "rb");
-        if (!f) return(false);
-        this->FileName=FileName;
-
-        if (!Insert) NewTZX();
-
-        if (FileNameGetExt(FileName)==".P")
-        {
-                ConvertASCIIZX81(RemoveExt(RemovePath(FileName)), (unsigned char*)tempdata);
-                fnamelen=ZX81Strlen((unsigned char*)tempdata);
-        }
-        else    fnamelen=0;
-
-        len=fread(tempdata+fnamelen, 1, 65536, f);
-
-        MoveBlock(AddGeneralBlock(tempdata, len+fnamelen), CurBlock);
-        Tape[CurBlock].Pause=3000;
-
-        fclose(f);
-        GroupCount();
-        return(true);
-}
-
-bool TTZXFile::LoadPFile( void* data, int len, bool insert )
+bool TTZXFile::LoadPFile( const void* data, size_t size, bool insert )
 {
   if ( !insert )
   {
@@ -718,26 +770,27 @@ bool TTZXFile::LoadPFile( void* data, int len, bool insert )
   
   tempdata[ 0 ] = 0x35 | 0x80; // P
   //tempdata[ 1 ] = 0;
-  memcpy( (void*)( tempdata + 1 ), data, len );
+  memcpy( (void*)( tempdata + 1 ), data, size );
   
-  MoveBlock( AddGeneralBlock( tempdata, len + 1 ), CurBlock );
+  MoveBlock( AddGeneralBlock( tempdata, size + 1 ), CurBlock );
   Tape[ CurBlock ].Pause = 3000;
   GroupCount();
   
   return true;
 }
 
-bool TTZXFile::LoadT81File(AnsiString FileName, bool Insert)
+bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
 {
+        RWMEM m;
+        RWMEM* fptr = &m;
+        
         char header[5];
         char fname[32], flen[16];
         unsigned char buffer1[65536+256], buffer2[65535+256];
 
-        FILE *fptr;
         int length, zxnamelen,i;
 
-        fptr=fopen(FileName.c_str(), "rb");
-        if (!fptr) return(false);
+        rwmem( fptr, data, size );
         this->FileName=FileName;
 
         fread(header, 4, 1, fptr);
@@ -792,33 +845,15 @@ bool TTZXFile::LoadT81File(AnsiString FileName, bool Insert)
 }
 
 
-bool TTZXFile::LoadFile(AnsiString FileName, bool Insert)
+bool TTZXFile::LoadTZXFile(const void* data, size_t size, bool Insert)
 {
-        FILE *f;
+        RWMEM m;
+        RWMEM* f = &m;
+        
+        rwmem( f, data, size );
+        
         char *p;
         int BlockID, error, i, OldCurBlock;
-        AnsiString Extension;
-
-        struct TZXHeader head;
-
-        Extension=FileNameGetExt(FileName);
-
-        if (Extension == ".TAP") return(LoadTAPFile(FileName, Insert));
-        if (Extension == ".P"
-                || Extension == ".O"
-                || Extension == ".A83") return(LoadPFile(FileName, Insert));
-        if (Extension == ".T81") return(LoadT81File(FileName, Insert));
-
-        f=fopen(FileName.c_str(), "rb");
-        if (!f) return(false);
-        this->FileName=FileName;
-
-        fread(&head, sizeof(head),1, f);
-        if (strncmp(head.id, TZX_ID, 8))
-        {
-                fclose(f);
-                return(false);
-        }
 
         if (!Insert) EraseAll();
         error=false;
@@ -875,6 +910,28 @@ bool TTZXFile::LoadFile(AnsiString FileName, bool Insert)
         GroupCount();
         return(true);
 }
+
+
+bool TTZXFile::LoadFile(const void* data, size_t size, bool Insert)
+{
+        RWMEM m;
+        RWMEM *f = &m;
+        
+        rwmem( f, data, size );
+        FileName = "";
+        
+        struct TZXHeader head;
+        
+        fread( &head, sizeof( head ), 1, f );
+        
+        if ( !strncmp( head.id, TZX_ID, 8 ) )
+        {
+          return LoadTZXFile( data, size, Insert );
+        }
+        
+        return LoadPFile( data, size, Insert );
+}
+
 
 void TTZXFile::GroupCount(void)
 {

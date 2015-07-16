@@ -67,6 +67,7 @@ void TTZXFile::Stop(bool Error)
         if (!Playing) return;
         if (Stopping) return;
         Stopping=true;
+        Playing=false;
         BlockInProgress=false;
         TZXEventCounter=0;
         FlashLoadable=0;
@@ -77,7 +78,7 @@ void TTZXFile::Stop(bool Error)
 void TTZXFile::StopNow(bool Error)
 {
         Playing=false;
-        FlashLoadable=0;
+        FlashLoadable=1;
         EarState=0;
         Stopping=false;
         TZXEventCounter=0;
@@ -176,6 +177,7 @@ bool TTZXFile::EventPause(void)
 {
         Pause=Tape[CurBlock].Pause;
         //if ((Pause==0) && (WavLoad->IgnoreZX81==false)) Stop(true);
+        if (Pause==0) Stop(true);
         EventNextBlock();
         return(true);
 }

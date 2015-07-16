@@ -28,6 +28,8 @@
 #include <types.h>
 #include "zx81config.h"
 
+typedef struct RWMEM RWMEM;
+
 #define TZX_MAX_BLOCKS 2000
 #define TZXSCALE(x) (((float)x)/(((float)3500000)/((float)machine.clockspeed)))
 //#define TZXSCALE(x) (x)
@@ -295,68 +297,69 @@ private:
         int LoopBlockStart, LoopBlockCounter;
         bool BlockInProgress;
 
-        bool LoadT81File(AnsiString FileName, bool Insert);
-        bool LoadPFile(AnsiString FileName, bool Insert);
-        bool LoadTAPFile(AnsiString FileName, bool Insert);
-        bool LoadROMBlock(FILE *f);
-        bool LoadTurboBlock(FILE *f);
-        bool LoadToneBlock(FILE *f);
-        bool LoadPulseBlock(FILE *f);
-        bool LoadDataBlock(FILE *f);
-        bool LoadDRecBlock(FILE *f);
-        bool LoadCSWBlock(FILE *f);
-        bool LoadOldGeneralBlock(FILE *f);
-        bool LoadGeneralBlock(FILE *f);
-        bool LoadPauseBlock(FILE *f);
-        bool LoadGStartBlock(FILE *f);
-        bool LoadGEndBlock(FILE *f);
-        bool LoadJumpBlock(FILE *f);
-        bool LoadLStartBlock(FILE *f);
-        bool LoadLEndBlock(FILE *f);
-        bool LoadSBlock(FILE *f);
-        bool LoadStop48KBlock(FILE *f);
-        bool LoadSetLevelBlock(FILE *f);
-        bool LoadTextBlock(FILE *f);
-        bool LoadMessageBlock(FILE *f);
-        bool LoadArchiveBlock(FILE *f);
-        bool LoadHWTypeBlock(FILE *f);
-        bool LoadCustomBlock(FILE *f);
-        bool LoadGlueBlock(FILE *f);
-        bool LoadUnknownBlock(FILE *f, int BlockID);
+        bool LoadT81File(const void* data, size_t size, bool Insert);
+        bool LoadPFile(const void* data, size_t size, bool Insert);
+        bool LoadTAPFile(const void* data, size_t size, bool Insert);
+        bool LoadTZXFile(const void* data, size_t size, bool Insert);
+        bool LoadROMBlock(RWMEM* f);
+        bool LoadTurboBlock(RWMEM* f);
+        bool LoadToneBlock(RWMEM* f);
+        bool LoadPulseBlock(RWMEM* f);
+        bool LoadDataBlock(RWMEM* f);
+        bool LoadDRecBlock(RWMEM* f);
+        bool LoadCSWBlock(RWMEM* f);
+        bool LoadOldGeneralBlock(RWMEM* f);
+        bool LoadGeneralBlock(RWMEM* f);
+        bool LoadPauseBlock(RWMEM* f);
+        bool LoadGStartBlock(RWMEM* f);
+        bool LoadGEndBlock(RWMEM* f);
+        bool LoadJumpBlock(RWMEM* f);
+        bool LoadLStartBlock(RWMEM* f);
+        bool LoadLEndBlock(RWMEM* f);
+        bool LoadSBlock(RWMEM* f);
+        bool LoadStop48KBlock(RWMEM* f);
+        bool LoadSetLevelBlock(RWMEM* f);
+        bool LoadTextBlock(RWMEM* f);
+        bool LoadMessageBlock(RWMEM* f);
+        bool LoadArchiveBlock(RWMEM* f);
+        bool LoadHWTypeBlock(RWMEM* f);
+        bool LoadCustomBlock(RWMEM* f);
+        bool LoadGlueBlock(RWMEM* f);
+        bool LoadUnknownBlock(RWMEM* f, int BlockID);
 
-        bool SaveTapFile(AnsiString FileName);
-        bool SaveT81File(AnsiString FileName);
-        bool SavePFile(AnsiString FileName);
-        bool SaveOFile(AnsiString FileName);
-        void WriteByte(FILE *f, unsigned char a);
-        void WriteWord(FILE *f, int c);
-        void WriteDWord(FILE *f, int c);
-        void Write3Bytes(FILE *f, int d);
-        void WriteBytes(FILE *f, int len, void *buf);
-        void SaveROMBlock(int Block, FILE *f);
-        void SaveTurboBlock(int Block, FILE *f);
-        void SaveToneBlock(int Block, FILE *f);
-        void SavePulseBlock(int Block, FILE *f);
-        void SaveDataBlock(int Block, FILE *f);
-        void SaveDRecBlock(int Block, FILE *f);
-        void SaveCSWBlock(int Block, FILE *f);
-        void SaveGeneralBlock(int Block, FILE *f);
-        void SavePauseBlock(int Block, FILE *f);
-        void SaveGStartBlock(int Block, FILE *f);
-        void SaveGEndBlock(int Block, FILE *f);
-        void SaveJumpBlock(int Block, FILE *f);
-        void SaveLStartBlock(int Block, FILE *f);
-        void SaveLEndBlock(int Block, FILE *f);
-        void SaveSBlock(int Block, FILE *f);
-        void SaveStop48KBlock(int Block, FILE *f);
-        void SaveSetLevelBlock(int Block, FILE *f);
-        void SaveTextBlock(int Block, FILE *f);
-        void SaveMessageBlock(int Block, FILE *f);
-        void SaveArchiveBlock(int Block, FILE *f);
-        void SaveHWTypeBlock(int Block, FILE *f);
-        void SaveCustomBlock(int Block, FILE *f);
-        void SaveGlueBlock(int Block, FILE *f);
-        void SaveUnknownBlock(int Block, FILE *f);
+        // bool SaveTapFile(AnsiString FileName);
+        // bool SaveT81File(AnsiString FileName);
+        // bool SavePFile(AnsiString FileName);
+        // bool SaveOFile(AnsiString FileName);
+        // void WriteByte(FILE *f, unsigned char a);
+        // void WriteWord(FILE *f, int c);
+        // void WriteDWord(FILE *f, int c);
+        // void Write3Bytes(FILE *f, int d);
+        // void WriteBytes(FILE *f, int len, void *buf);
+        // void SaveROMBlock(int Block, FILE *f);
+        // void SaveTurboBlock(int Block, FILE *f);
+        // void SaveToneBlock(int Block, FILE *f);
+        // void SavePulseBlock(int Block, FILE *f);
+        // void SaveDataBlock(int Block, FILE *f);
+        // void SaveDRecBlock(int Block, FILE *f);
+        // void SaveCSWBlock(int Block, FILE *f);
+        // void SaveGeneralBlock(int Block, FILE *f);
+        // void SavePauseBlock(int Block, FILE *f);
+        // void SaveGStartBlock(int Block, FILE *f);
+        // void SaveGEndBlock(int Block, FILE *f);
+        // void SaveJumpBlock(int Block, FILE *f);
+        // void SaveLStartBlock(int Block, FILE *f);
+        // void SaveLEndBlock(int Block, FILE *f);
+        // void SaveSBlock(int Block, FILE *f);
+        // void SaveStop48KBlock(int Block, FILE *f);
+        // void SaveSetLevelBlock(int Block, FILE *f);
+        // void SaveTextBlock(int Block, FILE *f);
+        // void SaveMessageBlock(int Block, FILE *f);
+        // void SaveArchiveBlock(int Block, FILE *f);
+        // void SaveHWTypeBlock(int Block, FILE *f);
+        // void SaveCustomBlock(int Block, FILE *f);
+        // void SaveGlueBlock(int Block, FILE *f);
+        // void SaveUnknownBlock(int Block, FILE *f);
 
         bool StateChange(void);
 
@@ -376,11 +379,11 @@ private:
         void StopNow(bool Error);
 
 
-        unsigned char ReadByte(FILE *f);
-        unsigned short ReadWord(FILE *f);
-        unsigned int ReadDWord(FILE *f);
-        unsigned int Read3Bytes(FILE *f);
-        void ReadBytes(FILE *f, int len, void *buf);
+        unsigned char ReadByte(RWMEM* f);
+        unsigned short ReadWord(RWMEM* f);
+        unsigned int ReadDWord(RWMEM* f);
+        unsigned int Read3Bytes(RWMEM* f);
+        void ReadBytes(RWMEM* f, int len, void *buf);
 
 public:
         struct TZXBlock Tape[TZX_MAX_BLOCKS];
@@ -393,8 +396,7 @@ public:
         bool Playing;
         bool Stopping;
 
-        bool LoadFile(AnsiString FileName, bool Insert);
-        bool LoadPFile(void *data, int len, bool Insert);
+        bool LoadFile(const void* data, size_t size, bool Insert);
         bool SaveFile(AnsiString FileName);
         void EraseBlock(int BlockNo);
         void InsertBlock(int Position);

@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <libretro.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct keybovl_t keybovl_t;
 
 typedef struct
@@ -33,5 +37,9 @@ struct keybovl_t
 
 void keybovl_set( keybovl_t* ovl_ );
 void keybovl_update( retro_input_state_t input_cb, unsigned* devices, uint16_t* fb, int pitch, int transp, int scale, int ms, int dt );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* KEYBOVL_H */

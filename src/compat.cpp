@@ -22,12 +22,12 @@ TTZXFile TZXFile;
 
 extern "C" int FlashSaveable( void )
 {
-  return 0;
+  return zx81.TZXout != 0;
 }
 
 extern "C" int FlashLoadable( void )
 {
-  return 0;
+  return zx81.TZXin ? TZXFile.FlashLoadable : 0;
 }
 
 extern "C" void WavClockTick( int TStates, int MicState )
@@ -42,11 +42,12 @@ extern "C" void WavClockTick( int TStates, int MicState )
 
 extern "C" int WavPlaying()
 {
-  return 0;
+  return zx81.TZXin ? TZXFile.Playing : 0;
 }
 
 extern "C" void WavStop( void )
 {
+  TZXFile.Stop( false );
 }
 
 extern "C" void WavStartRec( void )
@@ -55,6 +56,7 @@ extern "C" void WavStartRec( void )
 
 extern "C" void WavStart( void )
 {
+  TZXFile.Start();
 }
 
 extern "C" int WavFlashLoad( void )
@@ -69,7 +71,7 @@ extern "C" void WavRecordByte( int Byte )
 
 extern "C" int GetEarState()
 {
-  return !TZXFile.GetEarState();
+  return zx81.TZXin ? TZXFile.GetEarState() : 0;
 }
 
 /*

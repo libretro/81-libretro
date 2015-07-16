@@ -125,7 +125,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                //if ((zx81.machine != MACHINESPEC48) && (WavLoad->IgnoreZX81==false) ) EarState=!EarState;
+                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
                 PulseCount=1;
                 phase=1;
         }
@@ -160,7 +160,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                //if ((zx81.machine != MACHINESPEC48) && (WavLoad->IgnoreZX81==false) ) EarState=!EarState;
+                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
                 PulseCount=1;
                 return(false);
         }
@@ -194,7 +194,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                //if ((zx81.machine != MACHINESPEC48) && (WavLoad->IgnoreZX81==false) ) EarState=!EarState;
+                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
                 PulseCount=1;
                 phase=3;
         }
@@ -245,8 +245,7 @@ bool TTZXFile::EventGeneral(void)
                         case 2: EarState = 0; PulseList++; break;
                         case 3: EarState = 1; PulseList++; break;
                 }
-                //if ((zx81.machine != MACHINESPEC48) && (WavLoad->IgnoreZX81==false) ) EarState=!EarState;
-
+                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
                 return(false);
         }
 
