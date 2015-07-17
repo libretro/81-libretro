@@ -293,16 +293,18 @@ bool retro_load_game( const struct retro_game_info* info )
   
   update_variables();
 
-  bool res = !eo_init( &state.cfg ) && load_snap( "zx81_48k.z81" );
-
-  zx81.TZXin = 1;
-  TZXFile.LoadFile( info->data, info->size, false );
-  TZXFile.Start();
+  bool res = !eo_init( &state.cfg );
   
-  // if ( state.size != 0 )
-  // {
-    // eo_loadp( state.data, state.size );
-  // }
+  if ( res && state.size != 0 )
+  {
+    load_snap( "zx81_48k.z81" );
+    
+    zx81.TZXin = 1;
+    TZXFile.LoadFile( info->data, info->size, false );
+    TZXFile.Start();
+    
+    //eo_loadp( state.data, state.size );
+  }
   
   keybovl_set( &zx81ovl );
   return res;
