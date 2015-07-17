@@ -400,9 +400,13 @@ void retro_reset( void )
 {
   eo_reset();
   
-  if ( state.size != 0 )
+  if ( state.size )
   {
-    eo_loadp( state.data, state.size );
+    load_snap( "zx81_48k.z81" );
+    
+    zx81.TZXin = 1;
+    TZXFile.LoadFile( state.data, state.size, false );
+    TZXFile.Start();
   }
 }
 
