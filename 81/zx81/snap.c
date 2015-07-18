@@ -34,7 +34,7 @@
 #include <funcs.h>
 
 #include <bin/ROM/zx81.h>
-#include <src/snaps/zx81_48k.h>
+#include <src/snaps/zx81_16k.h>
 
 typedef struct
 {
@@ -268,11 +268,11 @@ void load_snap_ace(FILE *f)
 
 int load_snap( char* filename )
 {
-  if ( !strcmp( filename, "zx81_48k.z81" ) )
+  if ( !strcmp( filename, "zx81_16k.z81" ) )
   {
     FILE f;
-    f.buf = src_snaps_zx81_48k_z81;
-    f.len = src_snaps_zx81_48k_z81_len;
+    f.buf = src_snaps_zx81_16k_z81;
+    f.len = src_snaps_zx81_16k_z81_len;
     f.pos = 0;
     
     while ( !feof( &f ) )

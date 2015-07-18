@@ -409,7 +409,7 @@ void retro_reset( void )
   
   if ( state.size )
   {
-    load_snap( "zx81_48k.z81" );
+    load_snap( "zx81_16k.z81" );
     
     zx81.TZXin = 1;
     TZXFile.LoadFile( state.data, state.size, false );
