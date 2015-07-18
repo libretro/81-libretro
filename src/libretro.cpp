@@ -53,7 +53,7 @@ static void dummy_log( enum retro_log_level level, const char* fmt, ... )
 static retro_video_refresh_t video_cb;
 static retro_input_poll_t input_poll_cb;
 static retro_environment_t env_cb;
-static retro_log_printf_t log_cb = dummy_log;
+retro_log_printf_t log_cb = dummy_log;
 retro_audio_sample_batch_t audio_cb;
 static retro_input_state_t input_state_cb;
 struct retro_perf_callback perf_cb;
