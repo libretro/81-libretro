@@ -442,7 +442,9 @@ BYTE zx81_opcode_fetch(int Address)
                 // bit 6 set in the display file.  We actually execute these
                 // opcodes, and generate the noise.
 
-                ppaper = zx81.chromamode & 15;
+                ink = pink;
+                paper = ppaper;
+                pink = ppaper = zx81.chromamode & 15;
 
                 noise |= data;
                 return(opcode);
