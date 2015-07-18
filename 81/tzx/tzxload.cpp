@@ -74,22 +74,20 @@ static size_t fread( void* ptr, size_t size, size_t nmemb, RWMEM* f )
 
 static int fseek( RWMEM* f, long offset, int whence )
 {
-  long pos;
-  
   switch ( whence )
   {
-  case SEEK_SET: pos = offset;  break;
-  case SEEK_CUR: pos = f->pos + offset; break;
-  case SEEK_END: pos = f->len + offset; break;
+  case SEEK_SET: f->pos = offset;  break;
+  case SEEK_CUR: f->pos = f->pos + offset; break;
+  case SEEK_END: f->pos = f->len + offset; break;
   }
   
-  if ( pos < 0 )
+  if ( f->pos < 0 )
   {
-    pos = 0;
+    f->pos = 0;
   }
-  else if ( pos > f->len )
+  else if ( f->pos > f->len )
   {
-    pos = f->len;
+    f->pos = f->len;
   }
   
   return 0;
@@ -851,6 +849,7 @@ bool TTZXFile::LoadTZXFile(const void* data, size_t size, bool Insert)
         RWMEM* f = &m;
         
         rwmem( f, data, size );
+        fseek( f, sizeof( TZXHeader ), SEEK_SET );
         
         char *p;
         int BlockID, error, i, OldCurBlock;
