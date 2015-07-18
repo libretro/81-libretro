@@ -274,7 +274,7 @@ BYTE zx81_opcode_fetch(int Address)
 {
         int NewAddress, inv;
         int opcode, bit6, update=0;
-        BYTE data;
+        BYTE data, data2;
 
         if (Address<zx81.m1not)
         {
@@ -344,17 +344,6 @@ BYTE zx81_opcode_fetch(int Address)
                 // (or pseudo Hi-Res), but we still need to figure out
                 // where to get the bitmap for the character from
 
-                // First try to figure out which character set we're going
-                // to use if CHR$x16 is in use.  Else, standard ZX81
-                // character sets are only 64 characters in size.
-
-                if ((zx81.chrgen==CHRGENCHR16 && (z80.i&1))
-                        || (zx81.chrgen==CHRGENQS && zx81.enableqschrgen)
-                        || (zx81.chromamode==0x20))
-                        data = ((data&128)>>1)|(data&63);
-                else    data = data&63;
-
-
                 if (zx81.colour==COLOURCHROMA)
                 {
                         int c;
@@ -364,14 +353,26 @@ BYTE zx81_opcode_fetch(int Address)
 
                         if (zx81.chromamode&0x10)    // Attribute file
                                 c=memory[Address];
-                        else                         // Character code
-                                c=memory[0xc000 + (data<<3) | rowcounter];
+                        else {                        // Character code
+                                data2 = ((data&0x80)>>1) | (data&0x3f);
+	                        c=memory[0xc000 + (data2<<3) + rowcounter];
+			}
                                 
                         ink = pink;
                         paper = ppaper;
                         pink = c&15;
                         ppaper = (c>>4) & 15;
                 }
+
+                // First try to figure out which character set we're going
+                // to use if CHR$x16 is in use.  Else, standard ZX81
+                // character sets are only 64 characters in size.
+
+                if ((zx81.chrgen==CHRGENCHR16 && (z80.i&1))
+		 || (zx81.chrgen==CHRGENQS && zx81.enableqschrgen))
+                        data = ((data&128)>>1)|(data&63);
+                else    data = data&63;
+
 
                 // If I points to ROM, OR I points to the 8-16k region for
                 // CHR$x16, we'll fetch the bitmap from there.
