@@ -92,7 +92,7 @@ static int internal_init( CONFIG* cfg )
   }
 
   zx81.shadowROM  = !cfg->EnableLowRAM;
-  zx81.RAM816k    = cfg->EnableLowRAM;
+  zx81.RAM816k    = cfg->EnableLowRAM || ( cfg->HiRes == HIRESG007 );
   zx81.protectROM = cfg->ProtectROM;
   zx81.chrgen     = cfg->ChrGen;
   zx81.zxprinter  = cfg->ZXPrinter;
