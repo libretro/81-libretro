@@ -69,14 +69,19 @@ static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
+  { "81_highres",        "High Resolution; none|WRX" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
   { "81_key_hold_time",  "Time to Release Key in ms; 500|1000|100|300" },
   { NULL, NULL },
 };
+
+#define UPDATE_RESET 1
+#define UPDATE_AV    2
  
 static int update_variables( void )
 {
+  int reset = 0;
   int old_scaled = state.scaled;
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, "81_fast_load", NULL ) != 1;
@@ -177,6 +182,14 @@ static int update_variables( void )
     }
   }
   
+  {
+    static int hires[] = { HIRESDISABLED, HIRESWRX };
+    int option = coreopt( env_cb, core_vars, "81_highres", NULL );
+    option += option < 0;
+    reset = state.cfg.HiRes != hires[ option ];
+    state.cfg.HiRes = hires[ option ];
+  }
+  
   state.transp = coreopt( env_cb, core_vars, "81_keybovl_transp", NULL ) != 1;
 
   {
@@ -186,7 +199,7 @@ static int update_variables( void )
   }
   
   state.scaled = ( WinR - WinL ) == 640;
-  return old_scaled != state.scaled;
+  return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
 }
 
 void retro_get_system_info( struct retro_system_info* info )
@@ -292,22 +305,9 @@ bool retro_load_game( const struct retro_game_info* info )
   TZXFile.FlashLoad = true;
   
   update_variables();
-
-  bool res = !eo_init( &state.cfg );
-  
-  if ( res && state.size != 0 )
-  {
-    load_snap( "zx81_48k.z81" );
-    
-    zx81.TZXin = 1;
-    TZXFile.LoadFile( info->data, info->size, false );
-    TZXFile.Start();
-    
-    //eo_loadp( state.data, state.size );
-  }
-  
+  retro_reset();
   keybovl_set( &zx81ovl );
-  return res;
+  return true;
 }
 
 size_t retro_get_memory_size( unsigned id )
@@ -362,7 +362,14 @@ void retro_run( void )
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated ) && updated )
   {
-    if ( update_variables() )
+    int res = update_variables();
+    
+    if ( res & UPDATE_RESET )
+    {
+      retro_reset();
+    }
+    
+    if ( res & UPDATE_AV )
     {
       struct retro_system_av_info info;
       retro_get_system_av_info( &info );
@@ -398,7 +405,7 @@ void retro_set_controller_port_device( unsigned port, unsigned device )
 
 void retro_reset( void )
 {
-  eo_reset();
+  eo_init( &state.cfg );
   
   if ( state.size )
   {
@@ -407,6 +414,8 @@ void retro_reset( void )
     zx81.TZXin = 1;
     TZXFile.LoadFile( state.data, state.size, false );
     TZXFile.Start();
+    
+    //eo_loadp( state.data, state.size );
   }
 }
 
