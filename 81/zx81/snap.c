@@ -32,9 +32,12 @@
 #include "z80/z80.h"
 
 #include <funcs.h>
+#include <libretro.h>
 
 #include <bin/ROM/zx81.h>
 #include <src/snaps/zx81_16k.h>
+
+extern retro_log_printf_t log_cb;
 
 typedef struct
 {
@@ -286,6 +289,7 @@ int load_snap( char* filename )
     return 1;
   }
   
+  log_cb( RETRO_LOG_ERROR, "Snap \"%s\" not found\n", filename );
   return 0;
 }
 
@@ -486,6 +490,7 @@ int memory_load(char *filename, int address, int length)
     return length;
   }
   
+  log_cb( RETRO_LOG_ERROR, "ROM \"%s\" not found\n", filename );
   return 0;
 }
 
@@ -556,6 +561,7 @@ int font_load(char *filename, char *address, int length)
         return(len);
 #endif
 
+  log_cb( RETRO_LOG_ERROR, "Font \"%s\" not found\n", filename );
   return 0;
 }
 
