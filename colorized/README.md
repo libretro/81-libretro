@@ -1,6 +1,6 @@
-# 81-libretro
+# Colorized Games
 
-These games were originally available as black & white games and were [colorized for use with the Chroma 81]().
+These games were originally available as black & white games and were colorized for use with the Chroma 81.
 
 ## Details
 
