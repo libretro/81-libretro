@@ -30,9 +30,11 @@ EightyOne also emulates some ZX Spectrum machines, but those were left out of th
 The only core option available on the frontend is:
 
 * Tape Fast Load (enabled|disabled): Instantly loads files if enabled, or disabled it to see the moving horizontal lines while the game loads
-* Emulate Chroma 81 (disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
+* 8K-16K Contents (ROM shadow|RAM): Selects the contents of memory addresses between 8192 and 16383, a shadow copy of the ROM or RAM
 * High Resolution (none|WRX): Enables WRX high resolution
+* Emulate Chroma 81 (disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
 * Video Presets (clean|tv|noisy): Change how the video is emulated (if Chroma 81 is enabled, the video is set to "clean" regardless of this option)
+* Sound emulation (none|Zon X-81): Enables sound emulation
 * Transparent Keyboard Overlay (enabled|disabled): If the keyboard overlay is transparent or opaque
 * Time to Release Key in ms (500|1000|100|300): How many milliseconds to wait before releasing the key pressed using the keyboard overlay
 
@@ -56,7 +58,12 @@ Save states are supported, but are likely to change when more machines are emula
 
 ## Thanks
 
-* Erik Olofsen, for the correct values to set the Z80 registers and some memory variables to successfully load .P files, for the Chroma 81 emulation, and for .TZX support.
+Erik Olofsen, for:
+
+* The correct values to set the Z80 registers and some memory variables to successfully load `p` files
+* Chroma 81 emulation
+* `tzx` support
+* Zon X-81 sound emulation
 
 ## Versions
 
