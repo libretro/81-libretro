@@ -310,6 +310,19 @@ BYTE zx81_opcode_fetch(int Address)
         // loading it into the video shift register.
         if (z80.i>=zx81.maxireg && zx81.truehires==HIRESWRX && !bit6)
         {
+                if (zx81.colour==COLOURCHROMA)
+                {
+                        int c;
+
+                        // If the Chroma 81 interface is enabled, we had better fetch
+                        // the ink and paper colour from memory too.
+
+                        c = memory[Address];
+                                
+                        pink = c&15;
+                        ppaper = (c>>4) & 15;
+		}
+
                 data=zx81_readbyte((z80.i<<8) | (z80.r7 & 128) | ((z80.r-1) & 127));
                 update=1;
         }
@@ -358,8 +371,6 @@ BYTE zx81_opcode_fetch(int Address)
 	                        c=memory[0xc000 + (data2<<3) + rowcounter];
 			}
                                 
-                        ink = pink;
-                        paper = ppaper;
                         pink = c&15;
                         ppaper = (c>>4) & 15;
                 }
@@ -409,12 +420,12 @@ BYTE zx81_opcode_fetch(int Address)
 
                         c=zx81_readbyte((Address&1023)+8192);
 
-                        ink = c&15;
-                        paper = (c>>4) & 15;
+                        pink = c&15;
+                        ppaper = (c>>4) & 15;
 
                         if (setborder)
                         {
-                                border=paper;
+                                border=ppaper;
                                 setborder=0;
                         }
                 }
@@ -444,9 +455,6 @@ BYTE zx81_opcode_fetch(int Address)
 
                 if (zx81.colour==COLOURCHROMA)
                 {
-		        ink = pink;
-                        paper = ppaper;
-
                         pink = ppaper = zx81.chromamode & 15;
 		}
 
@@ -469,10 +477,12 @@ void zx81_writeport(int Address, int Data, int *tstates)
                 configbyte=Data;
                 break;
         case 0x0f:
+        case 0x1f:
                 if (zx81.aytype==AY_TYPE_ZONX)
                         sound_ay_write(SelectAYReg, Data);
                 break;
 
+        case 0xcf:
         case 0xdf:
                 if (zx81.aytype==AY_TYPE_ACE) sound_ay_write(SelectAYReg, Data);
                 if (zx81.aytype==AY_TYPE_ZONX) SelectAYReg=Data&15;
@@ -492,6 +502,7 @@ void zx81_writeport(int Address, int Data, int *tstates)
                 if (zx81.ts2050) d8251writeCTRL(Data);
                 break;
 
+		/*
         case 0xc7:
                 d8255_write(D8255PRTA,Data);
                 break;
@@ -503,6 +514,7 @@ void zx81_writeport(int Address, int Data, int *tstates)
         case 0xd7:
                 d8255_write(D8255PRTC,Data);
                 break;
+		*/
 
         case 0xdd:
                 if (zx81.aytype==AY_TYPE_ACE) SelectAYReg=Data;
@@ -730,6 +742,12 @@ int zx81_do_scanline()
 
                         shift_register<<=1;
                         shift_reg_inv<<=1;
+
+			if (zx81.colour==COLOURCHROMA && i==7) {
+			  ink = pink;
+			  paper = ppaper;
+			}
+
                 }
 
                 switch(LastInstruction)
@@ -765,7 +783,9 @@ int zx81_do_scanline()
 
                 hsync_counter -= ts;
 
-                if (!(z80.r & 64))
+ // check iff1 to avoid changing border color in some WRX modes
+
+                if (!(z80.r & 64) && z80.iff1)
                         int_pending=1;
                 if (!HSYNC_generator) sync_len += ts;
 

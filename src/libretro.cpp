@@ -68,9 +68,11 @@ static state_t state;
 static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
-  { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
+  { "81_8_16_contents",  "8K-16K Contents; ROM shadow|RAM" },
   { "81_highres",        "High Resolution; none|WRX" },
+  { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
+  { "81_sound",          "Sound emulation; none|Zon X-81" },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
   { "81_key_hold_time",  "Time to Release Key in ms; 500|1000|100|300" },
   { NULL, NULL },
@@ -85,6 +87,13 @@ static int update_variables( void )
   int old_scaled = state.scaled;
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, "81_fast_load", NULL ) != 1;
+  
+  {
+    int option = coreopt( env_cb, core_vars, "81_8_16_contents", NULL ) == 1;
+    option += option < 0;
+    reset = reset || state.cfg.EnableLowRAM != option;
+    state.cfg.EnableLowRAM = option;
+  }
 
   {
     int option = coreopt( env_cb, core_vars, "81_video_presets", NULL );
@@ -186,8 +195,16 @@ static int update_variables( void )
     static int hires[] = { HIRESDISABLED, HIRESWRX };
     int option = coreopt( env_cb, core_vars, "81_highres", NULL );
     option += option < 0;
-    reset = state.cfg.HiRes != hires[ option ];
+    reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
+  }
+  
+  {
+    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ZONX };
+    int option = coreopt( env_cb, core_vars, "81_sound", NULL );
+    option += option < 0;
+    reset = reset || state.cfg.SoundCard != sound[ option ];
+    state.cfg.SoundCard = sound[ option ];
   }
   
   state.transp = coreopt( env_cb, core_vars, "81_keybovl_transp", NULL ) != 1;
@@ -285,7 +302,7 @@ bool retro_load_game( const struct retro_game_info* info )
   memcpy( state.data, info->data, state.size );
   
   state.devices[ 0 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
-  state.devices[ 1 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
+  state.devices[ 1 ] = RETRO_DEVICE_SINCLAIR_KEYBOARD;
   
   state.cfg.machine = MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;

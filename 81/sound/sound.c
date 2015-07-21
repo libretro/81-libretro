@@ -58,15 +58,19 @@ extern void MidiWriteBit(int Bit);
 //int sound_vsync=0;
 //int sound_ay_type=1;
 
+// this patch is perhaps worse than the original,
+// in any case for ZONX
+#ifdef SNDPTCH
 int temp1,temp2,temp3;
+#endif
 
 extern int frametstates;
 int SelectAYReg;
 
 /* configuration */
 int sound_enabled=1;
-int sound_freq=22050;
-int sound_stereo=0;
+int sound_freq=44100;
+int sound_stereo=1;
 int sound_stereo_acb=0;		/* 1 for ACB stereo, else 0 */
 
 /* sound_vsync and sound_ay are in common.c */
@@ -331,16 +335,17 @@ static void sound_ay_overlay(void)
                         {
                         case 0: case 1: case 2: case 3: case 4: case 5:
                                 r=reg>>1;
+#ifdef SNDPTCH
                                 temp1=sound_ay_registers[reg&~1];
                                 temp2=sound_ay_registers[reg|1]&15;
                                 temp3=8*(temp1|temp2)<<16;
 
                                 ay_tone_period[r]=temp1|temp3;
+#else
 
-
-                                //ay_tone_period[r]=(8*(sound_ay_registers[reg&~1]|
-                                //        (sound_ay_registers[reg|1]&15)<<8))<<16;
-
+                                ay_tone_period[r]=(8*(sound_ay_registers[reg&~1]|
+                                        (sound_ay_registers[reg|1]&15)<<8))<<16;
+#endif
                                 /* important to get this right, otherwise e.g. Ghouls 'n' Ghosts
                                  * has really scratchy, horrible-sounding vibrato.
                                  */
