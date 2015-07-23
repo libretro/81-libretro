@@ -23,16 +23,20 @@
 
 #define AY_TYPE_DISABLED 0
 
+#define LOWRAM_ROMSHADOW 0
+#define LOWRAM_8KRAM     1
+#define LOWRAM_DK        2
+
 typedef struct
 {
   CFGBYTE machine;
   bool    LambdaColour;
-  bool    EnableLowRAM;
   bool    ProtectROM;
   bool    ZXPrinter;
   bool    NTSC;
   bool    M1Not;
   bool    TS2050;
+  int     LowRAMContents;
   int     ChrGen;
   int     RamPack;
   int     HiRes;

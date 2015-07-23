@@ -91,10 +91,10 @@ static int internal_init( CONFIG* cfg )
     zx81.colour = COLOURDISABLED;
   }
 
-  zx81.shadowROM  = !cfg->EnableLowRAM;
-  zx81.RAM816k    = cfg->EnableLowRAM || ( cfg->HiRes == HIRESG007 );
+  zx81.shadowROM  = cfg->LowRAMContents == LOWRAM_ROMSHADOW;
+  zx81.RAM816k    = cfg->LowRAMContents == LOWRAM_8KRAM || cfg->HiRes == HIRESG007;
   zx81.protectROM = cfg->ProtectROM;
-  zx81.chrgen     = cfg->ChrGen;
+  zx81.chrgen     = cfg->LowRAMContents == LOWRAM_DK ? CHRGENDK : cfg->ChrGen;
   zx81.zxprinter  = cfg->ZXPrinter;
   zx81.extfont    = 0;
   

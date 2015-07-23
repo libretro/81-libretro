@@ -42,6 +42,7 @@ SOURCES_C += $(CORE_DIR)/src/version.c
 SOURCES_CXX += $(CORE_DIR)/src/compat.cpp
 
 ROMS += $(CORE_DIR)/bin/ROM/zx81.rom
+ROMS += $(CORE_DIR)/bin/ROM/dkchr.rom
 
 SNAPS += $(CORE_DIR)/src/snaps/zx81_16k.z81
 #SNAPS += $(CORE_DIR)/src/snaps/zx81_48k.z81

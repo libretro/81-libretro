@@ -48,6 +48,7 @@
 //#define VK_SEPARATOR 0x6C /* Separator key */
 #define VK_SUBTRACT RETROK_KP_MINUS /* Subtract key */
 #define VK_DECIMAL  RETROK_KP_PERIOD /* Decimal key */
+#define VK_COMMA    188 /* Comma key */
 #define VK_DIVIDE   RETROK_KP_DIVIDE /* Divide key */
 #define VK_F1       RETROK_F1 /* F1 key */
 #define VK_F2       RETROK_F2 /* F2 key */

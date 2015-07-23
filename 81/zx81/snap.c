@@ -35,6 +35,7 @@
 #include <libretro.h>
 
 #include <bin/ROM/zx81.h>
+#include <bin/ROM/dkchr.h>
 #include <src/snaps/zx81_16k.h>
 
 extern retro_log_printf_t log_cb;
@@ -487,6 +488,16 @@ int memory_load(char *filename, int address, int length)
     }
     
     memcpy( (void*)( memory + address ), (void*)bin_ROM_zx81_rom, length );
+    return length;
+  }
+  else if ( !strcmp( filename, "dkchr.rom" ) )
+  {
+    if ( length > bin_ROM_dkchr_rom_len )
+    {
+      length = bin_ROM_dkchr_rom_len;
+    }
+    
+    memcpy( (void*)( memory + address ), (void*)bin_ROM_dkchr_rom, length );
     return length;
   }
   

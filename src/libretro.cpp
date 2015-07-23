@@ -68,7 +68,7 @@ static state_t state;
 static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
-  { "81_8_16_contents",  "8K-16K Contents; ROM shadow|RAM" },
+  { "81_8_16_contents",  "8K-16K Contents; ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
   { "81_highres",        "High Resolution; none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
@@ -89,10 +89,11 @@ static int update_variables( void )
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, "81_fast_load", NULL ) != 1;
   
   {
-    int option = coreopt( env_cb, core_vars, "81_8_16_contents", NULL ) == 1;
+    static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
+    int option = coreopt( env_cb, core_vars, "81_8_16_contents", NULL );
     option += option < 0;
-    reset = reset || state.cfg.EnableLowRAM != option;
-    state.cfg.EnableLowRAM = option;
+    reset = reset || state.cfg.LowRAMContents != lowram[ option ];
+    state.cfg.LowRAMContents = lowram[ option ];
   }
 
   {
@@ -306,7 +307,7 @@ bool retro_load_game( const struct retro_game_info* info )
   
   state.cfg.machine = MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;
-  state.cfg.EnableLowRAM = 0;
+  state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
   state.cfg.ProtectROM = 1;
   state.cfg.ZXPrinter = 0;
   state.cfg.NTSC = 0;
