@@ -83,21 +83,21 @@ keybovl_t zx81ovl = {
   zx81press,
   zx81release,
   {
-    '7', // B
-    '0', // Y
-    0,   // select
-    0,   // start
-    '7', // up
-    '6', // down
-    '5', // left
-    '8', // right
-    '0', // A
-    '0', // X
-    VK_RETURN, // L
-    VK_SPACE,  // R
-    0,   // L2
-    0,   // R2
-    0,   // L3
-    0,   // R3
+    0, // B
+    0, // Y
+    0, // select
+    0, // start
+    0, // up
+    0, // down
+    0, // left
+    0, // right
+    0, // A
+    0, // X
+    0, // L
+    0, // R
+    0, // L2
+    0, // R2
+    0, // L3
+    0, // R3
   }
 };

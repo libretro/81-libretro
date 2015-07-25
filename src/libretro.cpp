@@ -6,6 +6,7 @@
 
 #include <eo.h>
 #include <types.h>
+#include <keys.h>
 #include <snap.h>
 #include <zx81.h>
 #include <tzx/TZXFILE.h>
@@ -73,6 +74,11 @@ static const struct retro_variable core_vars[] =
   { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
   { "81_sound",          "Sound emulation; none|Zon X-81" },
+  { "81_joypad_up",      "Joypad Up mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
+  { "81_joypad_down",    "Joypad Down mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
+  { "81_joypad_left",    "Joypad Left mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
+  { "81_joypad_right",   "Joypad Right mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
+  { "81_joypad_fire",    "Joypad Fire mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
   { "81_key_hold_time",  "Time to Release Key in ms; 500|1000|100|300" },
   { NULL, NULL },
@@ -214,6 +220,30 @@ static int update_variables( void )
     const char* value;
     int option = coreopt( env_cb, core_vars, "81_key_hold_time", &value );
     state.ms = option >= 0 ? strtoll( value, NULL, 10 ) : 500LL;
+  }
+  
+  {
+    const int keys[] = { 0, VK_RETURN, VK_SHIFT, VK_SPACE, VK_DECIMAL };
+    const char* value;
+    
+    int option = coreopt( env_cb, core_vars, "81_joypad_up", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_UP ] = option <= 0 ? '7' : option < 5 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, "81_joypad_down", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_DOWN ] = option <= 0 ? '6' : option < 5 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, "81_joypad_left", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_LEFT ] = option <= 0 ? '5' : option < 5 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, "81_joypad_right", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_RIGHT ] = option <= 0 ? '8' : option < 5 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, "81_joypad_fire", &value );
+    option = option <= 0 ? '0' : option < 5 ? keys[ option ] : toupper( *value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_A ] = option;
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_B ] = option;
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_X ] = option;
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_Y ] = option;
   }
   
   state.scaled = ( WinR - WinL ) == 640;
