@@ -163,14 +163,15 @@ static void draw( uint16_t* fb, int pitch, int transp, int scale )
         int x, y, w, h;
         
         ovl->getrect( ovl, k, &x, &y, &w, &h );
-        dest = fb + y * pitch * 2 + x * 2;
         
         if ( scale )
         {
+          dest = fb + y * pitch * 2 + x * 2;
           invert_S( dest, pitch, w, h );
         }
         else
         {
+          dest = fb + y * pitch + x;
           invert_s( dest, pitch, w, h );
         }
       }
