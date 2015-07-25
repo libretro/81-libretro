@@ -49,7 +49,6 @@ static keybovl_key_t zx81keys[] = {
   { RETROK_SPACE,  VK_SPACE,   ID( 9, 3 ), 0, ID( 9, 2 ), ID( 9, 0 ), ID( 8, 3 ), ID( 0, 3 ) },
   // keys not present on the keyboard overlay
   { RETROK_BACKSPACE, VK_BACK },
-  { RETROK_RSHIFT,    VK_SHIFT },
   { RETROK_COMMA,     VK_COMMA },
   // end mark
   { 0, 0, 0xffff }
