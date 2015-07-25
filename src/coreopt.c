@@ -42,7 +42,7 @@ int coreopt( retro_environment_t env_cb, const struct retro_variable* vars, cons
             break;
           }
 
-          if ( ( option == first_opt || option[ -1 ] == '|' ) || ( option[ opt_len ] == 0 || option[ opt_len ] == '|' ) )
+          if ( ( option == first_opt || option[ -1 ] == '|' ) && ( option[ opt_len ] == 0 || option[ opt_len ] == '|' ) )
           {
             int pipes = 0;
 
