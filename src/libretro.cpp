@@ -186,16 +186,8 @@ static int update_variables( void )
       eo_settv( &state.cfg );
     }
     
-    if ( state.cfg.Chroma81 != option )
-    {
-      state.cfg.Chroma81 = option;
-      eo_init( &state.cfg );
-
-      if ( state.size != 0 )
-      {
-        eo_loadp( state.data, state.size );
-      }
-    }
+    reset = reset || state.cfg.Chroma81 != option;
+    state.cfg.Chroma81 = option;
   }
   
   {
