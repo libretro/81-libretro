@@ -1,5 +1,5 @@
 ##############
-# 
+# Install MSYS2
 
 #############
 # User config
@@ -12,9 +12,6 @@ LOG_PERFORMANCE = 1
 
 CORE_DIR  = ..
 INCLUDES  = 
-SOURCES_C =
-ROMS      =
-SNAPS     =
 
 include Makefile.common
 
@@ -24,6 +21,7 @@ include Makefile.common
 CC  = gcc
 CXX = g++
 AS  = as
+AR  = ar
 
 ############
 # Extensions
@@ -34,10 +32,12 @@ SOEXT  = .mingw32.dll
 ################
 # Platform setup
 
-PLATDEFS     = 
-PLATCFLAGS   = -m32 -fpic -fstrict-aliasing
-PLATCXXFLAGS = -m32 -fpic -fstrict-aliasing
-PLATLDFLAGS  = -shared -lm
+STATIC_LINKING = 0
+PLATFORM       = win
+PLATDEFS       = 
+PLATCFLAGS     = -m32 -fpic -fstrict-aliasing
+PLATCXXFLAGS   = -m32 -fpic -fstrict-aliasing
+PLATLDFLAGS    = -shared -lm
 
 ################
 # libretro setup

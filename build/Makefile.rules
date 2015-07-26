@@ -1,4 +1,8 @@
-TARGET = 81_libretro$(SOEXT)
+ifeq ($(STATIC_LINKING), 1)
+  TARGET = lib81_libretro_$(PLATFORM).a
+else
+  TARGET = 81_libretro$(SOEXT)
+endif
 
 DEFINES  +=
 CFLAGS   += -Wall
@@ -26,12 +30,16 @@ OBJS    = $(SOURCES_C:.c=$(OBJEXT)) $(SOURCES_CXX:.cpp=$(OBJEXT))
 all: $(TARGET)
 
 $(TARGET): $(HEADERS) $(OBJS)
-	$(CC) -o $@ $(OBJS) $(LDFLAGS)
+ifeq ($(STATIC_LINKING), 1)
+	$(AR) rcs $@ $(OBJS)
+else
+	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
+endif
 
 $(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)
 
 $(CORE_DIR)/src/version.c: FORCE
-	cat etc/version.c.templ | sed s/HASH/`git rev-parse HEAD | tr -d "\n"`/g > $@
+	cat $(CORE_DIR)/etc/version.c.templ | sed s/HASH/`git rev-parse HEAD | tr -d "\n"`/g > $@
 
 clean-objs:
 	rm -f $(OBJS)

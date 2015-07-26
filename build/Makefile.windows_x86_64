@@ -12,9 +12,6 @@ LOG_PERFORMANCE = 1
 
 CORE_DIR  = ..
 INCLUDES  = 
-SOURCES_C =
-ROMS      =
-SNAPS     =
 
 include Makefile.common
 
@@ -24,6 +21,7 @@ include Makefile.common
 CC  = x86_64-w64-mingw32-gcc
 CXX = x86_64-w64-mingw32-g++
 AS  = x86_64-w64-mingw32-as
+AR  = x86_64-w64-mingw32-ar
 
 ############
 # Extensions
@@ -34,10 +32,12 @@ SOEXT  = .windows_x86_64.dll
 ################
 # Platform setup
 
-PLATDEFS     = 
-PLATCFLAGS   = -fpic -fstrict-aliasing
-PLATCXXFLAGS = -fpic -fstrict-aliasing
-PLATLDFLAGS  = -shared -lm
+STATIC_LINKING = 0
+PLATFORM       = win
+PLATDEFS       = 
+PLATCFLAGS     = -fpic -fstrict-aliasing
+PLATCXXFLAGS   = -fpic -fstrict-aliasing
+PLATLDFLAGS    = -shared -lm
 
 ################
 # libretro setup
