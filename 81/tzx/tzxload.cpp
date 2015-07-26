@@ -43,17 +43,17 @@ static void rwmem( RWMEM* f, const void* data, size_t size )
   f->len = (long)size;
 }
 
-static int fgetc( RWMEM* f )
+static int rwgetc( RWMEM* f )
 {
   return f->pos < f->len ? f->buf[ f->pos++ ] : EOF;
 }
 
-static int feof( RWMEM* f )
+static int rweof( RWMEM* f )
 {
   return f->pos >= f->len;
 }
 
-static size_t fread( void* ptr, size_t size, size_t nmemb, RWMEM* f )
+static size_t rwread( void* ptr, size_t size, size_t nmemb, RWMEM* f )
 {
   size_t bytes = size * nmemb;
   size_t avail = f->pos < f->len ? f->len - f->pos : 0;
@@ -72,7 +72,7 @@ static size_t fread( void* ptr, size_t size, size_t nmemb, RWMEM* f )
   return bytes / size;
 }
 
-static int fseek( RWMEM* f, long offset, int whence )
+static int rwseek( RWMEM* f, long offset, int whence )
 {
   switch ( whence )
   {
@@ -93,12 +93,12 @@ static int fseek( RWMEM* f, long offset, int whence )
   return 0;
 }
 
-static long ftell( RWMEM* f )
+static long rwtell( RWMEM* f )
 {
   return f->pos;
 }
 
-static int fclose( RWMEM* f )
+static int rwclose( RWMEM* f )
 {
   (void)f;
   return 0;
@@ -111,7 +111,7 @@ char TZX_ID[]="ZXTape!\032";
 unsigned char TTZXFile::ReadByte(RWMEM *f)
 {
         unsigned char a=0;
-        fread(&a, 1,1, f);
+        rwread(&a, 1,1, f);
         return(a);
 }
 
@@ -142,7 +142,7 @@ unsigned int TTZXFile::Read3Bytes(RWMEM *f)
 
 void TTZXFile::ReadBytes(RWMEM *f, int len, void *buf)
 {
-        fread(buf, 1, len, f);
+        rwread(buf, 1, len, f);
 }
 
 bool TTZXFile::LoadOldGeneralBlock(RWMEM *f)
@@ -229,11 +229,11 @@ bool TTZXFile::LoadGeneralBlock(RWMEM *f)
 
         long pos;
 
-        pos=ftell(f);
+        pos=rwtell(f);
 
         if (!LoadOldGeneralBlock(f)) return(false);
 
-        fseek(f,pos,SEEK_SET);
+        rwseek(f,pos,SEEK_SET);
 
         DataLen=ReadDWord(f);
         Pause=ReadWord(f);
@@ -709,7 +709,7 @@ bool TTZXFile::LoadTAPFile(const void* buf, size_t size, bool Insert)
         if (!Insert) EraseAll();
         error=false;
 
-        while(!feof(f) && !error)
+        while(!rweof(f) && !error)
         {
                 len=ReadWord(f);
 
@@ -752,7 +752,7 @@ bool TTZXFile::LoadTAPFile(const void* buf, size_t size, bool Insert)
                 }
         }
 
-        fclose(f);
+        rwclose(f);
         GroupCount();
         return(true);
 }
@@ -791,10 +791,10 @@ bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
         rwmem( fptr, data, size );
         this->FileName=FileName;
 
-        fread(header, 4, 1, fptr);
+        rwread(header, 4, 1, fptr);
         if (strncmp(header, T81_HEADER_ID,4))
         {
-                fclose(fptr);
+                rwclose(fptr);
                 return(false);
         }
 
@@ -804,8 +804,8 @@ bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
         {
                 memset(fname, 0, 32);
                 memset(flen, 0, 16);
-                fread(fname, 32, 1, fptr);
-                fread (flen, 16, 1, fptr);
+                rwread(fname, 32, 1, fptr);
+                rwread (flen, 16, 1, fptr);
 
                 length = atoi(flen);
 
@@ -815,7 +815,7 @@ bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
                 if (!strcmp(fname,"<Silence>")) MoveBlock(AddPauseBlock(length), CurBlock++);
                 else
                 {
-                        fread(buffer1, length, 1, fptr);
+                        rwread(buffer1, length, 1, fptr);
                         if ( (*buffer1==0x00) || (*buffer1==255) || (*buffer1==1) ) // If buffer doesn't include the filename, add one
                         {
                                 ConvertASCIIZX81(fname, buffer2);
@@ -830,9 +830,9 @@ bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
 
                         MoveBlock(AddGeneralBlock((char*)buffer2, length), CurBlock++);
                 }
-        } while(!feof(fptr));
+        } while(!rweof(fptr));
 
-        fclose(fptr);
+        rwclose(fptr);
         MergeBlocks();
 
         for(i=1;i<Blocks;i++)
@@ -849,7 +849,7 @@ bool TTZXFile::LoadTZXFile(const void* data, size_t size, bool Insert)
         RWMEM* f = &m;
         
         rwmem( f, data, size );
-        fseek( f, sizeof( TZXHeader ), SEEK_SET );
+        rwseek( f, sizeof( TZXHeader ), SEEK_SET );
         
         char *p;
         int BlockID, error, i, OldCurBlock;
@@ -857,7 +857,7 @@ bool TTZXFile::LoadTZXFile(const void* data, size_t size, bool Insert)
         if (!Insert) EraseAll();
         error=false;
 
-        while(!feof(f) && !error)
+        while(!rweof(f) && !error)
         {
                 BlockID=ReadByte(f);
 
@@ -905,7 +905,7 @@ bool TTZXFile::LoadTZXFile(const void* data, size_t size, bool Insert)
                 }
         }
 
-        fclose(f);
+        rwclose(f);
         GroupCount();
         return(true);
 }
@@ -921,7 +921,7 @@ bool TTZXFile::LoadFile(const void* data, size_t size, bool Insert)
         
         struct TZXHeader head;
         
-        fread( &head, sizeof( head ), 1, f );
+        rwread( &head, sizeof( head ), 1, f );
         
         if ( !strncmp( head.id, TZX_ID, 8 ) )
         {
