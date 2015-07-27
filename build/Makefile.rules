@@ -33,7 +33,7 @@ $(TARGET): $(HEADERS) $(OBJS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
-	$(CXX) -o $@ $(OBJS) $(LDFLAGS)
+	$(CXX) -o $@ $(OBJS) $(LDXFLAGS)
 endif
 
 $(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)

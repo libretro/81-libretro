@@ -305,7 +305,7 @@ $(TARGET): $(OBJS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
-	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDXFLAGS) $(LIBS)
 endif
 
 $(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)
