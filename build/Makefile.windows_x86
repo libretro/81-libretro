@@ -38,6 +38,7 @@ PLATDEFS       =
 PLATCFLAGS     = -fstrict-aliasing
 PLATCXXFLAGS   = -fstrict-aliasing
 PLATLDFLAGS    = -shared -lm
+PLATLDXFLAGS   = -shared -lm
 
 ################
 # libretro setup
@@ -46,6 +47,7 @@ RETRODEFS     = -D__LIBRETRO__
 RETROCFLAGS   =
 RETROCXXFLAGS =
 RETROLDFLAGS  =
+RETROLDXFLAGS =
 
 #################
 # Final variables
@@ -54,6 +56,7 @@ DEFINES  = $(PLATDEFS) $(RETRODEFS)
 CFLAGS   = $(PLATCFLAGS) $(RETROCFLAGS) $(DEFINES) $(INCLUDES)
 CXXFLAGS = $(PLATCXXFLAGS) $(RETROCXXFLAGS) $(DEFINES) $(INCLUDES)
 LDFLAGS  = $(PLATLDFLAGS) $(RETROLDFLAGS)
+LDXFLAGS = $(PLATLDXFLAGS) $(RETROLDXFLAGS)
 
 ########
 # Tuning
@@ -62,6 +65,7 @@ ifeq ($(DEBUG), 1)
   CFLAGS   += -O0 -g
   CXXFLAGS += -O0 -g
   LDFLAGS  += -g
+  LDXFLAGS += -g
 else
   CFLAGS   += -O3 -DNDEBUG
   CXXFLAGS += -O3 -DNDEBUG
