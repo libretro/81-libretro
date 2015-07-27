@@ -33,7 +33,7 @@ SOEXT  = .mingw32.dll
 # Platform setup
 
 STATIC_LINKING = 0
-PLATFORM       = win
+platform       = win
 PLATDEFS       = 
 PLATCFLAGS     = -m32 -fpic -fstrict-aliasing
 PLATCXXFLAGS   = -m32 -fpic -fstrict-aliasing

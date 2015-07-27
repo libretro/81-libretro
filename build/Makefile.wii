@@ -33,7 +33,7 @@ SOEXT  = .wii.so
 # Platform setup
 
 STATIC_LINKING = 1
-PLATFORM       = wii
+platform       = wii
 PLATDEFS       = -DGEKKO -DHW_RVL
 PLATCFLAGS     = -m32 -fstrict-aliasing -mrvl -mcpu=750 -meabi -mhard-float
 PLATCXXFLAGS   = -m32 -fstrict-aliasing -mrvl -mcpu=750 -meabi -mhard-float

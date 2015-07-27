@@ -33,7 +33,7 @@ SOEXT  = .linux_x86_64.so
 # Platform setup
 
 STATIC_LINKING = 0
-PLATFORM       = unix
+platform       = unix
 PLATDEFS       = 
 PLATCFLAGS     = -m64 -fpic -fstrict-aliasing
 PLATCXXFLAGS   = -m64 -fpic -fstrict-aliasing

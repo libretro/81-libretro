@@ -34,7 +34,7 @@ SOEXT  = .${EXT}.${SO}
 # Platform setup
 
 STATIC_LINKING = ${STATIC_LINKING}
-PLATFORM       = ${PLATFORM}
+platform       = ${PLATFORM}
 PLATDEFS       = ${PLAT_DEFS}
 PLATCFLAGS     = ${PLAT_CFLAGS}
 PLATCXXFLAGS   = ${PLAT_CXXFLAGS}

@@ -33,7 +33,7 @@ SOEXT  = .windows_x86.dll
 # Platform setup
 
 STATIC_LINKING = 0
-PLATFORM       = win
+platform       = win
 PLATDEFS       = 
 PLATCFLAGS     = -fstrict-aliasing
 PLATCXXFLAGS   = -fstrict-aliasing
