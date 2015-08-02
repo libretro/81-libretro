@@ -83,9 +83,10 @@ endif
 include Makefile.rules
 ]]
 
-local host = 'linux-x86_64'
---local host = 'linux-x86'
+--local host = 'linux-x86_64'
+--local host = 'darwin-x86_64'
 --local host = 'windows-x86_64'
+local host = '$(NDK_PLATFORM)-x86_64'
 
 local platforms = {
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm_v7a = {
-    MAKEFILE      = 'Makefile.armeabi-v7a',
+    MAKEFILE      = 'Makefile.android_armeabi-v7a',
     HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
@@ -162,7 +163,7 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm_v5te = {
-    MAKEFILE      = 'Makefile.armeabi',
+    MAKEFILE      = 'Makefile.android_armeabi',
     HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
@@ -180,7 +181,7 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_x86 = {
-    MAKEFILE      = 'Makefile.x86',
+    MAKEFILE      = 'Makefile.android_x86',
     HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-g++',

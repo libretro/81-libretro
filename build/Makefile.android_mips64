@@ -18,10 +18,10 @@ include Makefile.common
 #################
 # Toolchain setup
 
-CC  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/linux-x86_64/bin/mips64el-linux-android-gcc
-CXX = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/linux-x86_64/bin/mips64el-linux-android-g++
-AS  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/linux-x86_64/bin/mips64el-linux-android-as
-AR  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/linux-x86_64/bin/mips64el-linux-android-ar
+CC  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/mips64el-linux-android-gcc
+CXX = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/mips64el-linux-android-g++
+AS  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/mips64el-linux-android-as
+AR  = $(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/mips64el-linux-android-ar
 
 ############
 # Extensions

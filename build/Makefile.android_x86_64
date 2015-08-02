@@ -18,10 +18,10 @@ include Makefile.common
 #################
 # Toolchain setup
 
-CC  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
-CXX = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-g++
-AS  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-as
-AR  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-ar
+CC  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/x86_64-linux-android-gcc
+CXX = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/x86_64-linux-android-g++
+AS  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/x86_64-linux-android-as
+AR  = $(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/$(NDK_PLATFORM)-x86_64/bin/x86_64-linux-android-ar
 
 ############
 # Extensions
