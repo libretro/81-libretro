@@ -1,4 +1,5 @@
 ##############
+# Works on hosts Windows
 # Install MSYS2
 
 #############
@@ -10,10 +11,11 @@ LOG_PERFORMANCE = 1
 ####################################
 # Variable setup for Makefile.common
 
-CORE_DIR  = ..
-INCLUDES  = 
+CORE_DIR  ?= ..
+BUILD_DIR ?= .
+INCLUDES   = 
 
-include Makefile.common
+include $(BUILD_DIR)/Makefile.common
 
 #################
 # Toolchain setup
@@ -37,8 +39,8 @@ platform       = win
 PLATDEFS       = 
 PLATCFLAGS     = -m64 -fpic -fstrict-aliasing
 PLATCXXFLAGS   = -m64 -fpic -fstrict-aliasing
-PLATLDFLAGS    = -shared -lm
-PLATLDXFLAGS   = -shared -lm
+PLATLDFLAGS    = -m64 -shared -lm
+PLATLDXFLAGS   = -m64 -shared -lm
 
 ################
 # libretro setup
@@ -79,4 +81,4 @@ endif
 ###############
 # Include rules
 
-include Makefile.rules
+include $(BUILD_DIR)/Makefile.rules

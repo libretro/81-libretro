@@ -1,5 +1,6 @@
 local template = [[
 ##############
+# Works on hosts ${HOST}
 # ${HEADERMSG}
 
 #############
@@ -11,10 +12,11 @@ LOG_PERFORMANCE = 1
 ####################################
 # Variable setup for Makefile.common
 
-CORE_DIR  = ..
-INCLUDES  = ${PLAT_INCDIR}
+CORE_DIR  ?= ..
+BUILD_DIR ?= .
+INCLUDES   = ${PLAT_INCDIR}
 
-include Makefile.common
+include $(BUILD_DIR)/Makefile.common
 
 #################
 # Toolchain setup
@@ -80,7 +82,7 @@ endif
 ###############
 # Include rules
 
-include Makefile.rules
+include $(BUILD_DIR)/Makefile.rules
 ]]
 
 --local host = 'linux-x86_64'
@@ -91,8 +93,9 @@ local host = '$(NDK_PLATFORM)-x86_64'
 local platforms = {
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm64_v8a = {
-    MAKEFILE      = 'Makefile.android_arm64_v8a',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-arm64_v8a',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-as',
@@ -109,8 +112,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_x86_64 = {
-    MAKEFILE      = 'Makefile.android_x86_64',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-x86_64',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-as',
@@ -127,8 +131,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_mips64 = {
-    MAKEFILE      = 'Makefile.android_mips64',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-mips64',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-as',
@@ -145,8 +150,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm_v7a = {
-    MAKEFILE      = 'Makefile.android_armeabi-v7a',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-armeabi_v7a',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-as',
@@ -163,8 +169,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm_v5te = {
-    MAKEFILE      = 'Makefile.android_armeabi',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-armeabi',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-as',
@@ -181,8 +188,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_x86 = {
-    MAKEFILE      = 'Makefile.android_x86',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-x86',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-as',
@@ -199,8 +207,9 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_mips = {
-    MAKEFILE      = 'Makefile.android_mips',
-    HEADERMSG     = 'Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it',
+    MAKEFILE      = 'Makefile.android-mips',
+    HOST          = 'Linux, Windows and Darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
     CC            = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-as',
@@ -217,7 +226,8 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   linux_x86 = {
-    MAKEFILE      = 'Makefile.linux_x86',
+    MAKEFILE      = 'Makefile.linux-x86',
+    HOST          = 'Linux',
     HEADERMSG     = 'apt-get install g++-multilib libc6-dev-i386',
     CC            = 'gcc',
     CXX           = 'g++',
@@ -230,12 +240,32 @@ local platforms = {
     PLAT_DEFS     = '',
     PLAT_CFLAGS   = '-m32 -fpic -fstrict-aliasing',
     PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
-    PLAT_LDFLAGS  = '-m32 -shared -lm',
+    PLAT_LDFLAGS  = '-m32 -shared -lm -Wl,-version-script=$(BUILD_DIR)/link.T -Wl,-no-undefined',
+    PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
+  },
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  linux_portable_x86 = {
+    MAKEFILE      = 'Makefile.linux_portable-x86',
+    HOST          = 'Linux',
+    HEADERMSG     = 'apt-get install g++-multilib libc6-dev-i386',
+    CC            = 'gcc',
+    CXX           = 'g++',
+    AS            = 'as',
+    AR            = 'ar',
+    EXT           = 'linux_x86',
+    SO            = 'so',
+    PLATFORM      = 'unix',
+    PLAT_INCDIR   = '',
+    PLAT_DEFS     = '',
+    PLAT_CFLAGS   = '-m32 -fpic -fstrict-aliasing',
+    PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
+    PLAT_LDFLAGS  = '-m32 -shared -lm -Wl,-version-script=$(BUILD_DIR)/link.T',
     PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   linux_x86_64 = {
-    MAKEFILE      = 'Makefile.linux_x86_64',
+    MAKEFILE      = 'Makefile.linux-x86_64',
+    HOST          = 'Linux',
     HEADERMSG     = '',
     CC            = 'gcc',
     CXX           = 'g++',
@@ -248,12 +278,32 @@ local platforms = {
     PLAT_DEFS     = '',
     PLAT_CFLAGS   = '-m64 -fpic -fstrict-aliasing',
     PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
-    PLAT_LDFLAGS  = '-m64 -shared -lm',
+    PLAT_LDFLAGS  = '-m64 -shared -lm -Wl,-version-script=$(BUILD_DIR)/link.T -Wl,-no-undefined',
+    PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
+  },
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  linux_portable_x86_64 = {
+    MAKEFILE      = 'Makefile.linux_portable-x86_64',
+    HOST          = 'Linux',
+    HEADERMSG     = '',
+    CC            = 'gcc',
+    CXX           = 'g++',
+    AS            = 'as',
+    AR            = 'ar',
+    EXT           = 'linux_x86_64',
+    SO            = 'so',
+    PLATFORM      = 'unix',
+    PLAT_INCDIR   = '',
+    PLAT_DEFS     = '',
+    PLAT_CFLAGS   = '-m64 -fpic -fstrict-aliasing',
+    PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
+    PLAT_LDFLAGS  = '-m64 -shared -lm -Wl,-version-script=$(BUILD_DIR)/link.T',
     PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   windows_x86 = {
-    MAKEFILE      = 'Makefile.windows_x86',
+    MAKEFILE      = 'Makefile.windows-x86',
+    HOST          = 'Linux',
     HEADERMSG     = 'apt-get install mingw-w64',
     CC            = 'i686-w64-mingw32-gcc',
     CXX           = 'i686-w64-mingw32-g++',
@@ -271,7 +321,8 @@ local platforms = {
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   windows_x86_64 = {
-    MAKEFILE      = 'Makefile.windows_x86_64',
+    MAKEFILE      = 'Makefile.windows-x86_64',
+    HOST          = 'Linux',
     HEADERMSG     = 'apt-get install mingw-w64',
     CC            = 'x86_64-w64-mingw32-gcc',
     CXX           = 'x86_64-w64-mingw32-g++',
@@ -290,6 +341,7 @@ local platforms = {
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   mingw32 = {
     MAKEFILE      = 'Makefile.mingw32',
+    HOST          = 'Windows',
     HEADERMSG     = 'Install MSYS2',
     CC            = 'gcc',
     CXX           = 'g++',
@@ -302,12 +354,13 @@ local platforms = {
     PLAT_DEFS     = '',
     PLAT_CFLAGS   = '-m32 -fpic -fstrict-aliasing',
     PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
-    PLAT_LDFLAGS  = '-shared -lm',
+    PLAT_LDFLAGS  = '-m32 -shared -lm',
     PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   mingw64 = {
     MAKEFILE      = 'Makefile.mingw64',
+    HOST          = 'Windows',
     HEADERMSG     = 'Install MSYS2',
     CC            = 'gcc',
     CXX           = 'g++',
@@ -320,13 +373,14 @@ local platforms = {
     PLAT_DEFS     = '',
     PLAT_CFLAGS   = '-m64 -fpic -fstrict-aliasing',
     PLAT_CXXFLAGS = '${PLAT_CFLAGS}',
-    PLAT_LDFLAGS  = '-shared -lm',
+    PLAT_LDFLAGS  = '-m64 -shared -lm',
     PLAT_LDXFLAGS = '${PLAT_LDFLAGS}',
   },
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   wii = {
     MAKEFILE       = 'Makefile.wii',
-    HEADERMSG      = 'Install devkitppc and libogc',
+    HOST           = 'Linux',
+    HEADERMSG      = 'Install devkitppc',
     CC             = '$(DEVKITPPC_ROOT_DIR)/bin/powerpc-eabi-gcc',
     CXX            = '$(DEVKITPPC_ROOT_DIR)/bin/powerpc-eabi-g++',
     AS             = '$(DEVKITPPC_ROOT_DIR)/bin/powerpc-eabi-as',

@@ -8,6 +8,7 @@ DEFINES  +=
 CFLAGS   += -Wall
 CXXFLAGS += -Wall
 LDFLAGS  +=
+LDXFLAGS +=
 
 HEADERS = $(ROMS:.rom=.h) $(SNAPS:.z81=.h)
 OBJS    = $(SOURCES_C:.c=$(OBJEXT)) $(SOURCES_CXX:.cpp=$(OBJEXT))

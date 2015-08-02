@@ -1,5 +1,6 @@
 ##############
-# Download android-ndk-r10d-linux-x86_64.bin from https://developer.android.com/tools/sdk/ndk/index.html, unpack somewhere, and set NDK_ROOT_DIR to it
+# Works on hosts Linux, Windows and Darwin
+# Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin
 
 #############
 # User config
@@ -10,10 +11,11 @@ LOG_PERFORMANCE = 1
 ####################################
 # Variable setup for Makefile.common
 
-CORE_DIR  = ..
-INCLUDES  = -I$(NDK_ROOT_DIR)/platforms/android-9/arch-x86/usr/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include $(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/libs/x86/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include/backward
+CORE_DIR  ?= ..
+BUILD_DIR ?= .
+INCLUDES   = -I$(NDK_ROOT_DIR)/platforms/android-9/arch-x86/usr/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include $(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/libs/x86/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include/backward
 
-include Makefile.common
+include $(BUILD_DIR)/Makefile.common
 
 #################
 # Toolchain setup
@@ -79,4 +81,4 @@ endif
 ###############
 # Include rules
 
-include Makefile.rules
+include $(BUILD_DIR)/Makefile.rules
