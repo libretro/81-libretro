@@ -8,6 +8,21 @@
 DEBUG = 0
 LOG_PERFORMANCE = 1
 
+##########################
+# Checks the host platform
+
+HOST_PLATFORM = linux
+ifeq ($(shell uname -a),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+  HOST_PLATFORM = darwin
+else ifneq ($(findstring win,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+endif
+
+
 ####################################
 # Variable setup for Makefile.common
 

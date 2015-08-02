@@ -1,12 +1,27 @@
 ##############
 # Works on hosts Linux, Windows and Darwin
-# Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin
+# Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it
 
 #############
 # User config
 
 DEBUG = 0
 LOG_PERFORMANCE = 1
+
+##########################
+# Checks the host platform
+
+HOST_PLATFORM = linux
+ifeq ($(shell uname -a),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+  HOST_PLATFORM = darwin
+else ifneq ($(findstring win,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+endif
+
 
 ####################################
 # Variable setup for Makefile.common
@@ -20,10 +35,10 @@ include $(BUILD_DIR)/Makefile.common
 #################
 # Toolchain setup
 
-CC  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(NDK_PLATFORM)-x86_64/bin/i686-linux-android-gcc
-CXX = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(NDK_PLATFORM)-x86_64/bin/i686-linux-android-g++
-AS  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(NDK_PLATFORM)-x86_64/bin/i686-linux-android-as
-AR  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(NDK_PLATFORM)-x86_64/bin/i686-linux-android-ar
+CC  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(HOST_PLATFORM)-x86_64/bin/i686-linux-android-gcc
+CXX = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(HOST_PLATFORM)-x86_64/bin/i686-linux-android-g++
+AS  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(HOST_PLATFORM)-x86_64/bin/i686-linux-android-as
+AR  = $(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/$(HOST_PLATFORM)-x86_64/bin/i686-linux-android-ar
 
 ############
 # Extensions

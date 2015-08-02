@@ -9,6 +9,21 @@ local template = [[
 DEBUG = 0
 LOG_PERFORMANCE = 1
 
+##########################
+# Checks the host platform
+
+HOST_PLATFORM = linux
+ifeq ($(shell uname -a),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+  HOST_PLATFORM = darwin
+else ifneq ($(findstring win,$(shell uname -a)),)
+  HOST_PLATFORM = windows
+endif
+
+
 ####################################
 # Variable setup for Makefile.common
 
@@ -88,14 +103,14 @@ include $(BUILD_DIR)/Makefile.rules
 --local host = 'linux-x86_64'
 --local host = 'darwin-x86_64'
 --local host = 'windows-x86_64'
-local host = '$(NDK_PLATFORM)-x86_64'
+local host = '$(HOST_PLATFORM)-x86_64'
 
 local platforms = {
   -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   android_arm64_v8a = {
     MAKEFILE      = 'Makefile.android-arm64_v8a',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/aarch64-linux-android-4.9/prebuilt/' .. host .. '/bin/aarch64-linux-android-as',
@@ -114,7 +129,7 @@ local platforms = {
   android_x86_64 = {
     MAKEFILE      = 'Makefile.android-x86_64',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/x86_64-4.9/prebuilt/' .. host .. '/bin/x86_64-linux-android-as',
@@ -133,7 +148,7 @@ local platforms = {
   android_mips64 = {
     MAKEFILE      = 'Makefile.android-mips64',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/mips64el-linux-android-4.9/prebuilt/' .. host .. '/bin/mips64el-linux-android-as',
@@ -152,7 +167,7 @@ local platforms = {
   android_arm_v7a = {
     MAKEFILE      = 'Makefile.android-armeabi_v7a',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-as',
@@ -171,7 +186,7 @@ local platforms = {
   android_arm_v5te = {
     MAKEFILE      = 'Makefile.android-armeabi',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/arm-linux-androideabi-4.8/prebuilt/' .. host .. '/bin/arm-linux-androideabi-as',
@@ -190,7 +205,7 @@ local platforms = {
   android_x86 = {
     MAKEFILE      = 'Makefile.android-x86',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/x86-4.8/prebuilt/' .. host .. '/bin/i686-linux-android-as',
@@ -209,7 +224,7 @@ local platforms = {
   android_mips = {
     MAKEFILE      = 'Makefile.android-mips',
     HOST          = 'Linux, Windows and Darwin',
-    HEADERMSG     = 'Download the Android NDK, unpack somewhere, set NDK_ROOT_DIR to it, and set NDK_PLATFORM to your host: linux, windows or darwin',
+    HEADERMSG     = 'Download the Android NDK, unpack somewhere, and set NDK_ROOT_DIR to it',
     CC            = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-gcc',
     CXX           = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-g++',
     AS            = '$(NDK_ROOT_DIR)/toolchains/mipsel-linux-android-4.8/prebuilt/' .. host .. '/bin/mipsel-linux-android-as',
