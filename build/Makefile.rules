@@ -1,5 +1,5 @@
 ifeq ($(STATIC_LINKING), 1)
-  TARGET = lib81_libretro_$(platform).a
+  TARGET = 81_libretro_$(platform).a
 else
   TARGET = 81_libretro$(SOEXT)
 endif
