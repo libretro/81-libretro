@@ -34,7 +34,9 @@ struct RWMEM
   long pos, len;
 };
 
+#ifndef EOF
 #define EOF -1
+#endif
 
 static void rwmem( RWMEM* f, const void* data, size_t size )
 {
