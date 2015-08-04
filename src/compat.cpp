@@ -5,6 +5,7 @@
 #include <eo.h>
 #include <funcs.h>
 #include <types.h>
+#include <ctype.h>
 
 #ifndef false
 #define false 0

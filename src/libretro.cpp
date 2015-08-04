@@ -2,6 +2,7 @@
 #include <coreopt.h>
 #include <keybovl.h>
 
+#include <ctype.h>
 #include <string.h>
 
 #include <eo.h>
