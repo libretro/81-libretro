@@ -47,7 +47,9 @@ typedef struct
 }
 FILE;
 
+#ifndef EOF
 #define EOF -1
+#endif
 
 static int fgetc( FILE* s )
 {
