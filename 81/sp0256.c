@@ -1,5 +1,5 @@
 #include <stdio.h>
-#ifndef __CELLOS_LV2__
+#if !defined(__CELLOS_LV2__) && !defined(__APPLE__)
 #include <malloc.h>
 #endif
 #include <string.h>
