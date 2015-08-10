@@ -213,7 +213,7 @@ local platforms = {
     EXT           = 'android-x86',
     SO            = 'so',
     PLATFORM      = 'android',
-    PLAT_INCDIR   = '-I$(NDK_ROOT_DIR)/platforms/android-9/arch-x86/usr/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include $(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/libs/x86/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include/backward',
+    PLAT_INCDIR   = '-I$(NDK_ROOT_DIR)/platforms/android-9/arch-x86/usr/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/libs/x86/include -I$(NDK_ROOT_DIR)/sources/cxx-stl/gnu-libstdc++/4.8/include/backward',
     PLAT_DEFS     = '-DANDROID -DINLINE=inline -DHAVE_STDINT_H -DBSPF_UNIX -DHAVE_INTTYPES -DLSB_FIRST',
     PLAT_CFLAGS   = '-ffunction-sections -funwind-tables -no-canonical-prefixes -fstack-protector -fomit-frame-pointer -fstrict-aliasing -funswitch-loops -finline-limit=300 -Wa,--noexecstack -Wformat -Werror=format-security',
     PLAT_CXXFLAGS = '${PLAT_CFLAGS} -fno-exceptions -fno-rtti',
