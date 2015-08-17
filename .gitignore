@@ -1,6 +1,7 @@
 *.[oa]
 *.dll
 *.so
+*.dylib
 *~
 bin/*
 version.c
