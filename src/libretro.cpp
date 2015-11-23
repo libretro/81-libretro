@@ -12,8 +12,8 @@
 #include <zx81.h>
 #include <tzx/TZXFILE.h>
 
-#define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_KEYBOARD
-#define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_JOYPAD
+#define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_KEYBOARD, 0)
+#define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
 
 #ifdef LOG_PERFORMANCE
   #define RETRO_PERFORMANCE_INIT( name )  do { static struct retro_perf_counter name = { #name }; if ( !name.registered ) perf_cb.perf_register( &( name ) ) } while ( 0 )
@@ -67,6 +67,8 @@ extern TTZXFile TZXFile;
 
 static state_t state;
 
+#define ZX81KEYS "default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z"
+
 static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
@@ -75,20 +77,20 @@ static const struct retro_variable core_vars[] =
   { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
   { "81_sound",          "Sound emulation; none|Zon X-81" },
-  { "81_joypad_up",      "Joypad Up mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
-  { "81_joypad_down",    "Joypad Down mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
-  { "81_joypad_left",    "Joypad Left mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
-  { "81_joypad_right",   "Joypad Right mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
-  { "81_joypad_fire",    "Joypad Fire mapping; default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z" },
+  { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
+  { "81_joypad_down",    "Joypad Down mapping; " ZX81KEYS },
+  { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
+  { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
+  { "81_joypad_fire",    "Joypad Fire mapping; " ZX81KEYS },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
-  { "81_key_hold_time",  "Time to Release Key in ms; 500|1000|100|300" },
+  { "81_key_hold_time",  "Time to Release Key in ms; 100|300|500|1000" },
   { NULL, NULL },
 };
 
 #define UPDATE_RESET 1
 #define UPDATE_AV    2
  
-static int update_variables( void )
+static int update_variables()
 {
   int reset = 0;
   int old_scaled = state.scaled;
@@ -325,9 +327,6 @@ bool retro_load_game( const struct retro_game_info* info )
   
   memcpy( state.data, info->data, state.size );
   
-  state.devices[ 0 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
-  state.devices[ 1 ] = RETRO_DEVICE_SINCLAIR_KEYBOARD;
-  
   state.cfg.machine = MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
@@ -343,6 +342,7 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.Chroma81 = 0;
   
   state.scaled = -1;
+  TZXFile.AddTextBlock( "" ); // prevent a crash if the user does a LOAD ""
   TZXFile.FlashLoad = true;
   
   update_variables();

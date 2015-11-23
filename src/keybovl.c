@@ -8,6 +8,7 @@ static int            timer;      // milliseconds counter to release the key
 static uint32_t       joystate = 0; // joystick button states
 static uint32_t       keystate[ ( RETROK_LAST + 31 ) / 32 ] = { 0 }; // key states
 
+#define TOGGLE   1
 #define PRESSED  2
 #define SELECTED 4
 
@@ -295,7 +296,7 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
           }
         }
       }
-      else
+      else if ( timer <= 0 )
       {
         // virtual keyboard navigation
         
@@ -315,15 +316,15 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
             case RETRO_DEVICE_ID_JOYPAD_A:
             case RETRO_DEVICE_ID_JOYPAD_B:
               {
-                if ( key->meta & 1 )
+                if ( key->meta & TOGGLE )
                 {
                   key->meta ^= PRESSED;
                 }
-                else if ( timer <= 0 )
+                else
                 {
                   for ( k = ovl->keys; k->id != 0xffff; k++ )
                   {
-                    if ( ( k->meta & ( PRESSED | 1 ) ) == ( PRESSED | 1 ) )
+                    if ( ( k->meta & ( PRESSED | TOGGLE ) ) == ( PRESSED | TOGGLE ) )
                     {
                       ovl->keypress( ovl, k->mapped );
                     }
@@ -346,33 +347,36 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
   
   // Process the keyboard
   
-  for ( p = 0; p < 2; p++ )
+  if ( !visible )
   {
-    if ( ( devices[ p ] & RETRO_DEVICE_MASK ) != RETRO_DEVICE_KEYBOARD )
+    for ( p = 0; p < 2; p++ )
     {
-      continue;
-    }
-    
-    for ( k = ovl->keys; k->id != 0xffff; k++ )
-    {
-      int16_t  is_down = input_cb( p, devices[ p ], 0, k->retro );
-      int      index = k->retro / 32;
-      uint32_t bit = 1 << ( k->retro & 31 );
-
-      if ( is_down )
+      if ( ( devices[ p ] & RETRO_DEVICE_MASK ) != RETRO_DEVICE_KEYBOARD )
       {
-        if ( ( keystate[ index ] & bit ) == 0 )
-        {
-          keystate[ index ] |= bit;
-          ovl->keypress( ovl, k->mapped );
-        }
+        continue;
       }
-      else
+      
+      for ( k = ovl->keys; k->id != 0xffff; k++ )
       {
-        if ( keystate[ index ] & bit )
+        int16_t  is_down = input_cb( p, devices[ p ], 0, k->retro );
+        int      index = k->retro / 32;
+        uint32_t bit = 1 << ( k->retro & 31 );
+
+        if ( is_down )
         {
-          keystate[ index ] &= ~bit;
-          ovl->keyrelease( ovl, k->mapped );
+          if ( ( keystate[ index ] & bit ) == 0 )
+          {
+            keystate[ index ] |= bit;
+            ovl->keypress( ovl, k->mapped );
+          }
+        }
+        else
+        {
+          if ( keystate[ index ] & bit )
+          {
+            keystate[ index ] &= ~bit;
+            ovl->keyrelease( ovl, k->mapped );
+          }
         }
       }
     }
