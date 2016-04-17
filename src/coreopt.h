@@ -2,6 +2,7 @@
 #define COREOPT_H
 
 #include <libretro.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +12,7 @@ extern "C" {
  * retro_variable. Returns -1 if the option wasn't found in the list or if
  * opt_name is not a valid option.
  */
-int coreopt( retro_environment_t env_cb, const struct retro_variable* vars, const char* opt_name, const char** opt_value );
+int coreopt( retro_environment_t env_cb, const struct retro_variable* vars, uint32_t* sha1, const char* opt_name, const char** opt_value );
 
 #ifdef __cplusplus
 }

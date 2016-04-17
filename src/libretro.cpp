@@ -4,6 +4,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <stdint.h>
 
 #include <eo.h>
 #include <types.h>
@@ -11,6 +12,11 @@
 #include <snap.h>
 #include <zx81.h>
 #include <tzx/TZXFILE.h>
+
+extern "C"
+{
+#include <gamedb/sha1.h>
+}
 
 #define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_KEYBOARD, 0)
 #define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
@@ -34,6 +40,7 @@ typedef struct
   int      transp;
   int      ms;
   unsigned devices[ 2 ];
+  uint32_t sha1[ 5 ];
 }
 state_t;
 
@@ -63,25 +70,31 @@ struct retro_perf_callback perf_cb;
 extern int WinR, WinL, WinT, WinB, TVP;
 extern WORD* TVFB;
 extern keybovl_t zx81ovl;
-extern TTZXFile TZXFile;
 
 static state_t state;
 
-#define ZX81KEYS "default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z"
+#define ZX81KEYS "auto|default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z"
 
 static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
-  { "81_highres",        "High Resolution; none|WRX" },
-  { "81_chroma_81",      "Emulate Chroma 81; disabled|enabled" },
+  { "81_highres",        "High Resolution; auto|none|WRX" },
+  { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
-  { "81_sound",          "Sound emulation; none|Zon X-81" },
-  { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
-  { "81_joypad_down",    "Joypad Down mapping; " ZX81KEYS },
+  { "81_sound",          "Sound emulation; auto|none|Zon X-81" },
   { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
   { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
-  { "81_joypad_fire",    "Joypad Fire mapping; " ZX81KEYS },
+  { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
+  { "81_joypad_down",    "Joypad Down mapping; " ZX81KEYS },
+  { "81_joypad_a",       "Joypad A button mapping; " ZX81KEYS },
+  { "81_joypad_b",       "Joypad B button mapping; " ZX81KEYS },
+  { "81_joypad_x",       "Joypad X button mapping; " ZX81KEYS },
+  { "81_joypad_y",       "Joypad Y button mapping; " ZX81KEYS },
+  { "81_joypad_l",       "Joypad L button mapping; " ZX81KEYS },
+  { "81_joypad_r",       "Joypad R button mapping; " ZX81KEYS },
+  { "81_joypad_l2",      "Joypad L2 button mapping; " ZX81KEYS },
+  { "81_joypad_r2",      "Joypad R2 button mapping; " ZX81KEYS },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
   { "81_key_hold_time",  "Time to Release Key in ms; 100|300|500|1000" },
   { NULL, NULL },
@@ -95,18 +108,18 @@ static int update_variables()
   int reset = 0;
   int old_scaled = state.scaled;
 
-  TZXFile.FlashLoad = coreopt( env_cb, core_vars, "81_fast_load", NULL ) != 1;
+  TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
   
   {
     static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
-    int option = coreopt( env_cb, core_vars, "81_8_16_contents", NULL );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_8_16_contents", NULL );
     option += option < 0;
     reset = reset || state.cfg.LowRAMContents != lowram[ option ];
     state.cfg.LowRAMContents = lowram[ option ];
   }
 
   {
-    int option = coreopt( env_cb, core_vars, "81_video_presets", NULL );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_video_presets", NULL );
     option += option < 0;
     
     switch ( option )
@@ -167,7 +180,7 @@ static int update_variables()
   }
 
   {
-    int option = coreopt( env_cb, core_vars, "81_chroma_81", NULL );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_chroma_81", NULL );
     option += option < 0;
     
     if ( option )
@@ -195,7 +208,7 @@ static int update_variables()
   
   {
     static int hires[] = { HIRESDISABLED, HIRESWRX };
-    int option = coreopt( env_cb, core_vars, "81_highres", NULL );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_highres", NULL );
     option += option < 0;
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
@@ -203,42 +216,59 @@ static int update_variables()
   
   {
     static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ZONX };
-    int option = coreopt( env_cb, core_vars, "81_sound", NULL );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
     option += option < 0;
     reset = reset || state.cfg.SoundCard != sound[ option ];
     state.cfg.SoundCard = sound[ option ];
   }
   
-  state.transp = coreopt( env_cb, core_vars, "81_keybovl_transp", NULL ) != 1;
+  state.transp = coreopt( env_cb, core_vars, state.sha1, "81_keybovl_transp", NULL ) != 1;
 
   {
     const char* value;
-    int option = coreopt( env_cb, core_vars, "81_key_hold_time", &value );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_key_hold_time", &value );
     state.ms = option >= 0 ? strtoll( value, NULL, 10 ) : 500LL;
   }
   
   {
-    const int keys[] = { 0, VK_RETURN, VK_SHIFT, VK_SPACE, VK_DECIMAL };
+    const int keys[] = { 0, 0, VK_RETURN, VK_SHIFT, VK_SPACE, VK_DECIMAL };
     const char* value;
     
-    int option = coreopt( env_cb, core_vars, "81_joypad_up", &value );
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_UP ] = option <= 0 ? '7' : option < 5 ? keys[ option ] : toupper( *value );
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_up", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_UP ] = option < 0 || option == 1 ? '7' : option < 6 ? keys[ option ] : toupper( *value );
     
-    option = coreopt( env_cb, core_vars, "81_joypad_down", &value );
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_DOWN ] = option <= 0 ? '6' : option < 5 ? keys[ option ] : toupper( *value );
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_down", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_DOWN ] = option < 0 || option == 1 ? '6' : option < 6 ? keys[ option ] : toupper( *value );
     
-    option = coreopt( env_cb, core_vars, "81_joypad_left", &value );
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_LEFT ] = option <= 0 ? '5' : option < 5 ? keys[ option ] : toupper( *value );
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_left", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_LEFT ] = option < 0 || option == 1 ? '5' : option < 6 ? keys[ option ] : toupper( *value );
     
-    option = coreopt( env_cb, core_vars, "81_joypad_right", &value );
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_RIGHT ] = option <= 0 ? '8' : option < 5 ? keys[ option ] : toupper( *value );
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_right", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_RIGHT ] = option < 0 || option == 1 ? '8' : option < 6 ? keys[ option ] : toupper( *value );
     
-    option = coreopt( env_cb, core_vars, "81_joypad_fire", &value );
-    option = option <= 0 ? '0' : option < 5 ? keys[ option ] : toupper( *value );
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_A ] = option;
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_B ] = option;
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_X ] = option;
-    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_Y ] = option;
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_a", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_A ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_b", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_B ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_x", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_X ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_y", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_Y ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_l", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_L ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_r", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_R ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_l2", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_L2 ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_r2", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_R2 ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
   }
   
   state.scaled = ( WinR - WinL ) == 640;
@@ -317,7 +347,7 @@ bool retro_load_game( const struct retro_game_info* info )
   
   memset( (void*)&state, 0, sizeof( state ) );
   state.size = info->size;
-  state.data = malloc( state.size );
+  state.data = malloc( info->size );
   
   if ( !state.data )
   {
@@ -344,6 +374,12 @@ bool retro_load_game( const struct retro_game_info* info )
   state.scaled = -1;
   TZXFile.AddTextBlock( "" ); // prevent a crash if the user does a LOAD ""
   TZXFile.FlashLoad = true;
+  
+  SHA1Context sha1;
+  SHA1Reset( &sha1 );
+  SHA1Input( &sha1, (const unsigned char*)info->data, info->size );
+  SHA1Result( &sha1 );
+  memcpy( state.sha1, sha1.Message_Digest, sizeof(state.sha1) );
   
   update_variables();
   retro_reset();

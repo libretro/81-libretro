@@ -39,6 +39,7 @@ SOURCES_C += $(CORE_DIR)/src/keybovl.c
 SOURCES_C += $(CORE_DIR)/src/eo.c
 SOURCES_C += $(CORE_DIR)/src/kbds/zx81kbd.c
 SOURCES_C += $(CORE_DIR)/src/version.c
+SOURCES_C += $(CORE_DIR)/src/gamedb/sha1.c
 SOURCES_CXX += $(CORE_DIR)/src/compat.cpp
 
 ROMS += $(CORE_DIR)/bin/ROM/zx81.rom

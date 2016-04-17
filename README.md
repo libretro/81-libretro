@@ -31,11 +31,11 @@ The only core option available on the frontend is:
 
 * Tape Fast Load (enabled|disabled): Instantly loads files if enabled, or disabled it to see the moving horizontal lines while the game loads
 * 8K-16K Contents (ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM): Selects the contents of memory addresses between 8192 and 16383, a shadow copy of the ROM, 8K of RAM, or [dK'tronics 4K ROM plus 4K of RAM](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_CharacterSetROM.htm)
-* High Resolution (none|WRX): Enables WRX high resolution
-* Emulate Chroma 81 (disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
+* High Resolution (auto|none|WRX): Enables WRX high resolution
+* Emulate Chroma 81 (auto|disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
 * Video Presets (clean|tv|noisy): Change how the video is emulated (if Chroma 81 is enabled, the video is set to "clean" regardless of this option)
-* Sound emulation (none|Zon X-81): Enables sound emulation
-* Joypad Up, Down, Left, Right and Fire mappings (default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z): Maps a joypad button to a keyboard key, defaults are the cursor keys and 0 to fire
+* Sound emulation (auto|none|Zon X-81): Enables sound emulation
+* Joypad button mappings (up, down, left, right, a, b, x, y, l, r, l2, r2): (auto|default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z): Maps a joypad button to a keyboard key, defaults are the cursor keys for the directional pad and '0' to all the other buttons
 * Transparent Keyboard Overlay (enabled|disabled): If the keyboard overlay is transparent or opaque
 * Time to Release Key in ms (500|1000|100|300): How many milliseconds to wait before releasing the key pressed using the keyboard overlay
 
@@ -49,13 +49,21 @@ The `p` and the `tzx` formats are supported.
 
 ## Save States
 
-Save states are supported, but are likely to change when more machines are emulated.
+Save states are supported, but the format is likely to change when more machines are emulated.
 
 ## Setup
 
 1. Compile **81-libretro** with `make -f Makefile.libretro`
 1. Copy the resulting `81_libretro.dll` or `81_libretro.so` into the `cores` folder of your libretro frontend
 1. Profit!
+
+## Game Database
+
+Since configuring the core for each game can be a tedious task, **81-libretro** now features auto-configuration. Games support auto-configuration are listed in the `src/gamedb/gamedb.json` file, along with some information and the configuration required to play them.
+
+Currently, there's no way to change the auto-configuration settings short of recompiling the core after making the changes. If you feel the provided auto-configuration could be better or has bugs, please open an issue and I'll take a look.
+
+The core comes with auto-configuration for all homebrew games from [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html). If you want to add an auto-configuration for a missing game, please submit a push request with changes only to the `gamedb.json` file.
 
 ## Thanks
 
@@ -65,6 +73,8 @@ Erik Olofsen for help with:
 * Chroma 81 emulation
 * `tzx` support
 * Zon X-81 sound emulation
+
+See also the `colorized` subfolder.
 
 ## Versions
 

@@ -4,7 +4,7 @@ else
   TARGET = 81_libretro$(SOEXT)
 endif
 
-DEFINES  +=
+DEFINES  += SHA1_REMOVE_MAIN=1
 CFLAGS   += -Wall
 CXXFLAGS += -Wall
 LDFLAGS  +=
