@@ -681,6 +681,52 @@
         "81_joypad_up": "Up",
         "81_joypad_down": "Down"
       }
+    },
+    {
+      "name": "Hopper",
+      "author": "Personal Software Services",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "1982",
+      "file": "Hopper.tzx",
+      "sha1": "81dc34adb69d56050839de09a90b5ff4157e89c7",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down"
+      }
+    },
+    {
+      "name": "3D Monster Maze",
+      "author": "New Generation Software Ltd",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "1981",
+      "file": "3Dmonstermaze.tzx",
+      "sha1": "785b0b5cfb17e01f9279d032a34306da51a2e7bf",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_y": "c",
+        "81_joypad_x": "k",
+        "81_joypad_b": "a"
+      },
+      "labels": {
+        "81_joypad_left": "Turn Left",
+        "81_joypad_right": "Turn Right",
+        "81_joypad_up": "Move Forward",
+        "81_joypad_y": "Cont",
+        "81_joypad_x": "List",
+        "81_joypad_b": "Stop"
+      }
     }
   ]
 }

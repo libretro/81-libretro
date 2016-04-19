@@ -341,6 +341,28 @@ static overrides_t s_overrides[] =
     },
   },
   {
+    /* 3D Monster Maze, 1981, New Generation Software Ltd, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x785b0b5cU, 0xfb17e01fU, 0x9279d032U, 0xa34306daU, 0x51a2e7bfU },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "a" },
+      { "81_joypad_down", "default" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "k" },
+      { "81_joypad_y", "c" },
+      { "81_sound", "none" },
+    },
+  },
+  {
     /* One Little Ghost, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x7bd65421U, 0x239915daU, 0xd4137206U, 0xc0c7572fU, 0x31c6ac5aU },
     {
@@ -387,6 +409,28 @@ static overrides_t s_overrides[] =
   {
     /* Pacman, 2010, Paul Farrow, https://github.com/libretro/81-libretro/tree/master/colorized */
     { 0x80c554a9U, 0xe303794cU, 0x62ee3352U, 0xa926f8bcU, 0xa5393996U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Hopper, 1982, Personal Software Services, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x81dc34adU, 0xb69d5605U, 0x0839de09U, 0xa90b5ff4U, 0x157e89c7U },
     {
       { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "enabled" },
