@@ -39,6 +39,8 @@ endif
 
 $(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)
 
+$(CORE_DIR)/src/coreopt.o: $(CORE_DIR)/src/coreopt.c $(CORE_DIR)/src/gamedb/db.inl
+
 $(CORE_DIR)/src/version.c: FORCE
 	cat $(CORE_DIR)/etc/version.c.templ | sed s/HASH/`git rev-parse HEAD | tr -d "\n"`/g > $@
 

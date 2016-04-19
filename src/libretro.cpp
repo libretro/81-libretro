@@ -78,7 +78,7 @@ static state_t state;
 static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
-  { "81_8_16_contents",  "8K-16K Contents; ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
+  { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },

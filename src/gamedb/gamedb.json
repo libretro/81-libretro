@@ -9,35 +9,20 @@
       "file": "CrozxyRoad.p",
       "sha1": "98ef4e7a24f87c9d253da0dc68698850dcd2752f",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
         "81_joypad_down": "6",
-        "81_joypad_a": "default",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
         "81_joypad_y": "p",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "m",
-        "81_joypad_r2": "default"
+        "81_joypad_l2": "m"
       },
       "labels": {
         "81_joypad_left": "Left",
         "81_joypad_right": "Right",
         "81_joypad_up": "Up",
         "81_joypad_down": "Down",
-        "81_joypad_a": "",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
         "81_joypad_y": "Play",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "Menu",
-        "81_joypad_r2": ""
+        "81_joypad_l2": "Menu"
       }
     },
     {
@@ -48,21 +33,14 @@
       "file": "UBend.p",
       "sha1": "17c49e4ac9179ed0d08c18c671f3db5343bad3cc",
       "settings": {
-        "81_highres": "none",
         "81_chroma_81": "enabled",
-        "81_sound": "none",
         "81_joypad_left": "z",
         "81_joypad_right": "x",
         "81_joypad_up": "k",
         "81_joypad_down": "m",
         "81_joypad_a": "l",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
         "81_joypad_y": "p",
-        "81_joypad_l": "c",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
-        "81_joypad_r2": "default"
+        "81_joypad_l": "c"
       },
       "labels": {
         "81_joypad_left": "Left",
@@ -70,13 +48,8 @@
         "81_joypad_up": "Up",
         "81_joypad_down": "Down",
         "81_joypad_a": "Place",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
         "81_joypad_y": "Play",
-        "81_joypad_l": "Code",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
-        "81_joypad_r2": ""
+        "81_joypad_l": "Code"
       }
     },
     {
@@ -87,34 +60,18 @@
       "file": "Rebound.p",
       "sha1": "6abc2d4de5bb40aac8f3703e5c33a9ce3a31be75",
       "settings": {
-        "81_highres": "none",
         "81_chroma_81": "enabled",
-        "81_sound": "none",
         "81_joypad_left": "z",
         "81_joypad_right": "x",
-        "81_joypad_up": "default",
-        "81_joypad_down": "default",
         "81_joypad_a": "l",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
         "81_joypad_y": "s",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
         "81_joypad_r2": "p"
       },
       "labels": {
         "81_joypad_left": "Left",
         "81_joypad_right": "Right",
-        "81_joypad_up": "",
-        "81_joypad_down": "",
         "81_joypad_a": "Fire",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
         "81_joypad_y": "Start",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
         "81_joypad_r2": "Pause"
       }
     },
@@ -126,19 +83,14 @@
       "file": "Pandemic.p",
       "sha1": "28afa426e660186a1c1c56d74251b604e25bb2a1",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "z",
         "81_joypad_right": "x",
         "81_joypad_up": "k",
         "81_joypad_down": "m",
         "81_joypad_a": "l",
-        "81_joypad_b": "default",
         "81_joypad_x": "r",
         "81_joypad_y": "s",
         "81_joypad_l": "c",
-        "81_joypad_r": "default",
         "81_joypad_l2": "m",
         "81_joypad_r2": "p"
       },
@@ -148,11 +100,9 @@
         "81_joypad_up": "Up",
         "81_joypad_down": "Down",
         "81_joypad_a": "Fire",
-        "81_joypad_b": "",
         "81_joypad_x": "Restart",
         "81_joypad_y": "Start",
         "81_joypad_l": "Code",
-        "81_joypad_r": "",
         "81_joypad_l2": "Menu",
         "81_joypad_r2": "Pause"
       }
@@ -165,35 +115,14 @@
       "file": "ZXagon.p",
       "sha1": "59dae098079f00c3e72ec4647ccbd2ed99b979f1",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "z",
         "81_joypad_right": "x",
-        "81_joypad_up": "default",
-        "81_joypad_down": "default",
-        "81_joypad_a": "default",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
-        "81_joypad_y": "s",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
-        "81_joypad_r2": "default"
+        "81_joypad_y": "s"
       },
       "labels": {
         "81_joypad_left": "Left",
         "81_joypad_right": "Right",
-        "81_joypad_up": "",
-        "81_joypad_down": "",
-        "81_joypad_a": "",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
-        "81_joypad_y": "Start",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
-        "81_joypad_r2": ""
+        "81_joypad_y": "Start"
       }
     },
     {
@@ -204,35 +133,18 @@
       "file": "quack.p",
       "sha1": "d7e40348cc9181d2033c63e17e8fe07589e90c64",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
         "81_joypad_down": "6",
-        "81_joypad_a": "0",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
-        "81_joypad_y": "default",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
-        "81_joypad_r2": "default"
+        "81_joypad_a": "0"
       },
       "labels": {
         "81_joypad_left": "Fly",
         "81_joypad_right": "Fly",
         "81_joypad_up": "Fly",
         "81_joypad_down": "Fly",
-        "81_joypad_a": "Fly",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
-        "81_joypad_y": "",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
-        "81_joypad_r2": ""
+        "81_joypad_a": "Fly"
       }
     },
     {
@@ -243,15 +155,10 @@
       "file": "AntAttack.p",
       "sha1": "1b4fc9eb5cd3373a9986fcd395d0117c6b3c4718",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "z",
         "81_joypad_right": "x",
         "81_joypad_up": "v",
-        "81_joypad_down": "default",
         "81_joypad_a": "c",
-        "81_joypad_b": "default",
         "81_joypad_x": "g",
         "81_joypad_y": "b",
         "81_joypad_l": "f",
@@ -263,9 +170,7 @@
         "81_joypad_left": "Rotate Left",
         "81_joypad_right": "Rotate Right",
         "81_joypad_up": "Foreward",
-        "81_joypad_down": "",
         "81_joypad_a": "Jump",
-        "81_joypad_b": "",
         "81_joypad_x": "Girl",
         "81_joypad_y": "Boy",
         "81_joypad_l": "Long Range Granade",
@@ -282,35 +187,18 @@
       "file": "OneLG.p",
       "sha1": "7bd65421239915dad4137206c0c7572f31c6ac5a",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "7",
         "81_joypad_right": "6",
         "81_joypad_up": "8",
         "81_joypad_down": "5",
-        "81_joypad_a": "default",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
-        "81_joypad_y": "p",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
-        "81_joypad_r2": "default"
+        "81_joypad_y": "p"
       },
       "labels": {
         "81_joypad_left": "Left",
         "81_joypad_right": "Right",
         "81_joypad_up": "Up",
         "81_joypad_down": "Down",
-        "81_joypad_a": "",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
-        "81_joypad_y": "Play",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
-        "81_joypad_r2": ""
+        "81_joypad_y": "Play"
       }
     },
     {
@@ -321,21 +209,13 @@
       "file": "Impact.p",
       "sha1": "11c5fe8d44763d94a3eedf597b6daf0438364e22",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
         "81_joypad_down": "6",
         "81_joypad_a": "0",
         "81_joypad_b": "h",
-        "81_joypad_x": "default",
-        "81_joypad_y": "s",
-        "81_joypad_l": "default",
-        "81_joypad_r": "default",
-        "81_joypad_l2": "default",
-        "81_joypad_r2": "default"
+        "81_joypad_y": "s"
       },
       "labels": {
         "81_joypad_left": "Left",
@@ -344,12 +224,7 @@
         "81_joypad_down": "Break",
         "81_joypad_a": "Fire",
         "81_joypad_b": "Jump",
-        "81_joypad_x": "",
-        "81_joypad_y": "Start",
-        "81_joypad_l": "",
-        "81_joypad_r": "",
-        "81_joypad_l2": "",
-        "81_joypad_r2": ""
+        "81_joypad_y": "Start"
       }
     },
     {
@@ -360,21 +235,16 @@
       "file": "NoirShapes.p",
       "sha1": "5642ddd94d1c6649bc2e01ca112b7d76f376c826",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
         "81_joypad_down": "6",
         "81_joypad_a": "0",
-        "81_joypad_b": "default",
         "81_joypad_x": "c",
         "81_joypad_y": "s",
         "81_joypad_l": "l",
         "81_joypad_r": "r",
-        "81_joypad_l2": "q",
-        "81_joypad_r2": "default"
+        "81_joypad_l2": "q"
       },
       "labels": {
         "81_joypad_left": "Left",
@@ -382,13 +252,11 @@
         "81_joypad_up": "Thrust",
         "81_joypad_down": "Break",
         "81_joypad_a": "Select",
-        "81_joypad_b": "",
         "81_joypad_x": "Continue",
         "81_joypad_y": "Start",
         "81_joypad_l": "Level Code",
         "81_joypad_r": "Reset",
-        "81_joypad_l2": "Quit",
-        "81_joypad_r2": ""
+        "81_joypad_l2": "Quit"
       }
     },
     {
@@ -399,15 +267,10 @@
       "file": "MinerMan.p",
       "sha1": "54db0c5305f89a629a19e5e107f34e65d2bfbd93",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
         "81_joypad_down": "6",
-        "81_joypad_a": "default",
-        "81_joypad_b": "default",
         "81_joypad_x": "c",
         "81_joypad_y": "s",
         "81_joypad_l": "l",
@@ -420,8 +283,6 @@
         "81_joypad_right": "Right",
         "81_joypad_up": "Thrust",
         "81_joypad_down": "Break",
-        "81_joypad_a": "",
-        "81_joypad_b": "",
         "81_joypad_x": "Continue",
         "81_joypad_y": "Start",
         "81_joypad_l": "Level Code",
@@ -438,9 +299,6 @@
       "file": "BoulderL.p",
       "sha1": "3c74569ef70327ecf17db982ef92b4557c17b538",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
         "81_joypad_up": "7",
@@ -477,16 +335,12 @@
       "file": "virus.p",
       "sha1": "0f7a62fa0d575d595857aafdefc78b33a207be91",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
-        "81_joypad_left": "5",
-        "81_joypad_right": "8",
-        "81_joypad_up": "7",
-        "81_joypad_down": "6",
-        "81_joypad_a": "0",
-        "81_joypad_b": "default",
-        "81_joypad_x": "default",
+        "81_joypad_left": "z",
+        "81_joypad_right": "x",
+        "81_joypad_up": "k",
+        "81_joypad_down": "m",
+        "81_joypad_a": "l",
+        "81_joypad_x": "d",
         "81_joypad_y": "s",
         "81_joypad_l": "c",
         "81_joypad_r": "r",
@@ -499,8 +353,7 @@
         "81_joypad_up": "Thrust",
         "81_joypad_down": "Break",
         "81_joypad_a": "Fire",
-        "81_joypad_b": "",
-        "81_joypad_x": "",
+        "81_joypad_x": "Difficulty",
         "81_joypad_y": "Start",
         "81_joypad_l": "Cheat Code",
         "81_joypad_r": "Reset",
@@ -516,16 +369,10 @@
       "file": "DOMIN8TR1S.P",
       "sha1": "8e8ee9c4fc589f386596ef3b3e8fab9b9ee799ef",
       "settings": {
-        "81_highres": "none",
-        "81_chroma_81": "disabled",
-        "81_sound": "none",
         "81_joypad_left": "5",
         "81_joypad_right": "8",
-        "81_joypad_up": "default",
-        "81_joypad_down": "default",
         "81_joypad_a": "0",
         "81_joypad_b": "6",
-        "81_joypad_x": "default",
         "81_joypad_y": "n",
         "81_joypad_l": "s",
         "81_joypad_r": "i",
@@ -535,16 +382,304 @@
       "labels": {
         "81_joypad_left": "Left",
         "81_joypad_right": "Right",
-        "81_joypad_up": "",
-        "81_joypad_down": "",
         "81_joypad_a": "Rotate",
         "81_joypad_b": "Down",
-        "81_joypad_x": "",
         "81_joypad_y": "New Game",
         "81_joypad_l": "Skill",
         "81_joypad_r": "Inverse",
         "81_joypad_l2": "Rows",
         "81_joypad_r2": "Help"
+      }
+    },
+    {
+      "name": "Alien Mind",
+      "author": "André Baune",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2006",
+      "file": "Alien Mind.tzx",
+      "sha1": "cc0494b94aad9d3669ec75a2b51594c84f8af336",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6",
+        "81_joypad_a": "0",
+        "81_joypad_x": "new line",
+        "81_joypad_y": "p",
+        "81_joypad_l": "c",
+        "81_joypad_r": "r",
+        "81_joypad_r2": "i"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down",
+        "81_joypad_x": "Enter",
+        "81_joypad_y": "Play",
+        "81_joypad_l": "Code",
+        "81_joypad_r": "Redo",
+        "81_joypad_r2": "Info"
+      }
+    },
+    {
+      "name": "Mazogs",
+      "author": "Bug-Byte Software",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "1981",
+      "file": "Mazogs.tzx",
+      "sha1": "9f9cb099b26ac2a5324da8f870989ab863c83aba",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "a",
+        "81_joypad_right": "d",
+        "81_joypad_up": "w",
+        "81_joypad_down": "x",
+        "81_joypad_a": "3",
+        "81_joypad_b": "g",
+        "81_joypad_x": "2",
+        "81_joypad_y": "1",
+        "81_joypad_l": "l",
+        "81_joypad_r": "r",
+        "81_joypad_l2": "v",
+        "81_joypad_r2": "y"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down",
+        "81_joypad_a": "Maniac Mobile Mazogs",
+        "81_joypad_b": "Another Game",
+        "81_joypad_x": "Face a Challenge",
+        "81_joypad_y": "Try it Out",
+        "81_joypad_l": "Left",
+        "81_joypad_r": "Right",
+        "81_joypad_l2": "View",
+        "81_joypad_r2": "Stop"
+      }
+    },
+    {
+      "name": "Miner Man",
+      "author": "Bob Smith",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2011",
+      "file": "Miner Man.tzx",
+      "sha1": "73b76ddcda52cc081b18e40c6186d90dd847cf60",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6",
+        "81_joypad_x": "c",
+        "81_joypad_y": "s",
+        "81_joypad_l": "l",
+        "81_joypad_r": "r",
+        "81_joypad_l2": "q",
+        "81_joypad_r2": "p"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Thrust",
+        "81_joypad_down": "Break",
+        "81_joypad_x": "Continue",
+        "81_joypad_y": "Start",
+        "81_joypad_l": "Level Code",
+        "81_joypad_r": "Reset",
+        "81_joypad_l2": "Quit",
+        "81_joypad_r2": "Pause"
+      }
+    },
+    {
+      "name": "Missile Command",
+      "author": "Fernando Grossi and Milton Maldonado Jr.",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "1985",
+      "file": "Missile Command.tzx",
+      "sha1": "bf885a776d2f03e924b2a23aff3b6375a8328241",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_8_16_contents": "RAM",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6",
+        "81_joypad_a": "0",
+        "81_joypad_y": "new line"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down",
+        "81_joypad_a": "Fire",
+        "81_joypad_y": "Play"
+      }
+    },
+    {
+      "name": "Noir Shapes",
+      "author": "Bob Smith",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2012",
+      "file": "Noir Shapes.tzx",
+      "sha1": "32be2ea837e8618898312ec58526d4e9c30e542c",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6",
+        "81_joypad_a": "0",
+        "81_joypad_x": "c",
+        "81_joypad_y": "s",
+        "81_joypad_l": "l",
+        "81_joypad_r": "r",
+        "81_joypad_l2": "q"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Thrust",
+        "81_joypad_down": "Break",
+        "81_joypad_a": "Select",
+        "81_joypad_x": "Continue",
+        "81_joypad_y": "Start",
+        "81_joypad_l": "Level Code",
+        "81_joypad_r": "Reset",
+        "81_joypad_l2": "Quit"
+      }
+    },
+    {
+      "name": "Pandemic",
+      "author": "Bob Smith",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2014",
+      "file": "Pandemic.tzx",
+      "sha1": "548cde66e0d65e437dca54b88ef69be8db0dd556",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "z",
+        "81_joypad_right": "x",
+        "81_joypad_up": "k",
+        "81_joypad_down": "m",
+        "81_joypad_a": "l",
+        "81_joypad_x": "r",
+        "81_joypad_y": "s",
+        "81_joypad_l": "c",
+        "81_joypad_l2": "m",
+        "81_joypad_r2": "p"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down",
+        "81_joypad_a": "Fire",
+        "81_joypad_x": "Restart",
+        "81_joypad_y": "Start",
+        "81_joypad_l": "Code",
+        "81_joypad_l2": "Menu",
+        "81_joypad_r2": "Pause"
+      }
+    },
+    {
+      "name": "Virus",
+      "author": "Bob Smith",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2010",
+      "file": "Virus.tzx",
+      "sha1": "7be46275f1048dc26216f9ded649e2c2f88083d3",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "z",
+        "81_joypad_right": "x",
+        "81_joypad_up": "k",
+        "81_joypad_down": "m",
+        "81_joypad_a": "l",
+        "81_joypad_x": "d",
+        "81_joypad_y": "s",
+        "81_joypad_l": "c",
+        "81_joypad_r": "r",
+        "81_joypad_l2": "q",
+        "81_joypad_r2": "p"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Thrust",
+        "81_joypad_down": "Break",
+        "81_joypad_a": "Fire",
+        "81_joypad_x": "Difficulty",
+        "81_joypad_y": "Start",
+        "81_joypad_l": "Cheat Code",
+        "81_joypad_r": "Reset",
+        "81_joypad_l2": "Quit",
+        "81_joypad_r2": "Pause"
+      }
+    },
+    {
+      "name": "ZX-Galaxian",
+      "author": "Artic Computing Ltd",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2010",
+      "file": "ZX-Galaxians.tzx",
+      "sha1": "6e25de78484888361a685f504245025a598b4418",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_8_16_contents": "RAM",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_a": "0",
+        "81_joypad_y": "new line"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_a": "Fire",
+        "81_joypad_y": "New Line"
+      }
+    },
+    {
+      "name": "Kong",
+      "author": "Paul Farrow",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2010",
+      "file": "ZX81 Kong.tzx",
+      "sha1": "4d238823fce7e4f22f198bb3d85bb07b2ad58c6a",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_a": "0"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_a": "Jump"
+      }
+    },
+    {
+      "name": "Pacman",
+      "author": "Paul Farrow",
+      "url": "https://github.com/libretro/81-libretro/tree/master/colorized",
+      "year": "2010",
+      "file": "ZX81 Pacman.tzx",
+      "sha1": "80c554a9e303794c62ee3352a926f8bca5393996",
+      "settings": {
+        "81_chroma_81": "enabled",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down"
       }
     }
   ]

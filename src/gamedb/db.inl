@@ -4,37 +4,39 @@
 typedef struct
 {
   uint32_t sha1[ 5 ];
-  struct retro_variable vars[ 15 ];
+  struct retro_variable vars[ 16 ];
 }
 overrides_t;
 
 static overrides_t s_overrides[] =
 {
   {
-    /* Virus, 2010, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Virus, 2010, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x0f7a62faU, 0x0d575d59U, 0x5857aafdU, 0xefc78b33U, 0xa207be91U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
-      { "81_joypad_a", "0" },
+      { "81_joypad_a", "l" },
       { "81_joypad_b", "default" },
-      { "81_joypad_down", "6" },
+      { "81_joypad_down", "m" },
       { "81_joypad_l", "c" },
       { "81_joypad_l2", "q" },
-      { "81_joypad_left", "5" },
+      { "81_joypad_left", "z" },
       { "81_joypad_r", "r" },
       { "81_joypad_r2", "p" },
-      { "81_joypad_right", "8" },
-      { "81_joypad_up", "7" },
-      { "81_joypad_x", "default" },
+      { "81_joypad_right", "x" },
+      { "81_joypad_up", "k" },
+      { "81_joypad_x", "d" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
     },
   },
   {
-    /* Impact!, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Impact!, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x11c5fe8dU, 0x44763d94U, 0xa3eedf59U, 0x7b6daf04U, 0x38364e22U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -53,9 +55,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* U-Bend, 2015, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* U-Bend, 2015, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x17c49e4aU, 0xc9179ed0U, 0xd08c18c6U, 0x71f3db53U, 0x43bad3ccU },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -74,9 +77,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Ant Attack, 2013, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Ant Attack, 2013, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x1b4fc9ebU, 0x5cd3373aU, 0x9986fcd3U, 0x95d0117cU, 0x6b3c4718U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "c" },
@@ -95,9 +99,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Pandemic, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Pandemic, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x28afa426U, 0xe660186aU, 0x1c1c56d7U, 0x4251b604U, 0xe25bb2a1U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -116,9 +121,32 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Boulder Logic, 2011, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Noir Shapes, 2012, Bob Smith, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x32be2ea8U, 0x37e86188U, 0x98312ec5U, 0x8526d4e9U, 0xc30e542cU },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "0" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "l" },
+      { "81_joypad_l2", "q" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "r" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "c" },
+      { "81_joypad_y", "s" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Boulder Logic, 2011, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x3c74569eU, 0xf70327ecU, 0xf17db982U, 0xef92b455U, 0x7c17b538U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -137,9 +165,54 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Miner Man, 2011, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Kong, 2010, Paul Farrow, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x4d238823U, 0xfce7e4f2U, 0x2f198bb3U, 0xd85bb07bU, 0x2ad58c6aU },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "0" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "default" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "default" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Pandemic, 2014, Bob Smith, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x548cde66U, 0xe0d65e43U, 0x7dca54b8U, 0x8ef69be8U, 0xdb0dd556U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "l" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "m" },
+      { "81_joypad_l", "c" },
+      { "81_joypad_l2", "m" },
+      { "81_joypad_left", "z" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "p" },
+      { "81_joypad_right", "x" },
+      { "81_joypad_up", "k" },
+      { "81_joypad_x", "r" },
+      { "81_joypad_y", "s" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Miner Man, 2011, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x54db0c53U, 0x05f89a62U, 0x9a19e5e1U, 0x07f34e65U, 0xd2bfbd93U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -158,9 +231,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Noir Shapes, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Noir Shapes, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x5642ddd9U, 0x4d1c6649U, 0xbc2e01caU, 0x112b7d76U, 0xf376c826U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -179,9 +253,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* ZXagon, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* ZXagon, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x59dae098U, 0x079f00c3U, 0xe72ec464U, 0x7ccbd2edU, 0x99b979f1U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -200,9 +275,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Rebound, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Rebound, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x6abc2d4dU, 0xe5bb40aaU, 0xc8f3703eU, 0x5c33a9ceU, 0x3a31be75U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -221,9 +297,54 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* One Little Ghost, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* ZX-Galaxian, 2010, Artic Computing Ltd, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x6e25de78U, 0x48488836U, 0x1a685f50U, 0x4245025aU, 0x598b4418U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "0" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "default" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "default" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "new line" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Miner Man, 2011, Bob Smith, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x73b76ddcU, 0xda52cc08U, 0x1b18e40cU, 0x6186d90dU, 0xd847cf60U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "l" },
+      { "81_joypad_l2", "q" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "r" },
+      { "81_joypad_r2", "p" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "c" },
+      { "81_joypad_y", "s" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* One Little Ghost, 2012, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x7bd65421U, 0x239915daU, 0xd4137206U, 0xc0c7572fU, 0x31c6ac5aU },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -242,9 +363,54 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Domin8tr1s, 2010, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Virus, 2010, Bob Smith, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x7be46275U, 0xf1048dc2U, 0x6216f9deU, 0xd649e2c2U, 0xf88083d3U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "l" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "m" },
+      { "81_joypad_l", "c" },
+      { "81_joypad_l2", "q" },
+      { "81_joypad_left", "z" },
+      { "81_joypad_r", "r" },
+      { "81_joypad_r2", "p" },
+      { "81_joypad_right", "x" },
+      { "81_joypad_up", "k" },
+      { "81_joypad_x", "d" },
+      { "81_joypad_y", "s" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Pacman, 2010, Paul Farrow, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x80c554a9U, 0xe303794cU, 0x62ee3352U, 0xa926f8bcU, 0xa5393996U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Domin8tr1s, 2010, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x8e8ee9c4U, 0xfc589f38U, 0x6596ef3bU, 0x3e8fab9bU, 0x9ee799efU },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -263,9 +429,10 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* CroZXy Road, 2015, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* CroZXy Road, 2015, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x98ef4e7aU, 0x24f87c9dU, 0x253da0dcU, 0x68698850U, 0xdcd2752fU },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -284,9 +451,76 @@ static overrides_t s_overrides[] =
     },
   },
   {
-    /* Quack!, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html*/
+    /* Mazogs, 1981, Bug-Byte Software, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0x9f9cb099U, 0xb26ac2a5U, 0x324da8f8U, 0x70989ab8U, 0x63c83abaU },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "3" },
+      { "81_joypad_b", "g" },
+      { "81_joypad_down", "x" },
+      { "81_joypad_l", "l" },
+      { "81_joypad_l2", "v" },
+      { "81_joypad_left", "a" },
+      { "81_joypad_r", "r" },
+      { "81_joypad_r2", "y" },
+      { "81_joypad_right", "d" },
+      { "81_joypad_up", "w" },
+      { "81_joypad_x", "2" },
+      { "81_joypad_y", "1" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Missile Command, 1985, Fernando Grossi and Milton Maldonado Jr., https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0xbf885a77U, 0x6d2f03e9U, 0x24b2a23aU, 0xff3b6375U, 0xa8328241U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "0" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "new line" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Alien Mind, 2006, André Baune, https://github.com/libretro/81-libretro/tree/master/colorized */
+    { 0xcc0494b9U, 0x4aad9d36U, 0x69ec75a2U, 0xb51594c8U, 0x4f8af336U },
+    {
+      { "81_8_16_contents", "ROM shadow" },
+      { "81_chroma_81", "enabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "0" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "c" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "r" },
+      { "81_joypad_r2", "i" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "new line" },
+      { "81_joypad_y", "p" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Quack!, 2014, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0xd7e40348U, 0xcc9181d2U, 0x033c63e1U, 0x7e8fe075U, 0x89e90c64U },
     {
+      { "81_8_16_contents", "ROM shadow" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },

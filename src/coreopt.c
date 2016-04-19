@@ -7,6 +7,8 @@
 
 #include <gamedb/db.inl>
 
+retro_log_printf_t log_cb;
+
 static int getindex( const char* options, const char* value )
 {
   const char* option = options;
@@ -167,6 +169,8 @@ int coreopt( retro_environment_t env_cb, const struct retro_variable* vars, uint
   {
     *opt_value = value;
   }
+  
+  log_cb( RETRO_LOG_INFO, "%s = %s (%d)\n", opt_name, value, index );
   
   return index;
 }

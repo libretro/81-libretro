@@ -1,23 +1,7 @@
 local json = require 'dkjson'
 
-local function map( game, button )
-  if game.settings.mapping[ button ] then
-    return game.settings.mapping[ button ].key
-  else
-    return 'default'
-  end
-end
-
-local function label( game, button )
-  if game.settings.mapping[ button ] then
-    return game.settings.mapping[ button ].label
-  else
-    return ''
-  end
-end
-
 local db = io.open( 'gamedb.json' ):read( '*a' )
-local obj, pos, err = json.decode( db, 1, nil )
+local obj, pos, err = json.decode( db, 1, json.null )
 
 if err then
   error( err )
@@ -29,7 +13,7 @@ io.write( '#include <libretro.h>\n\n' )
 io.write( 'typedef struct\n' )
 io.write( '{\n' )
 io.write( '  uint32_t sha1[ 5 ];\n' )
-io.write( '  struct retro_variable vars[ 15 ];\n' )
+io.write( '  struct retro_variable vars[ 16 ];\n' )
 io.write( '}\n' )
 io.write( 'overrides_t;\n\n' )
 
@@ -42,7 +26,7 @@ for i = 1, #obj.games do
   local game = obj.games[ i ]
   
   io.write( '  {\n' )
-  io.write( '    /* ', game.name, ', ', game.year, ', ', game.author, ', ', game.url, '*/\n' )
+  io.write( '    /* ', game.name, ', ', game.year, ', ', game.author, ', ', game.url, ' */\n' )
   
   io.write( '    { ' )
   io.write( '0x', game.sha1:sub( 1, 8 ), 'U, ' )
@@ -53,8 +37,35 @@ for i = 1, #obj.games do
   io.write( '},\n' )
   
   local settings = {}
+  local unused =
+  {
+    [ '81_8_16_contents' ] = 'ROM shadow',
+    [ '81_chroma_81' ] = 'disabled',
+    [ '81_highres' ] = 'none',
+    [ '81_sound' ] = 'none',
+    
+    [ '81_joypad_a' ] = 'default',
+    [ '81_joypad_b' ] = 'default',
+    [ '81_joypad_down' ] = 'default',
+    [ '81_joypad_l' ] = 'default',
+    [ '81_joypad_l2' ] = 'default',
+    [ '81_joypad_left' ] = 'default',
+    [ '81_joypad_r' ] = 'default',
+    [ '81_joypad_r2' ] = 'default',
+    [ '81_joypad_right' ] = 'default',
+    [ '81_joypad_up' ] = 'default',
+    [ '81_joypad_x' ] = 'default',
+    [ '81_joypad_y' ] = 'default',
+  }
   
   for key, value in pairs( game.settings ) do
+    if value ~= json.null then
+      settings[ #settings + 1 ] = { key = key, value = value }
+      unused[ key ] = nil
+    end
+  end
+  
+  for key, value in pairs( unused ) do
     settings[ #settings + 1 ] = { key = key, value = value }
   end
   
