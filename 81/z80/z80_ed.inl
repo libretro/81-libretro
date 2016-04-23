@@ -52,7 +52,7 @@ case 0x6c:
 case 0x74:
 case 0x7c:	/* NEG */
 {
-  BYTE bytetemp=A;
+  uint8_t bytetemp=A;
   A=0;
   SUB(bytetemp);
 }
@@ -191,7 +191,7 @@ break;
 
 case 0x67:	/* RRD */
 {
-  BYTE bytetemp=readbyte(HL);
+  uint8_t bytetemp=readbyte(HL);
   contend( HL, 7 ); contend( HL, 3 );
   writebyte(HL,  ( A << 4 ) | ( bytetemp >> 4 ) );
   A = ( A & 0xf0 ) | ( bytetemp & 0x0f );
@@ -220,7 +220,7 @@ break;
 
 case 0x6f:	/* RLD */
 {
-  BYTE bytetemp=readbyte(HL);
+  uint8_t bytetemp=readbyte(HL);
   contend( HL, 7 ); contend( HL, 3 );
   writebyte(HL, (bytetemp << 4 ) | ( A & 0x0f ) );
   A = ( A & 0xf0 ) | ( bytetemp >> 4 );
@@ -231,7 +231,7 @@ break;
 case 0x70:	/* IN F,(C) */
 tstates += 1;
 {
-  BYTE bytetemp;
+  uint8_t bytetemp;
   IN(bytetemp,BC);
 }
 break;
@@ -271,7 +271,7 @@ break;
 
 case 0xa0:	/* LDI */
 {
-  BYTE bytetemp=readbyte(HL);
+  uint8_t bytetemp=readbyte(HL);
   contend( HL, 3 ); contend( DE, 3 ); contend( DE, 1 ); contend( DE, 1 );
   BC--;
   writebyte(DE,bytetemp);
@@ -284,7 +284,7 @@ break;
 
 case 0xa1:	/* CPI */
 {
-  BYTE value=readbyte(HL),bytetemp=A-value,
+  uint8_t value=readbyte(HL),bytetemp=A-value,
     lookup = ( (A & 0x08) >> 3 ) | ( ( (value) & 0x08 ) >> 2 ) |
     ( (bytetemp & 0x08) >> 1 );
   contend( HL, 3 ); contend( HL, 1 ); contend( HL, 1 ); contend( HL, 1 );
@@ -300,7 +300,7 @@ break;
 
 case 0xa2:	/* INI */
 {
-  WORD initemp=readport(BC,&tstates);
+  uint16_t initemp=readport(BC,&tstates);
   tstates += 2; contend_io( BC, 3 ); contend( HL, 3 );
   writebyte(HL,initemp);
   B--; HL++;
@@ -311,7 +311,7 @@ break;
 
 case 0xa3:	/* OUTI */
 {
-  WORD outitemp=readbyte(HL);
+  uint16_t outitemp=readbyte(HL);
   B--;		/* This does happen first, despite what the specs say */
   tstates++; contend( HL, 4 ); contend_io( BC, 3 );
   HL++;
@@ -323,7 +323,7 @@ break;
 
 case 0xa8:	/* LDD */
 {
-  BYTE bytetemp=readbyte(HL);
+  uint8_t bytetemp=readbyte(HL);
   contend( HL, 3 ); contend( DE, 3 ); contend( DE, 1 ); contend( DE, 1 );
   BC--;
   writebyte(DE,bytetemp);
@@ -336,7 +336,7 @@ break;
 
 case 0xa9:	/* CPD */
 {
-  BYTE value=readbyte(HL),bytetemp=A-value,
+  uint8_t value=readbyte(HL),bytetemp=A-value,
     lookup = ( (A & 0x08) >> 3 ) | ( ( (value) & 0x08 ) >> 2 ) |
     ( (bytetemp & 0x08) >> 1 );
   contend( HL, 3 ); contend( HL, 1 ); contend( HL, 1 ); contend( HL, 1 );
@@ -352,7 +352,7 @@ break;
 
 case 0xaa:	/* IND */
 {
-  WORD initemp=readport(BC,&tstates);
+  uint16_t initemp=readport(BC,&tstates);
   tstates += 2; contend_io( BC, 3 ); contend( HL, 3 );
   writebyte(HL,initemp);
   B--; HL--;
@@ -363,7 +363,7 @@ break;
 
 case 0xab:	/* OUTD */
 {
-  WORD outitemp=readbyte(HL);
+  uint16_t outitemp=readbyte(HL);
   B--;		/* This does happen first, despite what the specs say */
   tstates++; contend( HL, 4 ); contend_io( BC, 3 );
   HL--;
@@ -375,7 +375,7 @@ break;
 
 case 0xb0:	/* LDIR */
 {
-  BYTE bytetemp = readbyte( HL );
+  uint8_t bytetemp = readbyte( HL );
   contend( HL, 3 ); contend( DE, 3 ); contend( DE, 1 ); contend( DE, 1 );
   writebyte(DE,bytetemp);
   HL++; DE++; BC--;
@@ -392,7 +392,7 @@ break;
 
 case 0xb1:	/* CPIR */
 {
-  BYTE value=readbyte(HL),bytetemp=A-value,
+  uint8_t value=readbyte(HL),bytetemp=A-value,
     lookup = ( (A & 0x08) >> 3 ) | ( ( (value) & 0x08 ) >> 2 ) |
     ( (bytetemp & 0x08) >> 1 );
   contend( HL, 3 ); contend( HL, 1 ); contend( HL, 1 ); contend( HL, 1 );
@@ -413,7 +413,7 @@ break;
   
 case 0xb2:	/* INIR */
 {
-  WORD initemp=readport(BC,&tstates);
+  uint16_t initemp=readport(BC,&tstates);
   tstates += 2; contend_io( BC, 3 ); contend( HL, 3 );
   writebyte(HL,initemp);
   B--; HL++;
@@ -429,7 +429,7 @@ break;
 
 case 0xb3:	/* OTIR */
 {
-  WORD outitemp=readbyte(HL);
+  uint16_t outitemp=readbyte(HL);
   tstates++; contend( HL, 4 );
   B--;	HL++;	/* This does happen first, despite what the specs say */
   writeport(BC,outitemp,&tstates);
@@ -448,7 +448,7 @@ break;
 
 case 0xb8:	/* LDDR */
 {
-  BYTE bytetemp=readbyte(HL);
+  uint8_t bytetemp=readbyte(HL);
   contend( HL, 3 ); contend( DE, 3 ); contend( DE, 1 ); contend( DE, 1 );
   writebyte(DE,bytetemp);
   HL--; DE--; BC--;
@@ -465,7 +465,7 @@ break;
 
 case 0xb9:	/* CPDR */
 {
-  BYTE value=readbyte(HL),bytetemp=A-value,
+  uint8_t value=readbyte(HL),bytetemp=A-value,
     lookup = ( (A & 0x08) >> 3 ) | ( ( (value) & 0x08 ) >> 2 ) |
     ( (bytetemp & 0x08) >> 1 );
   contend( HL, 3 ); contend( HL, 1 ); contend( HL, 1 ); contend( HL, 1 );
@@ -486,7 +486,7 @@ break;
 
 case 0xba:	/* INDR */
 {
-  WORD initemp=readport(BC,&tstates);
+  uint16_t initemp=readport(BC,&tstates);
   tstates += 2; contend_io( BC, 3 ); contend( HL, 3 );
   writebyte(HL,initemp);
   B--; HL--;
@@ -502,7 +502,7 @@ break;
 
 case 0xbb:	/* OTDR */
 {
-  WORD outitemp=readbyte(HL);
+  uint16_t outitemp=readbyte(HL);
   tstates++; contend( HL, 4 );
   B--; HL--;	/* This does happen first, despite what the specs say */
   writeport(BC,outitemp,&tstates);
@@ -523,8 +523,8 @@ case 0xfb:	/* Emulator trap to load .slt data */
 //if( settings_current.slt_traps ) {
 //
 //  if( slt_length[A] ) {
-//    WORD base = HL;
-//    BYTE *data = slt[A];
+//    uint16_t base = HL;
+//    uint8_t *data = slt[A];
 //    size_t length = slt_length[A];
 //
 //    while( length-- ) writebyte( base++, *data++ );

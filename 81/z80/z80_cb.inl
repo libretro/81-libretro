@@ -50,7 +50,7 @@ break;
 
 case 0x06:	/* RLC (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   RLC(bytetemp);
   writebyte(HL,bytetemp);
@@ -87,7 +87,7 @@ break;
 
 case 0x0e:	/* RRC (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL,4 ); contend( HL, 3 );
   RRC(bytetemp);
   writebyte(HL,bytetemp);
@@ -124,7 +124,7 @@ break;
 
 case 0x16:	/* RL (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   RL(bytetemp);
   writebyte(HL,bytetemp);
@@ -161,7 +161,7 @@ break;
 
 case 0x1e:	/* RR (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   RR(bytetemp);
   writebyte(HL,bytetemp);
@@ -198,7 +198,7 @@ break;
 
 case 0x26:	/* SLA (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   SLA(bytetemp);
   writebyte(HL,bytetemp);
@@ -235,7 +235,7 @@ break;
 
 case 0x2e:	/* SRA (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   SRA(bytetemp);
   writebyte(HL,bytetemp);
@@ -272,7 +272,7 @@ break;
 
 case 0x36:	/* SLL (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   SLL(bytetemp);
   writebyte(HL,bytetemp);
@@ -309,7 +309,7 @@ break;
 
 case 0x3e:	/* SRL (HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 ); contend( HL, 3 );
   SRL(bytetemp);
   writebyte(HL,bytetemp);
@@ -346,7 +346,7 @@ break;
 
 case 0x46:	/* BIT 0,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(0,bytetemp);
 }
@@ -382,7 +382,7 @@ break;
 
 case 0x4e:	/* BIT 1,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(1,bytetemp);
 }
@@ -418,7 +418,7 @@ break;
 
 case 0x56:	/* BIT 2,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(2,bytetemp);
 }
@@ -454,7 +454,7 @@ break;
 
 case 0x5e:	/* BIT 3,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(3,bytetemp);
 }
@@ -490,7 +490,7 @@ break;
 
 case 0x66:	/* BIT 4,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(4,bytetemp);
 }
@@ -526,7 +526,7 @@ break;
 
 case 0x6e:	/* BIT 5,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(5,bytetemp);
 }
@@ -562,7 +562,7 @@ break;
 
 case 0x76:	/* BIT 6,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT(6,bytetemp);
 }
@@ -598,7 +598,7 @@ break;
 
 case 0x7e:	/* BIT 7,(HL) */
 {
-  BYTE bytetemp = readbyte(HL);
+  uint8_t bytetemp = readbyte(HL);
   contend( HL, 4 );
   BIT7(bytetemp);
 }

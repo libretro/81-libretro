@@ -68,7 +68,7 @@ extern void TZXWriteByte(unsigned char Byte);
 void ace_initialise(void)
 {
         int i, romlen;
-        z80_init();
+        z80_init(&z80);
 
         for(i=0;i<65536;i++) memory[i]=myrandom(255);
 
@@ -84,10 +84,10 @@ void ace_initialise(void)
         sync_valid=0;
 
         // NASTY HACK ALERT!
-        z80_reset();
+        z80_reset(&z80);
         d8255_reset();
         d8251reset();
-        z80_reset();
+        z80_reset(&z80);
         ATA_Reset();
         if (spectrum.HDType==HDACECF) ATA_SetMode(ATA_MODE_8BIT);
 }
@@ -310,10 +310,10 @@ int ace_do_scanline()
 
                 if (z80.pc.w==0x1820) WavStartRec();
 
-                ts=z80_do_opcode();
+                ts=z80_do_opcode(&z80);
                 if (!fts)
                 {
-                        int intlen=z80_interrupt(0);
+                        int intlen=z80_interrupt(&z80, 0);
                         ts+=intlen;
                         if (intlen) WavStop();
                 }
@@ -321,7 +321,7 @@ int ace_do_scanline()
                 i=70;
                 while(FlashLoading && FlashLoadable() && i)
                 {
-                        ts=z80_do_opcode();
+                        ts=z80_do_opcode(&z80);
                         WavClockTick(ts,0);
                         i--;
                 }

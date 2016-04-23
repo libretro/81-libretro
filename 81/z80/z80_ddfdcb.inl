@@ -71,7 +71,7 @@ break;
 case 0x06:	/* RLC (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   RLC(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -129,7 +129,7 @@ break;
 case 0x0e:	/* RRC (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   RRC(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -187,7 +187,7 @@ break;
 case 0x16:	/* RL (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   RL(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -245,7 +245,7 @@ break;
 case 0x1e:	/* RR (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   RR(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -303,7 +303,7 @@ break;
 case 0x26:	/* SLA (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   SLA(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -361,7 +361,7 @@ break;
 case 0x2e:	/* SRA (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   SRA(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -419,7 +419,7 @@ break;
 case 0x36:	/* SLL (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   SLL(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -477,7 +477,7 @@ break;
 case 0x3e:	/* SRL (REGISTER+dd) */
 tstates += 8;
 {
-  BYTE bytetemp = readbyte(tempaddr);
+  uint8_t bytetemp = readbyte(tempaddr);
   SRL(bytetemp);
   writebyte(tempaddr,bytetemp);
 }
@@ -500,7 +500,7 @@ case 0x46:
 case 0x47:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(0,bytetemp);
 }
 break;
@@ -515,7 +515,7 @@ case 0x4e:
 case 0x4f:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(1,bytetemp);
 }
 break;
@@ -530,7 +530,7 @@ case 0x56:
 case 0x57:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(2,bytetemp);
 }
 break;
@@ -545,7 +545,7 @@ case 0x5e:
 case 0x5f:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(3,bytetemp);
 }
 break;
@@ -560,7 +560,7 @@ case 0x66:
 case 0x67:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(4,bytetemp);
 }
 break;
@@ -575,7 +575,7 @@ case 0x6e:
 case 0x6f:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(5,bytetemp);
 }
 break;
@@ -590,7 +590,7 @@ case 0x76:
 case 0x77:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT(6,bytetemp);
 }
 break;
@@ -605,7 +605,7 @@ case 0x7e:
 case 0x7f:
 tstates += 5;
 {
-  BYTE bytetemp=readbyte(tempaddr);
+  uint8_t bytetemp=readbyte(tempaddr);
   BIT7(bytetemp);
 }
 break;

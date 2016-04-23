@@ -98,8 +98,8 @@ break;
 case 0x34:		/* INC (REGISTER+dd) */
 tstates += 15;		/* FIXME: how is this contended? */
 {
-  WORD wordtemp=REGISTER+(SBYTE)readbyte(PC++);
-  BYTE bytetemp=readbyte(wordtemp);
+  uint16_t wordtemp=REGISTER+(int8_t)readbyte(PC++);
+  uint8_t bytetemp=readbyte(wordtemp);
   INC(bytetemp);
   writebyte(wordtemp,bytetemp);
 }
@@ -108,8 +108,8 @@ break;
 case 0x35:		/* DEC (REGISTER+dd) */
 tstates += 15;		/* FIXME: how is this contended? */
 {
-  WORD wordtemp=REGISTER+(SBYTE)readbyte(PC++);
-  BYTE bytetemp=readbyte(wordtemp);
+  uint16_t wordtemp=REGISTER+(int8_t)readbyte(PC++);
+  uint8_t bytetemp=readbyte(wordtemp);
   DEC(bytetemp);
   writebyte(wordtemp,bytetemp);
 }
@@ -118,7 +118,7 @@ break;
 case 0x36:		/* LD (REGISTER+dd),nn */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  WORD wordtemp=REGISTER+(SBYTE)readbyte(PC++);
+  uint16_t wordtemp=REGISTER+(int8_t)readbyte(PC++);
   writebyte(wordtemp,readbyte(PC++));
 }
 break;
@@ -137,7 +137,7 @@ break;
 
 case 0x46:		/* LD B,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-B=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+B=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x4c:		/* LD C,REGISTERH */
@@ -150,7 +150,7 @@ break;
 
 case 0x4e:		/* LD C,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-C=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+C=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x54:		/* LD D,REGISTERH */
@@ -163,7 +163,7 @@ break;
 
 case 0x56:		/* LD D,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-D=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+D=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x5c:		/* LD E,REGISTERH */
@@ -176,7 +176,7 @@ break;
 
 case 0x5e:		/* LD E,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-E=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+E=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x60:		/* LD REGISTERH,B */
@@ -204,7 +204,7 @@ break;
 
 case 0x66:		/* LD H,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-H=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+H=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x67:		/* LD REGISTERH,A */
@@ -236,7 +236,7 @@ break;
 
 case 0x6e:		/* LD L,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-L=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+L=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x6f:		/* LD REGISTERL,A */
@@ -245,37 +245,37 @@ break;
 
 case 0x70:		/* LD (REGISTER+dd),B */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), B);
+writebyte( REGISTER + (int8_t)readbyte(PC++), B);
 break;
 
 case 0x71:		/* LD (REGISTER+dd),C */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), C);
+writebyte( REGISTER + (int8_t)readbyte(PC++), C);
 break;
 
 case 0x72:		/* LD (REGISTER+dd),D */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), D);
+writebyte( REGISTER + (int8_t)readbyte(PC++), D);
 break;
 
 case 0x73:		/* LD (REGISTER+dd),E */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), E);
+writebyte( REGISTER + (int8_t)readbyte(PC++), E);
 break;
 
 case 0x74:		/* LD (REGISTER+dd),H */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), H);
+writebyte( REGISTER + (int8_t)readbyte(PC++), H);
 break;
 
 case 0x75:		/* LD (REGISTER+dd),L */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), L);
+writebyte( REGISTER + (int8_t)readbyte(PC++), L);
 break;
 
 case 0x77:		/* LD (REGISTER+dd),A */
 tstates += 11;		/* FIXME: how is this contended? */
-writebyte( REGISTER + (SBYTE)readbyte(PC++), A);
+writebyte( REGISTER + (int8_t)readbyte(PC++), A);
 break;
 
 case 0x7c:		/* LD A,REGISTERH */
@@ -288,7 +288,7 @@ break;
 
 case 0x7e:		/* LD A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
-A=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+A=readbyte( REGISTER + (int8_t)readbyte(PC++) );
 break;
 
 case 0x84:		/* ADD A,REGISTERH */
@@ -302,7 +302,7 @@ break;
 case 0x86:		/* ADD A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   ADD(bytetemp);
 }
 break;
@@ -318,7 +318,7 @@ break;
 case 0x8e:		/* ADC A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   ADC(bytetemp);
 }
 break;
@@ -334,7 +334,7 @@ break;
 case 0x96:		/* SUB A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   SUB(bytetemp);
 }
 break;
@@ -350,7 +350,7 @@ break;
 case 0x9e:		/* SBC A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   SBC(bytetemp);
 }
 break;
@@ -366,7 +366,7 @@ break;
 case 0xa6:		/* AND A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   AND(bytetemp);
 }
 break;
@@ -382,7 +382,7 @@ break;
 case 0xae:		/* XOR A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   XOR(bytetemp);
 }
 break;
@@ -398,7 +398,7 @@ break;
 case 0xb6:		/* OR A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   OR(bytetemp);
 }
 break;
@@ -414,7 +414,7 @@ break;
 case 0xbe:		/* CP A,(REGISTER+dd) */
 tstates += 11;		/* FIXME: how is this contended? */
 {
-  BYTE bytetemp=readbyte( REGISTER + (SBYTE)readbyte(PC++) );
+  uint8_t bytetemp=readbyte( REGISTER + (int8_t)readbyte(PC++) );
   CP(bytetemp);
 }
 break;
@@ -422,18 +422,14 @@ break;
 /* FIXME: contention here is just a guess */
 case 0xcb:		/* {DD,FD}CBxx opcodes */
 {
-  WORD tempaddr; BYTE opcode3;
+  uint16_t tempaddr; uint8_t opcode3;
   contend( PC, 3 );
-  tempaddr = REGISTER + (SBYTE)opcode_fetch( PC++ );
+  tempaddr = REGISTER + (int8_t)opcode_fetch( PC++ );
   contend( PC, 4 );
   opcode3 = opcode_fetch( PC++ );
-#ifdef HAVE_ENOUGH_MEMORY
   switch(opcode3) {
-#include "z80_ddfdcb.c"
+#include "z80_ddfdcb.inl"
   }
-#else			/* #ifdef HAVE_ENOUGH_MEMORY */
-  z80_ddfdcbxx(opcode3,tempaddr);
-#endif			/* #ifdef HAVE_ENOUGH_MEMORY */
 }
 break;
 
@@ -443,7 +439,7 @@ break;
 
 case 0xe3:		/* EX (SP),REGISTER */
 {
-  BYTE bytetempl=readbyte(SP), bytetemph=readbyte(SP+1);
+  uint8_t bytetempl=readbyte(SP), bytetemph=readbyte(SP+1);
   contend( SP, 3 ); contend( SP+1, 4 );
   writebyte(SP,REGISTERL); writebyte(SP+1,REGISTERH);
   contend( SP, 3 ); contend( SP+1, 5 );

@@ -31,64 +31,46 @@
 extern "C" {
 #endif
 
-#include "config.h"
-
-#ifndef FUSE_TYPES_H
-//#include <types.h>
-#endif			/* #ifndef FUSE_TYPES_H */
+#include <stdint.h>
 
 /* Union allowing a register pair to be accessed as bytes or as a word */
-typedef union {
+typedef union
+{
 #ifdef WORDS_BIGENDIAN
-  struct { BYTE h,l; } b;
+  struct { uint8_t h, l; } b;
 #else
-  struct { BYTE l,h; } b;
+  struct { uint8_t l, h; } b;
 #endif
-  WORD w;
-} regpair;
+  uint16_t w;
+}
+z80_regpair_t;
 
 /* What's stored in the main processor */
-typedef struct {
-  regpair af,bc,de,hl;
-  regpair af_,bc_,de_,hl_;
-  regpair ix,iy;
-  BYTE i;
-  WORD r;		/* The low seven bits of the R register. 16 bits long
-			   so it can also act as an RZX instruction counter */
-  BYTE r7;		/* The high bit of the R register */
-  regpair sp,pc;
-  BYTE iff1,iff2,im;
+typedef struct
+{
+  z80_regpair_t af, bc, de, hl;
+  z80_regpair_t af_, bc_, de_, hl_;
+  z80_regpair_t ix, iy;
+  uint8_t i;
+  uint16_t r; /* The low seven bits of the R register. 16 bits long so it can
+                 also act as an RZX instruction counter */
+  uint8_t r7; /* The high bit of the R register */
+  z80_regpair_t sp, pc;
+  uint8_t iff1, iff2, im;
   int halted;
-} processor;
+}
+z80_t;
 
-extern void z80_init(void);
-extern void z80_reset(void);
+void z80_init(z80_t* z80);
+void z80_reset(z80_t* z80);
 
-extern int z80_interrupt(int ts);
-extern int z80_nmi( int ts );
+int z80_interrupt(z80_t* z80, int ts);
+int z80_nmi(z80_t* z80, int ts);
 
-extern int z80_do_opcode(void);
-
-//extern void writebyte(int Address, int Data);
-//extern BYTE readbyte(int Address);
-//extern BYTE readbyte_internal(int Address);
-//extern BYTE opcode_fetch(int Address);
-//extern void writeport(int Address, int Data);
-//extern BYTE readport(int Address);
-
-extern void debug(int data);
-
-extern processor z80;
-extern BYTE halfcarry_add_table[];
-extern BYTE halfcarry_sub_table[];
-extern BYTE overflow_add_table[];
-extern BYTE overflow_sub_table[];
-extern BYTE sz53_table[];
-extern BYTE sz53p_table[];
-extern BYTE parity_table[];
+int z80_do_opcode(z80_t* z80);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif			/* #ifndef FUSE_Z80_H */
+#endif /* #ifndef FUSE_Z80_H */

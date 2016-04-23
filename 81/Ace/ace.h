@@ -22,7 +22,7 @@
 #ifndef ace_h
 #define ace_h
 
-#include "z80/config.h"
+#include <stdint.h>
 
 #define kbD0 1
 #define kbD1 2
@@ -42,19 +42,19 @@
 
 #ifdef __cplusplus
 
-extern "C" BYTE memory[];
+extern "C" uint8_t memory[];
 extern "C" void ace_initialise(void);
 extern "C" int ace_do_scanline(void);
 extern "C" void ace_writebyte(int Address, int Data);
-extern "C" BYTE ace_readbyte(int Address);
-extern "C" BYTE ace_opcode_fetch(int Address);
+extern "C" uint8_t ace_readbyte(int Address);
+extern "C" uint8_t ace_opcode_fetch(int Address);
 extern "C" void ace_writeport(int Address, int Data, int *tstates);
-extern "C" BYTE ace_readport(int Address, int *tstates);
+extern "C" uint8_t ace_readport(int Address, int *tstates);
 extern "C" int tstates, event_next_event;
 extern "C" int framepos, NMI_generator, HSYNC_generator, frametstates;
-extern "C" BYTE get_i_reg(void);
-extern "C" BYTE ZXKeyboard[];
-extern "C" BYTE scanline[];
+extern "C" uint8_t get_i_reg(void);
+extern "C" uint8_t ZXKeyboard[];
+extern "C" uint8_t scanline[];
 extern "C" int scanline_len;
 extern "C" int sync_len, sync_valid;
 extern "C" int zx81_stop;
@@ -63,21 +63,21 @@ extern "C" int ace_do_accurate();
 extern "C" int ace_contend(int Address, int states, int time);
 #else
 
-extern BYTE memory[];
-extern BYTE acecolour[];
+extern uint8_t memory[];
+extern uint8_t acecolour[];
 extern void ace_initialise(void);
 extern int ace_do_scanline(void);
 extern void ace_writebyte(int Address, int Data);
-extern BYTE ace_readbyte(int Address);
-extern BYTE ace_opcode_fetch(int Address);
+extern uint8_t ace_readbyte(int Address);
+extern uint8_t ace_opcode_fetch(int Address);
 extern void ace_writeport(int Address, int Data, int *tstates);
-extern BYTE ace_readport(int Address, int *tstates);
+extern uint8_t ace_readport(int Address, int *tstates);
 extern int ace_contend(int Address, int states, int time);
 extern int tstates, event_next_event;
 extern int framepos, NMI_generator, HSYNC_generator, frametstates;
 extern int zx81_stop;
-extern BYTE ZXKeyboard[];
-extern BYTE scanline[];
+extern uint8_t ZXKeyboard[];
+extern uint8_t scanline[];
 extern int scanline_len;
 extern int sync_len, sync_valid;
 extern int ace_do_accurate();

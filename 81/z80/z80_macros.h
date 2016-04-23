@@ -27,79 +27,88 @@
 #ifndef FUSE_Z80_MACROS_H
 #define FUSE_Z80_MACROS_H
 
+#include <stdint.h>
+
+extern uint8_t halfcarry_add_table[];
+extern uint8_t halfcarry_sub_table[];
+extern uint8_t overflow_add_table[];
+extern uint8_t overflow_sub_table[];
+extern uint8_t sz53_table[];
+extern uint8_t sz53p_table[];
+extern uint8_t parity_table[];
+
 /* Macros used for accessing the registers */
-#define A   z80.af.b.h
-#define F   z80.af.b.l
-#define AF  z80.af.w
+#define A   z80->af.b.h
+#define F   z80->af.b.l
+#define AF  z80->af.w
 
-#define B   z80.bc.b.h
-#define C   z80.bc.b.l
-#define BC  z80.bc.w
+#define B   z80->bc.b.h
+#define C   z80->bc.b.l
+#define BC  z80->bc.w
 
-#define D   z80.de.b.h
-#define E   z80.de.b.l
-#define DE  z80.de.w
+#define D   z80->de.b.h
+#define E   z80->de.b.l
+#define DE  z80->de.w
 
-#define H   z80.hl.b.h
-#define L   z80.hl.b.l
-#define HL  z80.hl.w
+#define H   z80->hl.b.h
+#define L   z80->hl.b.l
+#define HL  z80->hl.w
 
-#define A_  z80.af_.b.h
-#define F_  z80.af_.b.l
-#define AF_ z80.af_.w
+#define A_  z80->af_.b.h
+#define F_  z80->af_.b.l
+#define AF_ z80->af_.w
 
-#define B_  z80.bc_.b.h
-#define C_  z80.bc_.b.l
-#define BC_ z80.bc_.w
+#define B_  z80->bc_.b.h
+#define C_  z80->bc_.b.l
+#define BC_ z80->bc_.w
 
-#define D_  z80.de_.b.h
-#define E_  z80.de_.b.l
-#define DE_ z80.de_.w
+#define D_  z80->de_.b.h
+#define E_  z80->de_.b.l
+#define DE_ z80->de_.w
 
-#define H_  z80.hl_.b.h
-#define L_  z80.hl_.b.l
-#define HL_ z80.hl_.w
+#define H_  z80->hl_.b.h
+#define L_  z80->hl_.b.l
+#define HL_ z80->hl_.w
 
-#define IXH z80.ix.b.h
-#define IXL z80.ix.b.l
-#define IX  z80.ix.w
+#define IXH z80->ix.b.h
+#define IXL z80->ix.b.l
+#define IX  z80->ix.w
 
-#define IYH z80.iy.b.h
-#define IYL z80.iy.b.l
-#define IY  z80.iy.w
+#define IYH z80->iy.b.h
+#define IYL z80->iy.b.l
+#define IY  z80->iy.w
 
-#define SPH z80.sp.b.h
-#define SPL z80.sp.b.l
-#define SP  z80.sp.w
+#define SPH z80->sp.b.h
+#define SPL z80->sp.b.l
+#define SP  z80->sp.w
 
-#define PCH z80.pc.b.h
-#define PCL z80.pc.b.l
-#define PC  z80.pc.w
+#define PCH z80->pc.b.h
+#define PCL z80->pc.b.l
+#define PC  z80->pc.w
 
-#define I  z80.i
-#define R  z80.r
-#define R7 z80.r7
+#define I  z80->i
+#define R  z80->r
+#define R7 z80->r7
 
-#define IFF1 z80.iff1
-#define IFF2 z80.iff2
-#define IM   z80.im
+#define IFF1 z80->iff1
+#define IFF2 z80->iff2
+#define IM   z80->im
 
 /* The flags */
+#define FLAG_C 0x01
+#define FLAG_N 0x02
+#define FLAG_P 0x04
+#define FLAG_V FLAG_P
+#define FLAG_3 0x08
+#define FLAG_H 0x10
+#define FLAG_5 0x20
+#define FLAG_Z 0x40
+#define FLAG_S 0x80
 
-#define FLAG_C	0x01
-#define FLAG_N	0x02
-#define FLAG_P	0x04
-#define FLAG_V	FLAG_P
-#define FLAG_3	0x08
-#define FLAG_H	0x10
-#define FLAG_5	0x20
-#define FLAG_Z	0x40
-#define FLAG_S	0x80
-
-/* Get the appropriate contended memory delay. Use this macro later
-   to avoid a function call if memory contention is disabled */
-#define contend(address,time) tstates += machine.contendmem(address,tstates,time);
-#define contend_io(port,time) tstates += machine.contendio(port,tstates,time);
+/* Get the appropriate contended memory delay. Use this macro later to avoid a
+   function call if memory contention is disabled */
+#define contend(address, time) tstates += machine.contendmem(address, tstates, time);
+#define contend_io(port, time) tstates += machine.contendio(port, tstates, time);
 
 /* Some commonly used instructions */
 #define AND(value)\
@@ -110,8 +119,8 @@
 
 #define ADC(value)\
 {\
-  WORD adctemp = A + (value) + ( F & FLAG_C );\
-  BYTE lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
+  uint16_t adctemp = A + (value) + ( F & FLAG_C );\
+  uint8_t lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
     ( (adctemp & 0x88) >> 1 );\
   A=adctemp;\
   F = ( adctemp & 0x100 ? FLAG_C : 0 ) |\
@@ -121,8 +130,8 @@
 
 #define ADC16(value)\
 {\
-  DWORD add16temp= HL + (value) + ( F & FLAG_C );\
-  BYTE lookup = ( ( HL & 0x8800 ) >> 11 ) |\
+  uint32_t add16temp= HL + (value) + ( F & FLAG_C );\
+  uint8_t lookup = ( ( HL & 0x8800 ) >> 11 ) |\
     ( ( (value) & 0x8800 ) >> 10 ) |\
     ( ( add16temp & 0x8800 ) >> 9 );\
   HL = add16temp;\
@@ -135,8 +144,8 @@
 
 #define ADD(value)\
 {\
-  WORD addtemp = A + (value);\
-  BYTE lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
+  uint16_t addtemp = A + (value);\
+  uint8_t lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
     ( (addtemp & 0x88) >> 1 );\
   A=addtemp;\
   F = ( addtemp & 0x100 ? FLAG_C : 0 ) |\
@@ -146,8 +155,8 @@
 
 #define ADD16(value1,value2)\
 {\
-  DWORD add16temp= (value1) + (value2);\
-  BYTE lookup = ( ( (value1) & 0x0800 ) >> 11 ) |\
+  uint32_t add16temp= (value1) + (value2);\
+  uint8_t lookup = ( ( (value1) & 0x0800 ) >> 11 ) |\
     ( ( (value2) & 0x0800 ) >> 10 ) |\
     ( ( add16temp & 0x0800 ) >> 9 );\
   tstates += 7;\
@@ -173,7 +182,7 @@
 
 #define CALL()\
 {\
-  BYTE calltempl, calltemph;\
+  uint8_t calltempl, calltemph;\
   calltempl=readbyte(PC++);\
   contend( PC, 1 );\
   calltemph=readbyte(PC++);\
@@ -183,8 +192,8 @@
 
 #define CP(value)\
 {\
-  WORD cptemp = A - value;\
-  BYTE lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
+  uint16_t cptemp = A - value;\
+  uint8_t lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
     ( (cptemp & 0x88) >> 1 );\
   F = ( cptemp & 0x100 ? FLAG_C : ( cptemp ? 0 : FLAG_Z ) ) | FLAG_N |\
     halfcarry_sub_table[lookup & 0x07] |\
@@ -226,7 +235,7 @@ break
 
 #define LD16_NNRR(regl,regh)\
 {\
-  WORD ldtemp;\
+  uint16_t ldtemp;\
   contend( PC, 3 );\
   ldtemp=readbyte(PC++);\
   contend( PC, 3 );\
@@ -239,7 +248,7 @@ break
 
 #define LD16_RRNN(regl,regh)\
 {\
-  WORD ldtemp;\
+  uint16_t ldtemp;\
   contend( PC, 3 );\
   ldtemp=readbyte(PC++);\
   contend( PC, 3 );\
@@ -252,7 +261,7 @@ break
 
 #define JP()\
 {\
-  WORD jptemp=PC;\
+  uint16_t jptemp=PC;\
   PCL=readbyte(jptemp++);\
   PCH=readbyte(jptemp);\
 }
@@ -261,7 +270,7 @@ break
 {\
   contend( PC, 1 ); contend( PC, 1 ); contend( PC, 1 ); contend( PC, 1 );\
   contend( PC, 1 );\
-  PC+=(SBYTE)readbyte(PC);\
+  PC+=(int8_t)readbyte(PC);\
 }
 
 #define OR(value)\
@@ -299,7 +308,7 @@ break
 
 #define RL(value)\
 {\
-  BYTE rltemp = (value);\
+  uint8_t rltemp = (value);\
   (value) = ( (value)<<1 ) | ( F & FLAG_C );\
   F = ( rltemp >> 7 ) | sz53p_table[(value)];\
 }
@@ -312,7 +321,7 @@ break
 
 #define RR(value)\
 {\
-  BYTE rrtemp = (value);\
+  uint8_t rrtemp = (value);\
   (value) = ( (value)>>1 ) | ( F << 7 );\
   F = ( rrtemp & FLAG_C ) | sz53p_table[(value)];\
 }
@@ -332,8 +341,8 @@ break
 
 #define SBC(value)\
 {\
-  WORD sbctemp = A - (value) - ( F & FLAG_C );\
-  BYTE lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
+  uint16_t sbctemp = A - (value) - ( F & FLAG_C );\
+  uint8_t lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
     ( (sbctemp & 0x88) >> 1 );\
   A=sbctemp;\
   F = ( sbctemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
@@ -343,8 +352,8 @@ break
 
 #define SBC16(value)\
 {\
-  DWORD sub16temp = HL - (value) - (F & FLAG_C);\
-  BYTE lookup = ( ( HL & 0x8800 ) >> 11 ) |\
+  uint32_t sub16temp = HL - (value) - (F & FLAG_C);\
+  uint8_t lookup = ( ( HL & 0x8800 ) >> 11 ) |\
     ( ( (value) & 0x8800 ) >> 10 ) |\
     ( ( sub16temp & 0x8800 ) >> 9 );\
   HL = sub16temp;\
@@ -385,8 +394,8 @@ break
 
 #define SUB(value)\
 {\
-  WORD subtemp = A - (value);\
-  BYTE lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
+  uint16_t subtemp = A - (value);\
+  uint8_t lookup = ( (A & 0x88) >> 3 ) | ( ( (value) & 0x88 ) >> 2 ) |\
     ( (subtemp & 0x88) >> 1 );\
   A=subtemp;\
   F = ( subtemp & 0x100 ? FLAG_C : 0 ) | FLAG_N |\
@@ -400,4 +409,4 @@ break
   F = sz53p_table[A];\
 }
 
-#endif		/* #ifndef FUSE_Z80_MACROS_H */
+#endif /* #ifndef FUSE_Z80_MACROS_H */

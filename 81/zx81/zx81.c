@@ -43,14 +43,15 @@
 #define LASTINSTOUTFD 3
 #define LASTINSTOUTFF 4
 
+z80_t z80;
 
 extern void DebugUpdate(void);
-extern void add_blank(int borrow, BYTE colour);
+extern void add_blank(int borrow, uint8_t colour);
 extern int CRC32Block(char *memory, int romlen);
 extern int RasterY;
 extern int sync_len, sync_valid;
 extern long noise;
-extern BYTE scanline[];
+extern uint8_t scanline[];
 extern int scanline_len;
 extern int SelectAYReg;
 
@@ -64,17 +65,17 @@ int hsync_counter=207;
 int borrow=0;
 int tstates, frametstates;
 int event_next_event;
-int configbyte=0;
+int configuint8_t=0;
 int setborder=0;
 int zx81_stop=0;
 int LastInstruction;
 int MemotechMode=0;
 int HaltCount;
 
-BYTE memory[1024 * 1024];
-BYTE font[512];
-BYTE memhrg[1024];
-BYTE ZXKeyboard[8];
+uint8_t memory[1024 * 1024];
+uint8_t font[512];
+uint8_t memhrg[1024];
+uint8_t ZXKeyboard[8];
 int shift_register=0, shift_reg_inv, shift_store=0;
 
 int int_pending=0;
@@ -85,7 +86,7 @@ extern unsigned char ZXPrinterReadPort(void);
 extern int shift_register, shift_reg_inv;
 extern long noise;
 
-BYTE get_i_reg(void)
+uint8_t get_i_reg(void)
 {
         return(z80.i);
 }
@@ -93,7 +94,7 @@ BYTE get_i_reg(void)
 void zx81_initialise(void)
 {
         int i, romlen;
-        z80_init();
+        z80_init(&z80);
 
         for(i=0;i<65536;i++) memory[i]=7;
 
@@ -131,10 +132,10 @@ void zx81_initialise(void)
         sync_valid=0;
         MemotechMode=0;
 
-        z80_reset();
+        z80_reset(&z80);
         d8255_reset();
         d8251reset();
-        z80_reset();
+        z80_reset(&z80);
 }
 
 void zx81_writebyte(int Address, int Data)
@@ -201,7 +202,7 @@ void zx81_writebyte(int Address, int Data)
         memory[Address]=Data;
 }
 
-BYTE zx81_readbyte(int Address)
+uint8_t zx81_readbyte(int Address)
 {
         int data;
 
@@ -249,9 +250,9 @@ BYTE zx81_readbyte(int Address)
         return(data);
 }
 
-// BYTE opcode_fetch(int Address)
+// uint8_t opcode_fetch(int Address)
 //
-// Given an address, opcode fetch return the byte at that memory address,
+// Given an address, opcode fetch return the uint8_t at that memory address,
 // modified depending on certain circumstances.
 // It also loads the video shift register and generates video noise.
 //
@@ -270,11 +271,11 @@ BYTE zx81_readbyte(int Address)
 // on which bus RAM is placed, it can either be used for extended
 // Fonts OR WRX style hi-res graphics, but never both.
 
-BYTE zx81_opcode_fetch(int Address)
+uint8_t zx81_opcode_fetch(int Address)
 {
         int NewAddress, inv;
         int opcode, bit6, update=0;
-        BYTE data, data2;
+        uint8_t data, data2;
 
         if (Address<zx81.m1not)
         {
@@ -306,7 +307,7 @@ BYTE zx81_opcode_fetch(int Address)
         inv = data&128;
 
         // First check for WRX graphics.  This is easy, we just create a
-        // 16 bit Address from the IR Register pair and fetch that byte
+        // 16 bit Address from the IR Register pair and fetch that uint8_t
         // loading it into the video shift register.
         if (z80.i>=zx81.maxireg && zx81.truehires==HIRESWRX && !bit6)
         {
@@ -474,7 +475,7 @@ void zx81_writeport(int Address, int Data, int *tstates)
         switch(Address&255)
         {
         case 0x01:
-                configbyte=Data;
+                configuint8_t=Data;
                 break;
         case 0x0f:
         case 0x1f:
@@ -548,14 +549,14 @@ void zx81_writeport(int Address, int Data, int *tstates)
         //HSYNC_generator=1;
 }
 
-BYTE zx81_readport(int Address, int *tstates)
+uint8_t zx81_readport(int Address, int *tstates)
 {
         static int beeper;
 
         setborder=1;
         if (!(Address&1))
         {
-                BYTE keyb, data=0;
+                uint8_t keyb, data=0;
                 int i;
                 if ((zx81.machine!=MACHINELAMBDA) && zx81.vsyncsound)
                         sound_beeper(0);
@@ -588,7 +589,7 @@ BYTE zx81_readport(int Address, int *tstates)
                         char *config;
 
                         config=(char *)(&zx81);
-                        return(config[configbyte]);
+                        return(config[configuint8_t]);
                 }
 
                 case 0x5f:
@@ -697,11 +698,11 @@ int zx81_do_scanline()
         {
                 LastInstruction=LASTINSTNONE;
                 z80.pc.w=PatchTest(z80.pc.w);
-                ts = z80_do_opcode();
+                ts = z80_do_opcode(&z80);
 
                 if (int_pending)
                 {
-                        ts += z80_interrupt(ts);
+                        ts += z80_interrupt(&z80, ts);
                         paper=border;
                         int_pending=0;
                 }
@@ -794,7 +795,7 @@ int zx81_do_scanline()
                         if (NMI_generator)
                         {
                                 int nmilen;
-                                nmilen = z80_nmi(scanline_len);
+                                nmilen = z80_nmi(&z80, scanline_len);
                                 //if (nmilen!=11) add_blank(nmilen-11,60);
                                 hsync_counter -= nmilen;
                                 ts += nmilen;
