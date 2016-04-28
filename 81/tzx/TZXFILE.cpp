@@ -291,6 +291,7 @@ void TTZXFile::DeleteBlock(int Block)
         for(i=Block; i<Blocks; i++)
                 Tape[i]=Tape[i+1];
 
+        if (Blocks==CurBlock) CurBlock--;
         Blocks--;
 }
 

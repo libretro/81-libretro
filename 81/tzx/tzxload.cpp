@@ -918,16 +918,22 @@ bool TTZXFile::LoadFile(const void* data, size_t size, bool Insert)
         RWMEM m;
         RWMEM *f = &m;
         
-        rwmem( f, data, size );
-        FileName = "";
-        
         struct TZXHeader head;
-        
+        rwmem( f, data, size );
         rwread( &head, sizeof( head ), 1, f );
         
         if ( !strncmp( head.id, TZX_ID, 8 ) )
         {
           return LoadTZXFile( data, size, Insert );
+        }
+        
+        char t81[ 4 ];
+        rwmem( f, data, size );
+        rwread( t81, sizeof( t81 ), 1, f );
+        
+        if ( !strncmp( t81, T81_HEADER_ID, 4 ) )
+        {
+          return LoadT81File( data, size, Insert );
         }
         
         return LoadPFile( data, size, Insert );

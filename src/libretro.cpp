@@ -281,7 +281,7 @@ void retro_get_system_info( struct retro_system_info* info )
   info->library_version = "1.0a";
   info->need_fullpath = false;
   info->block_extract = false;
-  info->valid_extensions = "p|tzx";
+  info->valid_extensions = "p|tzx|t81";
 }
 
 void retro_set_environment( retro_environment_t cb )
