@@ -16,12 +16,12 @@
 #endif
 
 /*
- __        __           ____ ___       _             __                                  
- \ \      / /_ ___   __/ ___|_ _|_ __ | |_ ___ _ __ / _| __ _  ___ ___   ___ _ __  _ __  
-  \ \ /\ / / _` \ \ / / |    | || '_ \| __/ _ \ '__| |_ / _` |/ __/ _ \ / __| '_ \| '_ \ 
+ __        __           ____ ___       _             __
+ \ \      / /_ ___   __/ ___|_ _|_ __ | |_ ___ _ __ / _| __ _  ___ ___   ___ _ __  _ __
+  \ \ /\ / / _` \ \ / / |    | || '_ \| __/ _ \ '__| |_ / _` |/ __/ _ \ / __| '_ \| '_ \
    \ V  V / (_| |\ V /| |___ | || | | | ||  __/ |  |  _| (_| | (_|  __/| (__| |_) | |_) |
-    \_/\_/ \__,_| \_/  \____|___|_| |_|\__\___|_|  |_|  \__,_|\___\___(_)___| .__/| .__/ 
-                                                                            |_|   |_|    
+    \_/\_/ \__,_| \_/  \____|___|_| |_|\__\___|_|  |_|  \__,_|\___\___(_)___| .__/| .__/
+                                                                            |_|   |_|
 */
 
 TTZXFile TZXFile;
@@ -39,7 +39,7 @@ extern "C" int FlashLoadable( void )
 extern "C" void WavClockTick( int TStates, int MicState )
 {
   sound_beeper( TZXFile.GetEarState() );
-  
+
   if ( TZXFile.Playing )
   {
     TZXFile.ClockTick( TStates );
@@ -81,12 +81,12 @@ extern "C" int GetEarState()
 }
 
 /*
-  ____       _                                   
- |  _ \  ___| |__  _   _  __ _   ___ _ __  _ __  
- | | | |/ _ \ '_ \| | | |/ _` | / __| '_ \| '_ \ 
+  ____       _
+ |  _ \  ___| |__  _   _  __ _   ___ _ __  _ __
+ | | | |/ _ \ '_ \| | | |/ _` | / __| '_ \| '_ \
  | |_| |  __/ |_) | |_| | (_| || (__| |_) | |_) |
- |____/ \___|_.__/ \__,_|\__, (_)___| .__/| .__/ 
-                         |___/      |_|   |_|    
+ |____/ \___|_.__/ \__,_|\__, (_)___| .__/| .__/
+                         |___/      |_|   |_|
 */
 
 void DebugUpdate( void )
@@ -94,12 +94,12 @@ void DebugUpdate( void )
 }
 
 /*
-                       _       _                            
-  ______  ___ __  _ __(_)_ __ | |_ ___ _ __ ___ _ __  _ __  
- |_  /\ \/ / '_ \| '__| | '_ \| __/ _ \ '__/ __| '_ \| '_ \ 
+                       _       _
+  ______  ___ __  _ __(_)_ __ | |_ ___ _ __ ___ _ __  _ __
+ |_  /\ \/ / '_ \| '__| | '_ \| __/ _ \ '__/ __| '_ \| '_ \
   / /  >  <| |_) | |  | | | | | ||  __/ |_| (__| |_) | |_) |
- /___|/_/\_\ .__/|_|  |_|_| |_|\__\___|_(_)\___| .__/| .__/ 
-           |_|                                 |_|   |_|    
+ /___|/_/\_\ .__/|_|  |_|_| |_|\__\___|_(_)\___| .__/| .__/
+           |_|                                 |_|   |_|
 */
 
 extern "C" void ZXPrinterClockTick( int ts )
@@ -118,12 +118,12 @@ extern "C" unsigned char ZXPrinterReadPort( void )
 }
 
 /*
-  ____                        _  ___  ____                  
- / ___|  ___  _   _ _ __   __| |/ _ \|  _ \ ___ _ __  _ __  
- \___ \ / _ \| | | | '_ \ / _` | | | | |_) / __| '_ \| '_ \ 
+  ____                        _  ___  ____
+ / ___|  ___  _   _ _ __   __| |/ _ \|  _ \ ___ _ __  _ __
+ \___ \ / _ \| | | | '_ \ / _` | | | | |_) / __| '_ \| '_ \
   ___) | (_) | |_| | | | | (_| | |_| |  __/ (__| |_) | |_) |
- |____/ \___/ \__,_|_| |_|\__,_|\___/|_| (_)___| .__/| .__/ 
-                                               |_|   |_|    
+ |____/ \___/ \__,_|_| |_|\__,_|\___/|_| (_)___| .__/| .__/
+                                               |_|   |_|
 */
 
 void SoundOP_Update( unsigned char* data, int len )
@@ -133,12 +133,12 @@ void SoundOP_Update( unsigned char* data, int len )
 }
 
 /*
-            _     _ _       
-  _ __ ___ (_) __| (_)  ___ 
+            _     _ _
+  _ __ ___ (_) __| (_)  ___
  | '_ ` _ \| |/ _` | | / __|
- | | | | | | | (_| | || (__ 
+ | | | | | | | (_| | || (__
  |_| |_| |_|_|\__,_|_(_)___|
-                            
+
 */
 
 extern "C" void MidiWriteBit( int Bit )
@@ -147,12 +147,12 @@ extern "C" void MidiWriteBit( int Bit )
 }
 
 /*
-      _                                _       
-   __| |_  _____  ___  _   _ _ __   __| |  ___ 
+      _                                _
+   __| |_  _____  ___  _   _ _ __   __| |  ___
   / _` \ \/ / __|/ _ \| | | | '_ \ / _` | / __|
- | (_| |>  <\__ \ (_) | |_| | | | | (_| || (__ 
+ | (_| |>  <\__ \ (_) | |_| | | | | (_| || (__
   \__,_/_/\_\___/\___/ \__,_|_| |_|\__,_(_)___|
-                                               
+
 */
 
 extern "C" int sound_lowlevel_init( const char *device, int *freqptr, int *stereoptr )
@@ -174,22 +174,22 @@ static int16_t sbuf[ 1764 ];
 extern "C" void sound_lowlevel_frame( unsigned char *data, unsigned int len )
 {
   unsigned int i;
-  
+
   for ( i = 0; i < len; i++ )
   {
     sbuf[ i ] = data[ i ] * 65535 / 255 - 32768;
   }
-  
+
   audio_cb( sbuf, len / 2 );
 }
 
 /*
-  ____            _       _ ____            _                     
- / ___|  ___ _ __(_) __ _| |  _ \ ___  _ __| |_   ___ _ __  _ __  
- \___ \ / _ \ '__| |/ _` | | |_) / _ \| '__| __| / __| '_ \| '_ \ 
+  ____            _       _ ____            _
+ / ___|  ___ _ __(_) __ _| |  _ \ ___  _ __| |_   ___ _ __  _ __
+ \___ \ / _ \ '__| |/ _` | | |_) / _ \| '__| __| / __| '_ \| '_ \
   ___) |  __/ |  | | (_| | |  __/ (_) | |  | |_ | (__| |_) | |_) |
- |____/ \___|_|  |_|\__,_|_|_|   \___/|_|   \__(_)___| .__/| .__/ 
-                                                     |_|   |_|    
+ |____/ \___|_|  |_|\__,_|_|_|   \___/|_|   \__(_)___| .__/| .__/
+                                                     |_|   |_|
 */
 
 extern "C" BYTE d8251readCTRL( void )
@@ -217,12 +217,12 @@ extern "C" void d8251reset( void )
 }
 
 /*
-     _            ____                                         
-    / \   ___ ___|  _ \ _ __ __ ___      __    ___ _ __  _ __  
-   / _ \ / __/ __| | | | '__/ _` \ \ /\ / /   / __| '_ \| '_ \ 
+     _            ____
+    / \   ___ ___|  _ \ _ __ __ ___      __    ___ _ __  _ __
+   / _ \ / __/ __| | | | '__/ _` \ \ /\ / /   / __| '_ \| '_ \
   / ___ \ (_| (__| |_| | | | (_| |\ V  V /   | (__| |_) | |_) |
- /_/   \_\___\___|____/|_|  \__,_| \_/\_/___(_)___| .__/| .__/ 
-                                       |_____|    |_|   |_|    
+ /_/   \_\___\___|____/|_|  \__,_| \_/\_/___(_)___| .__/| .__/
+                                       |_____|    |_|   |_|
 */
 
 long noise;
@@ -320,7 +320,7 @@ extern "C" void add_blank( int tstates, BYTE colour )
 static void compute_palette( CONFIG* cfg )
 {
   /* From Artifacts_.cpp */
-  
+
   int NoiseLevel      = -cfg->Noise;
   int GhostLevel      = -cfg->Ghosting;
   int ScanLineLevel   = -cfg->ScanLines;
@@ -328,7 +328,7 @@ static void compute_palette( CONFIG* cfg )
   int GhostLevel2     = GhostLevel / 3;
   int ContrastLevel   = ContrastTrack_Max - cfg->Contrast;
   int ColourLevel     = ColourTrack_Max - cfg->Colour;
-  
+
   BrightnessLevel  -= ContrastLevel;
   int HiBrightLevel = BrightnessLevel + ( ContrastLevel / 2 ) + 2 * ContrastLevel;
   ContrastLevel     = BrightnessLevel + ContrastLevel + ContrastLevel;
@@ -339,7 +339,7 @@ static void compute_palette( CONFIG* cfg )
   for( i = 0; i < 16; i++ )
   {
     int colour = i;
-    
+
     if ( zx81.inverse )
     {
       colour = ( i & 8 ) + ( 7 - ( colour & 7 ) );
@@ -349,14 +349,14 @@ static void compute_palette( CONFIG* cfg )
     {
       int difference = ( 1000 * ( ( ( colour > 7 ) ? HiBrightLevel : ContrastLevel ) - BrightnessLevel ) ) / 16;
       int basecolour = ( difference * ( ( colour & 7 ) + 9 ) ) / 1000;
-      
+
       if ( colour == 0 || colour == 8)
       {
         basecolour = BrightnessLevel;
       }
 
       int colr, colg, colb;
-      
+
       if ( cfg->Vibrant )
       {
         colb = ( colour & 1 ) ? ( ( i > 7 ) ? HiBrightLevel : ContrastLevel ) : BrightnessLevel;
@@ -389,17 +389,17 @@ static void compute_palette( CONFIG* cfg )
     Palette[ 4 + i * 16 ] = DoPal( r + GhostLevel2, g + GhostLevel2, b + GhostLevel2 );
 
     b += NoiseLevel; g += NoiseLevel; r += NoiseLevel;
-    
+
     Palette[     i * 16 + 1 ] = DoPal( r, g, b );
     Palette[ 4 + i * 16 + 1 ] = DoPal( r + GhostLevel2, g + GhostLevel2, b + GhostLevel2 );
 
     b += GhostLevel; g += GhostLevel; r += GhostLevel;
-    
+
     Palette[     i * 16 + 3 ] = DoPal( r, g, b );
     Palette[ 4 + i * 16 + 3 ] = DoPal( r, g, b );
 
     b -= NoiseLevel; g -= NoiseLevel; r -= NoiseLevel;
-    
+
     Palette[     i * 16 + 2 ] = DoPal( r, g, b );
     Palette[ 4 + i * 16 + 2 ] = DoPal( r + GhostLevel2, g + GhostLevel2, b + GhostLevel2 );
   }
@@ -407,7 +407,7 @@ static void compute_palette( CONFIG* cfg )
   for ( i = 0; i < 16; i++ )
   {
     int f;
-    
+
     for ( f = 0; f < 8; f++ )
     {
       int colour = Palette[ i * 16 + f ];
@@ -420,7 +420,7 @@ static void compute_palette( CONFIG* cfg )
       {
         b += ScanLineLevel; g += ScanLineLevel; r += ScanLineLevel;
       }
-      
+
       Palette[ i * 16 + f + 8 ] = DoPal( r, g, b );
     }
   }
@@ -429,7 +429,7 @@ static void compute_palette( CONFIG* cfg )
 static void RecalcPalette( CONFIG* cfg )
 {
   compute_palette( cfg );
-  
+
   int rsz, gsz, bsz; // bitsize of field
   int rsh, gsh, bsh; // 0’s on left (the shift value)
   int i, r, g, b;
@@ -461,7 +461,7 @@ static void RecalcPalette( CONFIG* cfg )
 extern "C" int AccurateInit( CONFIG* cfg, int resize )
 {
   (void)resize;
-  
+
   dest = buffer = NULL;
   TVFB = NULL;
 
@@ -479,52 +479,52 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   {
   case BORDERNONE:
     WinL = BlWinL; WinR = BlWinR; WinT = BlWinT; WinB = BlWinB;
-    
+
     if ( zx81.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
-    
+
     break;
-    
+
   case BORDERSMALL:
     WinL = SmWinL; WinR = SmWinR; WinT = SmWinT; WinB = SmWinB;
-    
+
     if ( zx81.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
-    
+
     break;
-    
+
   case BORDERNORMAL:
     WinL = NoWinL; WinR = NoWinR; WinT = NoWinT; WinB = NoWinB;
-    
+
     if ( zx81.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
-    
+
     break;
-    
+
   case BORDERLARGE:
     WinL = LaWinL; WinR = LaWinR; WinT = LaWinT; WinB = LaWinB;
-    
+
     if ( zx81.NTSC )
     {
       WinB -= 24;
     }
-    
+
     break;
-    
+
   case BORDERFULL:
     WinL = FuWinL; WinR = FuWinR; WinT = FuWinT; WinB = FuWinB;
-    
+
     if ( zx81.NTSC )
     {
       WinB -= 51;
     }
-    
+
     break;
   }
 
@@ -556,7 +556,7 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
 
   RecalcPalette( cfg );
   //RecalcWinSize();
-  
+
   return -( dest == NULL );
 }
 
@@ -580,7 +580,7 @@ static void CompleteFrame(void)
 
       x += BPP;
     }
-    
+
     x = 0;
     y++;
     dest += TVP;
@@ -615,7 +615,7 @@ extern "C" void AccurateDraw( void )
       {
         RasterX += BPP;
         Plot( FrameNo * TVP, c + Shade );
-        
+
         if ( !tv.Interlaced )
         {
           Plot( TVP, c + 8 - Shade );
@@ -645,12 +645,12 @@ extern "C" void AccurateDraw( void )
       }
     }
   }
-  
+
   if ( sync_len < HSYNC_MINLEN )
   {
     sync_valid = 0;
   }
-  
+
   if ( sync_valid )
   {
     if ( RasterX > ( HSYNC_TOLLERANCE * BPP ) )
@@ -658,15 +658,15 @@ extern "C" void AccurateDraw( void )
       //scanlen[ RasterY ] = RasterX;
       RasterX = 0;
       RasterY += Scale;
-      
+
       if ( !tv.AdvancedEffects )
       {
         Shade = 8 - Shade;
       }
-      
+
       dest += TVP * Scale;
     }
-    
+
     if ( RasterY >= TVH || ( sync_len > VSYNC_MINLEN && RasterY > VSYNC_TOLLERANCE ) )
     {
       CompleteFrame();
@@ -682,7 +682,7 @@ extern "C" void AccurateDraw( void )
         {
           FrameNo = 0;
         }
-        
+
         LastVSyncLen = scanline_len;
       }
       else
@@ -690,7 +690,7 @@ extern "C" void AccurateDraw( void )
         FrameNo = 0;
         Shade = 0;
       }
-      
+
       //AccurateUpdateDisplay( false );
     }
 
@@ -706,18 +706,18 @@ extern "C" void AccurateDraw( void )
     {
       *(uint16_t*)( dest + RasterX + i * BPP ) = Colours[ 15 ];
     }
-    
+
     //AccurateUpdateDisplay( true );
   }
 }
 
 /*
-  __  __ ___ ____ ____ ___ _   _  ____ 
+  __  __ ___ ____ ____ ___ _   _  ____
  |  \/  |_ _/ ___/ ___|_ _| \ | |/ ___|
- | |\/| || |\___ \___ \| ||  \| | |  _ 
+ | |\/| || |\___ \___ \| ||  \| | |  _
  | |  | || | ___) |__) | || |\  | |_| |
  |_|  |_|___|____/____/___|_| \_|\____|
-                                       
+
 */
 
 extern "C" SHORT GetKeyState( int nVirtKey )
@@ -734,12 +734,12 @@ AnsiString AnsiString::UpperCase() const
 {
   AnsiString res = *this;
   int len = Length();
-  
+
   for ( int i = 0; i < len; i++ )
   {
     res[ i ] = toupper( res[ i ] );
   }
-  
+
   return res;
 }
 
@@ -761,3 +761,19 @@ int TStrings::Add( const AnsiString str )
   list.push_back( str );
   return list.size();
 }
+
+#ifdef VITA
+
+extern "C" char* getcwd( char* buf, size_t size )
+{
+  if ( buf != NULL && size >= 2 )
+  {
+    buf[ 0 ] = '.';
+    buf[ 1 ] = 0;
+    return buf;
+  }
+
+  return NULL;
+}
+
+#endif
