@@ -45,21 +45,25 @@ typedef struct
   const unsigned char* buf;
   int pos, len;
 }
-FILE;
+EO_FILE;
 
 #ifndef EOF
 #define EOF -1
 #endif
 
-static int fgetc( FILE* s )
+static int eo_fgetc( EO_FILE* s )
 {
   return s->pos < s->len ? s->buf[ s->pos++ ] : EOF;
 }
 
-static int feof( FILE* s )
+static int eo_feof( EO_FILE* s )
 {
   return s->pos >= s->len;
 }
+
+#define FILE  EO_FILE
+#define fgetc eo_fgetc
+#define feof  eo_feof
 
 extern int rowcounter;
 
@@ -280,7 +284,7 @@ int load_snap( char* filename )
     f.buf = src_snaps_zx81_16k_z81;
     f.len = src_snaps_zx81_16k_z81_len;
     f.pos = 0;
-    
+
     while ( !feof( &f ) )
     {
       if ( !strcmp( get_token( &f ), "[CPU]" ) )    load_snap_cpu( &f );
@@ -291,7 +295,7 @@ int load_snap( char* filename )
     DebugUpdate();
     return 1;
   }
-  
+
   log_cb( RETRO_LOG_ERROR, "Snap \"%s\" not found\n", filename );
   return 0;
 }
@@ -405,7 +409,7 @@ int save_snap(char *filename)
                 memory[memptr] = z80.iff2; memptr+=4;
                 memory[memptr] = z80.i; memptr+=4;
                 memory[memptr] = z80.r;
-                
+
                 Addr=0x2000;
 
                 while(Addr<32768)
@@ -488,7 +492,7 @@ int memory_load(char *filename, int address, int length)
     {
       length = bin_ROM_zx81_rom_len;
     }
-    
+
     memcpy( (void*)( memory + address ), (void*)bin_ROM_zx81_rom, length );
     return length;
   }
@@ -498,11 +502,11 @@ int memory_load(char *filename, int address, int length)
     {
       length = bin_ROM_dkchr_rom_len;
     }
-    
+
     memcpy( (void*)( memory + address ), (void*)bin_ROM_dkchr_rom, length );
     return length;
   }
-  
+
   log_cb( RETRO_LOG_ERROR, "ROM \"%s\" not found\n", filename );
   return 0;
 }
@@ -577,4 +581,3 @@ int font_load(char *filename, char *address, int length)
   log_cb( RETRO_LOG_ERROR, "Font \"%s\" not found\n", filename );
   return 0;
 }
-

@@ -762,7 +762,7 @@ int TStrings::Add( const AnsiString str )
   return list.size();
 }
 
-#ifdef VITA
+#if defined( VITA ) || defined( __CELLOS_LV2__ )
 
 extern "C" char* getcwd( char* buf, size_t size )
 {
