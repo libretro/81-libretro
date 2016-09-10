@@ -1,5 +1,5 @@
 ##############
-# Works on hosts Linux via wine
+# Works on hosts Windows or Linux using Wine
 # Install CellSDK
 
 #########################
@@ -24,10 +24,11 @@ TARGET_PLATFORM = ps3_ppc
 #################
 # Toolchain setup
 
-CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
-CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
-AS = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-as.exe
-AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
+CC  = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc
+CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++
+AS  = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-as
+AR  = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar
+
 ############
 # Extensions
 
@@ -39,7 +40,6 @@ LIBEXT = .ps3_ppc.a
 # Platform setup
 
 STATIC_LINKING = 1
-HAVE_COMPAT    = 1
 platform       = ps3
 PLATDEFS       = -D__CELLOS_LV2__
 PLATCFLAGS     = -DMSB_FIRST -DWORDS_BIGENDIAN=1
