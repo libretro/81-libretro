@@ -275,10 +275,15 @@ static int update_variables()
   return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
 }
 
+#define VERSION "1.0a"
+static char version[] = VERSION " .......";
+
 void retro_get_system_info( struct retro_system_info* info )
 {
+  memcpy(version + sizeof(VERSION), eo_githash, 7);
+
   info->library_name = "EightyOne";
-  info->library_version = "1.0a";
+  info->library_version = version;
   info->need_fullpath = false;
   info->block_extract = false;
   info->valid_extensions = "p|tzx|t81";
