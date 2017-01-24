@@ -326,29 +326,28 @@ void retro_init( void )
   struct retro_log_callback log;
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log ) )
-  {
     log_cb = log.log;
-  }
   
   if ( !env_cb( RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb ) )
-  {
     perf_cb.get_time_usec = NULL;
-  }
   
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
 bool retro_load_game( const struct retro_game_info* info )
 {
-  log_cb( RETRO_LOG_ERROR, "\n%s", eo_gitstamp );
-  
   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
+
+  if (!info)
+     return false;
   
   if ( !env_cb( RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt ) )
   {
     log_cb( RETRO_LOG_ERROR, "EightyOne needs RGB565\n" );
     return false;
   }
+
+  log_cb( RETRO_LOG_INFO, "\n%s", eo_gitstamp );
   
   memset( (void*)&state, 0, sizeof( state ) );
   state.size = info->size;
