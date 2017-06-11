@@ -31,6 +31,7 @@
 #include "dev8255.h"
 #include "zxprinter_c.h"
 #include "rompatch.h"
+#include "SerialPort.h"
 
 #include <funcs.h>
 
@@ -809,7 +810,7 @@ int zx81_do_scanline()
                                 if (scanline_len>=(machine.tperscanline*2))
                                         scanline_len=machine.tperscanline*2;
                                 //for(i=0;i<24;i++) scanline[i]=HBLANKCOLOUR;
-                                rowcounter = (++rowcounter)&7;
+                                rowcounter = (rowcounter+1)&7;
                         }
                         hsync_counter += machine.tperscanline;
                 }

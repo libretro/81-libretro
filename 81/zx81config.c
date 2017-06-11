@@ -148,6 +148,7 @@ void load_config(void)
         mouse.lastx=0;
         mouse.lasty=0;
 
-        getcwd(zx81.cwd,256);
+        /*getcwd(zx81.cwd,256);*/
+        strcpy(zx81.cwd, ".");
 }
 

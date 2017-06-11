@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "zx81.h"
 #include "z80/z80.h"
@@ -32,6 +33,7 @@
 #include "zxprinter_c.h"
 #include "rompatch.h"
 #include "ide.h"
+#include "SerialPort.h"
 
 #include <funcs.h>
 

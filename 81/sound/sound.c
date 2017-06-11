@@ -53,6 +53,9 @@
 #endif
 
 extern void MidiWriteBit(int Bit);
+extern int sound_lowlevel_init(const char *device, int *freqptr, int *stereoptr);
+extern void sound_lowlevel_end(void);
+extern void sound_lowlevel_frame(unsigned char *data, unsigned int len);
 
 //int sound_ay=1;
 //int sound_vsync=0;
