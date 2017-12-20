@@ -163,6 +163,15 @@ else ifeq ($(platform), qnx)
 	AR = QCC -Vgcc_ntoarmv7le
 	PLATFORM_DEFINES := -D__BLACKBERRY_QNX__ -fexceptions -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 
+# PS3
+else ifeq ($(platform), ps3)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
+   AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
+   ENDIANNESS_DEFINES := -DMSB_FIRST
+   PLATFORM_DEFINES := -D__CELLOS_LV2__ -D__ppc__
+   STATIC_LINKING := 1
+   HAVE_COMPAT = 1
 
 # sncps3
 else ifeq ($(platform), sncps3)
