@@ -18,6 +18,8 @@ extern "C"
 #include <gamedb/sha1.h>
 }
 
+extern BYTE memory[];
+
 #define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_KEYBOARD, 0)
 #define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
 
@@ -393,11 +395,15 @@ bool retro_load_game( const struct retro_game_info* info )
 
 size_t retro_get_memory_size( unsigned id )
 {
+  if ( id == RETRO_MEMORY_SYSTEM_RAM )
+    return 1024*1024 ;
   return 0;
 }
 
 void* retro_get_memory_data( unsigned id )
 {
+  if ( id == RETRO_MEMORY_SYSTEM_RAM )
+    return memory ;
   return NULL;
 }
 
