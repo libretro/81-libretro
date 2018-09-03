@@ -227,266 +227,266 @@ static keybovl_key_t* findkey( uint16_t id )
 
 static void update_keyb( retro_input_state_t input_cb, int ms )
 {
-	keybovl_key_t* k;
-	unsigned bit;
-	int16_t is_down;
-	int index;
+  keybovl_key_t* k;
+  unsigned bit;
+  int16_t is_down;
+  int index;
 
-	/* Toggle the virtual keyboard */
-	if ( input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_TAB ) )
-	{
-		if ( !keytab )
-		{
-			visible = !visible;
-			keytab = 1;
-		}
-	}
-	else
-	{
-		keytab = 0;
-	}
+  /* Toggle the virtual keyboard */
+  if ( input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_TAB ) )
+  {
+    if ( !keytab )
+    {
+      visible = !visible;
+      keytab = 1;
+    }
+  }
+  else
+  {
+    keytab = 0;
+  }
 
-	/* Process the keyboard */
+  /* Process the keyboard */
 
-	if ( !visible )
-	{
-		/* Direct keyboard input */
+  if ( !visible )
+  {
+    /* Direct keyboard input */
 
-		for ( k = ovl->keys; k->id != 0xffff; k++ )
-		{
+    for ( k = ovl->keys; k->id != 0xffff; k++ )
+    {
 
-			is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, k->retro );
-			index = k->retro / 32;
-			bit = 1 << ( k->retro & 31 );
+      is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, k->retro );
+      index = k->retro / 32;
+      bit = 1 << ( k->retro & 31 );
 
-			if ( is_down )
-			{
-				if ( ( keystate[ index ] & bit ) == 0 )
-				{
-					keystate[ index ] |= bit;
-					ovl->keypress( ovl, k->mapped );
-				}
-			}
-			else
-			{
-				if ( keystate[ index ] & bit )
-				{
-					keystate[ index ] &= ~bit;
-					ovl->keyrelease( ovl, k->mapped );
-				}
-			}
+      if ( is_down )
+      {
+        if ( ( keystate[ index ] & bit ) == 0 )
+        {
+          keystate[ index ] |= bit;
+          ovl->keypress( ovl, k->mapped );
+        }
+      }
+      else
+      {
+        if ( keystate[ index ] & bit )
+        {
+          keystate[ index ] &= ~bit;
+          ovl->keyrelease( ovl, k->mapped );
+        }
+      }
 
-		} /* for each key */
-	}
-	else if ( timer <= 0 )
-	{
-		/* virtual keyboard navigation with keyboard */
+    } /* for each key */
+  }
+  else if ( timer <= 0 )
+  {
+    /* virtual keyboard navigation with keyboard */
 
-		int16_t is_down;
+    int16_t is_down;
 
-		/* left */
-		bit = 1 << RETRO_DEVICE_ID_JOYPAD_LEFT;
-		is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_LEFT );
-		if ( is_down )
-		{
-			if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
-			{
-				keynavstate |= bit;
-				key = findkey( key->left );
-			}
-		}
-		else
-			keynavstate &= ~bit;
+    /* left */
+    bit = 1 << RETRO_DEVICE_ID_JOYPAD_LEFT;
+    is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_LEFT );
+    if ( is_down )
+    {
+      if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
+      {
+        keynavstate |= bit;
+        key = findkey( key->left );
+      }
+    }
+    else
+      keynavstate &= ~bit;
 
-		/* right */
-		bit = 1 << RETRO_DEVICE_ID_JOYPAD_RIGHT;
-		is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_RIGHT );
-		if ( is_down )
-		{
-			if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
-			{
-				keynavstate |= bit;
-				key = findkey( key->right );
-			}
-		}
-		else
-			keynavstate &= ~bit;
+    /* right */
+    bit = 1 << RETRO_DEVICE_ID_JOYPAD_RIGHT;
+    is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_RIGHT );
+    if ( is_down )
+    {
+      if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
+      {
+        keynavstate |= bit;
+        key = findkey( key->right );
+      }
+    }
+    else
+      keynavstate &= ~bit;
 
-		/* up */
-		bit = 1 << RETRO_DEVICE_ID_JOYPAD_UP;
-		is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_UP );
-		if ( is_down )
-		{
-			if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
-			{
-				keynavstate |= bit;
-				key = findkey( key->up );
-			}
-		}
-		else
-			keynavstate &= ~bit;
+    /* up */
+    bit = 1 << RETRO_DEVICE_ID_JOYPAD_UP;
+    is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_UP );
+    if ( is_down )
+    {
+      if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
+      {
+        keynavstate |= bit;
+        key = findkey( key->up );
+      }
+    }
+    else
+      keynavstate &= ~bit;
 
-		/* down */
-		bit = 1 << RETRO_DEVICE_ID_JOYPAD_DOWN;
-		is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_DOWN );
-		if ( is_down )
-		{
-			if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
-			{
-				keynavstate |= bit;
-				key = findkey( key->down );
-			}
-		}
-		else
-			keynavstate &= ~bit;
+    /* down */
+    bit = 1 << RETRO_DEVICE_ID_JOYPAD_DOWN;
+    is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_DOWN );
+    if ( is_down )
+    {
+      if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
+      {
+        keynavstate |= bit;
+        key = findkey( key->down );
+      }
+    }
+    else
+      keynavstate &= ~bit;
 
-		/* enter */
-		bit = 1 << RETRO_DEVICE_ID_JOYPAD_A;
-		bit |= 1 << RETRO_DEVICE_ID_JOYPAD_B;
-		is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_RETURN );
-		if ( is_down )
-		{
-			if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
-			{
-				keynavstate |= bit;
+    /* enter */
+    bit = 1 << RETRO_DEVICE_ID_JOYPAD_A;
+    bit |= 1 << RETRO_DEVICE_ID_JOYPAD_B;
+    is_down = input_cb( 0, RETRO_DEVICE_KEYBOARD, 0, RETROK_RETURN );
+    if ( is_down )
+    {
+      if ( ( keynavstate & bit ) == 0 && ( joystate & bit ) == 0 )
+      {
+        keynavstate |= bit;
 
-				if ( key->meta & TOGGLE )
-				{
-					key->meta ^= PRESSED;
-				}
-				else
-				{
-					for ( k = ovl->keys; k->id != 0xffff; k++ )
-					{
-						if ( ( k->meta & ( PRESSED | TOGGLE ) ) == ( PRESSED | TOGGLE ) )
-						{
-							ovl->keypress( ovl, k->mapped );
-						}
-					}
+        if ( key->meta & TOGGLE )
+        {
+          key->meta ^= PRESSED;
+        }
+        else
+        {
+          for ( k = ovl->keys; k->id != 0xffff; k++ )
+          {
+            if ( ( k->meta & ( PRESSED | TOGGLE ) ) == ( PRESSED | TOGGLE ) )
+            {
+              ovl->keypress( ovl, k->mapped );
+            }
+          }
 
-					ovl->keypress( ovl, key->mapped );
-					timer = ms;
-				}
-			}
-		}
-		else
-		{
-			keynavstate &= ~bit;
-		}
-	}
+          ovl->keypress( ovl, key->mapped );
+          timer = ms;
+        }
+      }
+    }
+    else
+    {
+      keynavstate &= ~bit;
+    }
+  }
 }
 
 static void update_joy( retro_input_state_t input_cb, int ms )
 {
-	keybovl_key_t* k;
-	unsigned ibtn, bit;
-	int16_t is_btn_down;
+  keybovl_key_t* k;
+  unsigned ibtn, bit;
+  int16_t is_btn_down;
 
-	/* Toggle the virtual keyboard */
-	if ( input_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT ) )
-	{
-		if ( !select )
-		{
-			visible = !visible;
-			select = 1;
-		}
-	}
-	else
-	{
-		select = 0;
-	}
+  /* Toggle the virtual keyboard */
+  if ( input_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT ) )
+  {
+    if ( !select )
+    {
+      visible = !visible;
+      select = 1;
+    }
+  }
+  else
+  {
+    select = 0;
+  }
 
-	/* Process the joypad */
-    for ( ibtn = 0; ibtn < 16; ++ibtn ) /* where's RETRO_DEVICE_ID_JOYPAD_LAST? :P */
-	{
-		if ( ibtn == RETRO_DEVICE_ID_JOYPAD_SELECT )
-			continue;
+  /* Process the joypad */
+  for ( ibtn = 0; ibtn < 16; ++ibtn ) /* where's RETRO_DEVICE_ID_JOYPAD_LAST? :P */
+  {
+    if ( ibtn == RETRO_DEVICE_ID_JOYPAD_SELECT )
+      continue;
 
-		is_btn_down = input_cb( 0, RETRO_DEVICE_JOYPAD, 0, ibtn ) ? 1 : 0;
-		bit = 1 << ibtn;
+    is_btn_down = input_cb( 0, RETRO_DEVICE_JOYPAD, 0, ibtn ) ? 1 : 0;
+    bit = 1 << ibtn;
 
-		if ( !visible )
-		{
-			/* joystick -> keyboard mapper */
+    if ( !visible )
+    {
+      /* joystick -> keyboard mapper */
 
-			if ( is_btn_down )
-			{
-				if ( ( joystate & bit ) == 0 )
-				{
-					joystate |= bit;
-
-					if ( ovl->joymap[ ibtn ] )
-					{
-						ovl->keypress( ovl, ovl->joymap[ ibtn ] );
-					}
-				}
-			}
-			else
-			{
-				if ( joystate & bit )
-				{
-					joystate &= ~bit;
-
-					if ( ovl->joymap[ ibtn ] )
-					{
-						ovl->keyrelease( ovl, ovl->joymap[ ibtn ] );
-					}
-				}
-			}
-		}
-		else if ( timer <= 0 )
+      if ( is_btn_down )
+      {
+        if ( ( joystate & bit ) == 0 )
         {
-			/* virtual keyboard navigation */
+          joystate |= bit;
 
-			if ( is_btn_down )
-			{
-				if ( ( joystate & bit ) == 0 )
-				{
-					joystate |= bit;
+          if ( ovl->joymap[ ibtn ] )
+          {
+            ovl->keypress( ovl, ovl->joymap[ ibtn ] );
+          }
+        }
+      }
+      else
+      {
+        if ( joystate & bit )
+        {
+          joystate &= ~bit;
 
-					switch ( ibtn )
-					{
+          if ( ovl->joymap[ ibtn ] )
+          {
+            ovl->keyrelease( ovl, ovl->joymap[ ibtn ] );
+          }
+        }
+      }
+    }
+    else if ( timer <= 0 )
+    {
+      /* virtual keyboard navigation */
 
-					case RETRO_DEVICE_ID_JOYPAD_UP:    key = findkey( key->up );    break;
-					case RETRO_DEVICE_ID_JOYPAD_DOWN:  key = findkey( key->down );  break;
-					case RETRO_DEVICE_ID_JOYPAD_LEFT:  key = findkey( key->left );  break;
-					case RETRO_DEVICE_ID_JOYPAD_RIGHT: key = findkey( key->right ); break;
+      if ( is_btn_down )
+      {
+        if ( ( joystate & bit ) == 0 )
+        {
+          joystate |= bit;
 
-					case RETRO_DEVICE_ID_JOYPAD_A:
-					case RETRO_DEVICE_ID_JOYPAD_B:
-						{
-							if ( key->meta & TOGGLE )
-							{
-								key->meta ^= PRESSED;
-							}
-							else
-							{
-								for ( k = ovl->keys; k->id != 0xffff; k++ )
-								{
-									if ( ( k->meta & ( PRESSED | TOGGLE ) ) == ( PRESSED | TOGGLE ) )
-									{
-										ovl->keypress( ovl, k->mapped );
-									}
-								}
+          switch ( ibtn )
+          {
 
-								ovl->keypress( ovl, key->mapped );
-								timer = ms;
-							}
-						}
-						break;
+          case RETRO_DEVICE_ID_JOYPAD_UP:    key = findkey( key->up );    break;
+          case RETRO_DEVICE_ID_JOYPAD_DOWN:  key = findkey( key->down );  break;
+          case RETRO_DEVICE_ID_JOYPAD_LEFT:  key = findkey( key->left );  break;
+          case RETRO_DEVICE_ID_JOYPAD_RIGHT: key = findkey( key->right ); break;
 
-					} /* switch ( ibtn ) */
+          case RETRO_DEVICE_ID_JOYPAD_A:
+          case RETRO_DEVICE_ID_JOYPAD_B:
+            {
+              if ( key->meta & TOGGLE )
+              {
+                key->meta ^= PRESSED;
+              }
+              else
+              {
+                for ( k = ovl->keys; k->id != 0xffff; k++ )
+                {
+                  if ( ( k->meta & ( PRESSED | TOGGLE ) ) == ( PRESSED | TOGGLE ) )
+                  {
+                    ovl->keypress( ovl, k->mapped );
+                  }
+                }
 
-				} /* if ( ( joystate & bit ) == 0 ) */
-			}
-			else
-			{
-				joystate &= ~bit;
+                ovl->keypress( ovl, key->mapped );
+                timer = ms;
+              }
+            }
+            break;
 
-			} /* if ( is_btn_down ) */
-		}
+          } /* switch ( ibtn ) */
 
-	} /* for each joypad button */
+        } /* if ( ( joystate & bit ) == 0 ) */
+      }
+      else
+      {
+        joystate &= ~bit;
+
+      } /* if ( is_btn_down ) */
+    }
+
+  } /* for each joypad button */
 }
 
 void keybovl_set( keybovl_t* ovl_ )
@@ -499,19 +499,19 @@ void keybovl_set( keybovl_t* ovl_ )
 
 void keybovl_update( retro_input_state_t input_cb, unsigned input_device, uint16_t* fb, int pitch, int transp, int scale, int ms, int dt )
 {
-	if ( !ovl )
-		return;
+  if ( !ovl )
+    return;
 
-	depress( dt );
+  depress( dt );
 
-	if ( input_device == RETRO_DEVICE_KEYBOARD )
-	{
-		update_keyb( input_cb, ms );
-	}
-	else if ( input_device == RETRO_DEVICE_JOYPAD )
-	{
-		update_joy( input_cb, ms );
-	}
+  if ( input_device == RETRO_DEVICE_KEYBOARD )
+  {
+    update_keyb( input_cb, ms );
+  }
+  else if ( input_device == RETRO_DEVICE_JOYPAD )
+  {
+    update_joy( input_cb, ms );
+  }
 
-	draw( fb, pitch, transp, scale );
+  draw( fb, pitch, transp, scale );
 }
