@@ -22,9 +22,9 @@ extern "C"
 #define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
 
 #ifdef LOG_PERFORMANCE
-  #define RETRO_PERFORMANCE_INIT( name )  do { static struct retro_perf_counter name = { #name }; if ( !name.registered ) perf_cb.perf_register( &( name ) ) } while ( 0 )
-  #define RETRO_PERFORMANCE_START( name ) do { perf_cb.perf_start( &( name ) ) } while ( 0 )
-  #define RETRO_PERFORMANCE_STOP( name )  do { perf_cb.perf_stop( &( name ) ) } while ( 0 )
+  #define RETRO_PERFORMANCE_INIT( name )  do { static struct retro_perf_counter name = { #name }; if ( !name.registered && perf_cb.perf_register ) perf_cb.perf_register( &( name ) ) } while ( 0 )
+  #define RETRO_PERFORMANCE_START( name ) do { if ( perf_cb.perf_start ) perf_cb.perf_start( &( name ) ) } while ( 0 )
+  #define RETRO_PERFORMANCE_STOP( name )  do { if ( perf_cb.perf_stop ) perf_cb.perf_stop( &( name ) ) } while ( 0 )
 #else
   #define RETRO_PERFORMANCE_INIT( name )
   #define RETRO_PERFORMANCE_START( name )
@@ -329,8 +329,14 @@ void retro_init( void )
     log_cb = log.log;
   
   if ( !env_cb( RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb ) )
+  {
     perf_cb.get_time_usec = NULL;
-  
+  }
+  else
+  {
+    memset( (void*)&perf_cb, 0, sizeof( struct retro_perf_callback ) );
+  }
+
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
@@ -470,9 +476,10 @@ void retro_run( void )
 void retro_deinit( void )
 {
   eo_deinit();
-  
+
 #ifdef LOG_PERFORMANCE
-  perf_cb.perf_log();
+  if ( perf_cb.perf_log )
+    perf_cb.perf_log();
 #endif
 }
 
