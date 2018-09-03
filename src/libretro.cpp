@@ -18,9 +18,6 @@ extern "C"
 #include <gamedb/sha1.h>
 }
 
-#define RETRO_DEVICE_SINCLAIR_KEYBOARD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_KEYBOARD, 0)
-#define RETRO_DEVICE_CURSOR_JOYSTICK   RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
-
 #ifdef LOG_PERFORMANCE
   #define RETRO_PERFORMANCE_INIT( name )  do { static struct retro_perf_counter name = { #name }; if ( !name.registered && perf_cb.perf_register ) perf_cb.perf_register( &( name ) ) } while ( 0 )
   #define RETRO_PERFORMANCE_START( name ) do { if ( perf_cb.perf_start ) perf_cb.perf_start( &( name ) ) } while ( 0 )
@@ -39,7 +36,7 @@ typedef struct
   int      scaled;
   int      transp;
   int      ms;
-  unsigned devices[ 2 ];
+  unsigned input_device;
   uint32_t sha1[ 5 ];
 }
 state_t;
@@ -51,7 +48,7 @@ static void dummy_log( enum retro_log_level level, const char* fmt, ... )
 {
   (void)level;
   (void)fmt;
-  
+
   // va_list args;
   // va_start( args, fmt );
   // vfprintf( stderr, fmt, args );
@@ -102,14 +99,14 @@ static const struct retro_variable core_vars[] =
 
 #define UPDATE_RESET 1
 #define UPDATE_AV    2
- 
+
 static int update_variables()
 {
   int reset = 0;
   int old_scaled = state.scaled;
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
-  
+
   {
     static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_8_16_contents", NULL );
@@ -121,7 +118,7 @@ static int update_variables()
   {
     int option = coreopt( env_cb, core_vars, state.sha1, "81_video_presets", NULL );
     option += option < 0;
-    
+
     switch ( option )
     {
     case 0: // clean
@@ -132,15 +129,15 @@ static int update_variables()
       state.cfg.AdvancedEffects = 0;
       state.cfg.DotCrawl = 0;
       state.cfg.Interlaced = 0;
-      
+
       state.cfg.Artifacts = 0;
       state.cfg.Noise = 0;
       state.cfg.Ghosting = 0;
       state.cfg.ScanLines = 0;
       state.cfg.SimpleGhosting = 0;
-      
+
       break;
-      
+
     case 1: // tv
       state.cfg.Brightness = 206;
       state.cfg.Contrast = 117;
@@ -149,15 +146,15 @@ static int update_variables()
       state.cfg.AdvancedEffects = 1;
       state.cfg.DotCrawl = 1;
       state.cfg.Interlaced = 0;
-      
+
       state.cfg.Artifacts = 1;
       state.cfg.Noise = -3;
       state.cfg.Ghosting = -40;
       state.cfg.ScanLines = 40;
       state.cfg.SimpleGhosting = 1;
-      
+
       break;
-      
+
     case 2: // noisy
       state.cfg.Brightness = 174;
       state.cfg.Contrast = 193;
@@ -166,23 +163,23 @@ static int update_variables()
       state.cfg.AdvancedEffects = 1;
       state.cfg.DotCrawl = 1;
       state.cfg.Interlaced = 0;
-      
+
       state.cfg.Artifacts = 1;
       state.cfg.Noise = -6;
       state.cfg.Ghosting = 40;
       state.cfg.ScanLines = 40;
       state.cfg.SimpleGhosting = 1;
-      
+
       break;
     }
-    
+
     eo_settv( &state.cfg );
   }
 
   {
     int option = coreopt( env_cb, core_vars, state.sha1, "81_chroma_81", NULL );
     option += option < 0;
-    
+
     if ( option )
     {
       state.cfg.Brightness = 128;
@@ -192,20 +189,20 @@ static int update_variables()
       state.cfg.AdvancedEffects = 0;
       state.cfg.DotCrawl = 0;
       state.cfg.Interlaced = 0;
-      
+
       state.cfg.Artifacts = 0;
       state.cfg.Noise = 0;
       state.cfg.Ghosting = 0;
       state.cfg.ScanLines = 0;
       state.cfg.SimpleGhosting = 0;
-      
+
       eo_settv( &state.cfg );
     }
-    
+
     reset = reset || state.cfg.Chroma81 != option;
     state.cfg.Chroma81 = option;
   }
-  
+
   {
     static int hires[] = { HIRESDISABLED, HIRESWRX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_highres", NULL );
@@ -213,7 +210,7 @@ static int update_variables()
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
   }
-  
+
   {
     static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ZONX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
@@ -221,7 +218,7 @@ static int update_variables()
     reset = reset || state.cfg.SoundCard != sound[ option ];
     state.cfg.SoundCard = sound[ option ];
   }
-  
+
   state.transp = coreopt( env_cb, core_vars, state.sha1, "81_keybovl_transp", NULL ) != 1;
 
   {
@@ -229,48 +226,48 @@ static int update_variables()
     int option = coreopt( env_cb, core_vars, state.sha1, "81_key_hold_time", &value );
     state.ms = option >= 0 ? strtoll( value, NULL, 10 ) : 500LL;
   }
-  
+
   {
     const int keys[] = { 0, 0, VK_RETURN, VK_SHIFT, VK_SPACE, VK_DECIMAL };
     const char* value;
-    
+
     int option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_up", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_UP ] = option < 0 || option == 1 ? '7' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_down", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_DOWN ] = option < 0 || option == 1 ? '6' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_left", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_LEFT ] = option < 0 || option == 1 ? '5' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_right", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_RIGHT ] = option < 0 || option == 1 ? '8' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_a", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_A ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_b", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_B ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_x", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_X ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_y", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_Y ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_l", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_L ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_r", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_R ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_l2", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_L2 ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
-    
+
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_r2", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_R2 ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
   }
-  
+
   state.scaled = ( WinR - WinL ) == 640;
   return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
 }
@@ -294,16 +291,12 @@ void retro_set_environment( retro_environment_t cb )
   env_cb = cb;
 
   static const struct retro_controller_description controllers[] = {
-    { "Cursor Joystick", RETRO_DEVICE_CURSOR_JOYSTICK },
-  };
-
-  static const struct retro_controller_description keyboards[] = {
-    { "Sinclair Keyboard", RETRO_DEVICE_SINCLAIR_KEYBOARD },
+    { "Keyboard", RETRO_DEVICE_KEYBOARD },
+    { "Virtual Keyboard", RETRO_DEVICE_JOYPAD },
   };
 
   static const struct retro_controller_info ports[] = {
     { controllers, sizeof( controllers ) / sizeof( controllers[ 0 ] ) }, // port 1
-    { keyboards,   sizeof( keyboards )   / sizeof( keyboards[ 0 ] )   }, // port 2
     { NULL, 0 }
   };
 
@@ -327,7 +320,7 @@ void retro_init( void )
 
   if ( env_cb( RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log ) )
     log_cb = log.log;
-  
+
   if ( !env_cb( RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb ) )
   {
     perf_cb.get_time_usec = NULL;
@@ -346,7 +339,7 @@ bool retro_load_game( const struct retro_game_info* info )
 
   if (!info)
      return false;
-  
+
   if ( !env_cb( RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt ) )
   {
     log_cb( RETRO_LOG_ERROR, "EightyOne needs RGB565\n" );
@@ -354,19 +347,19 @@ bool retro_load_game( const struct retro_game_info* info )
   }
 
   log_cb( RETRO_LOG_INFO, "\n%s", eo_gitstamp );
-  
+
   memset( (void*)&state, 0, sizeof( state ) );
   state.size = info->size;
   state.data = malloc( info->size );
-  
+
   if ( !state.data )
   {
     log_cb( RETRO_LOG_ERROR, "Error allocating memory for game data\n" );
     return false;
   }
-  
+
   memcpy( state.data, info->data, state.size );
-  
+
   state.cfg.machine = MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
@@ -380,17 +373,17 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.HiRes = HIRESDISABLED;
   state.cfg.SoundCard = AY_TYPE_DISABLED;
   state.cfg.Chroma81 = 0;
-  
+
   state.scaled = -1;
   TZXFile.AddTextBlock( "" ); // prevent a crash if the user does a LOAD ""
   TZXFile.FlashLoad = true;
-  
+
   SHA1Context sha1;
   SHA1Reset( &sha1 );
   SHA1Input( &sha1, (const unsigned char*)info->data, info->size );
   SHA1Result( &sha1 );
   memcpy( state.sha1, sha1.Message_Digest, sizeof(state.sha1) );
-  
+
   update_variables();
   retro_reset();
   keybovl_set( &zx81ovl );
@@ -450,12 +443,12 @@ void retro_run( void )
   if ( env_cb( RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated ) && updated )
   {
     int res = update_variables();
-    
+
     if ( res & UPDATE_RESET )
     {
       retro_reset();
     }
-    
+
     if ( res & UPDATE_AV )
     {
       struct retro_system_av_info info;
@@ -463,13 +456,13 @@ void retro_run( void )
       env_cb( RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &info );
     }
   }
-  
+
   input_poll_cb();
-  
+
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
 
   eo_tick();
-  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
+  keybovl_update( input_state_cb, state.input_device, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 
@@ -485,24 +478,24 @@ void retro_deinit( void )
 
 void retro_set_controller_port_device( unsigned port, unsigned device )
 {
-  if ( port < 2 )
+  if ( port < 1 )
   {
-    state.devices[ port ] = device;
+    state.input_device = device;
   }
 }
 
 void retro_reset( void )
 {
   eo_init( &state.cfg );
-  
+
   if ( state.size )
   {
     load_snap( "zx81_16k.z81" );
-    
+
     zx81.TZXin = 1;
     TZXFile.LoadFile( state.data, state.size, false );
     TZXFile.Start();
-    
+
     //eo_loadp( state.data, state.size );
   }
 }
