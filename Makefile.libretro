@@ -445,7 +445,7 @@ $(TARGET): $(OBJS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
-	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDXFLAGS) $(LIBS)
+	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS) $(LDXFLAGS) $(LIBS)
 endif
 	@echo "** BUILD SUCCESSFUL! GG NO RE **"
 
