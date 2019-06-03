@@ -24,10 +24,10 @@ TARGET_PLATFORM = mingw_x86
 #################
 # Toolchain setup
 
-CC  = gcc
-CXX = g++
-AS  = as
-AR  = ar
+CC  ?= gcc
+CXX ?= g++
+AS  ?= as
+AR  ?= ar
 
 ############
 # Extensions
