@@ -441,13 +441,11 @@ else
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) **"
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJS)
 else
 	$(CXX) -o $@ $(SHARED) $(OBJS) $(LDFLAGS) $(LDXFLAGS) $(LIBS)
 endif
-	@echo "** BUILD SUCCESSFUL! GG NO RE **"
 
 $(CORE_DIR)/src/snap.o: $(CORE_DIR)/src/snap.c $(HEADERS)
 
