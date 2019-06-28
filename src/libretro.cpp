@@ -276,11 +276,17 @@ static int update_variables()
 }
 
 #define VERSION "1.0a"
+#ifdef GIT_VERSION
+static char version[] = VERSION " " GIT_VERSION;
+#else
 static char version[] = VERSION " .......";
+#endif
 
 void retro_get_system_info( struct retro_system_info* info )
 {
+#ifndef GIT_VERSION
   memcpy(version + sizeof(VERSION), eo_githash, 7);
+#endif
 
   info->library_name = "EightyOne";
   info->library_version = version;
@@ -353,7 +359,9 @@ bool retro_load_game( const struct retro_game_info* info )
     return false;
   }
 
+#ifndef GIT_VERSION
   log_cb( RETRO_LOG_INFO, "\n%s", eo_gitstamp );
+#endif
   
   memset( (void*)&state, 0, sizeof( state ) );
   state.size = info->size;
