@@ -7,7 +7,7 @@
 
 #include <gamedb/db.inl>
 
-retro_log_printf_t log_cb;
+extern retro_log_printf_t log_cb;
 
 static int getindex( const char* options, const char* value )
 {
