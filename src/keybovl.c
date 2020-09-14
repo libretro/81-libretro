@@ -16,11 +16,11 @@ static void draw_ts( uint16_t* fb, int pitch )
 {
   const uint16_t* src = ovl->image;
   int x, y;
-
+  
   for ( y = 0; y < 240; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < 320; x++ )
     {
       *fb++ = *src++;
@@ -34,11 +34,11 @@ static void draw_tS( uint16_t* fb, int pitch )
 {
   const uint16_t* src = ovl->image;
   int x, y;
-
+  
   for ( y = 0; y < 240; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < 320; x++ )
     {
       uint32_t pixel = *src++;
@@ -59,11 +59,11 @@ static void draw_Ts( uint16_t* fb, int pitch )
 {
   const uint16_t* src = ovl->image;
   int x, y;
-
+  
   for ( y = 0; y < 240; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < 320; x++ )
     {
       uint32_t pixel = ( *src++ & 0xe79c ) * 3;
@@ -79,11 +79,11 @@ static void draw_TS( uint16_t* fb, int pitch )
 {
   const uint16_t* src = ovl->image;
   int x, y;
-
+  
   for ( y = 0; y < 240; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < 320; x++ )
     {
       uint32_t pixel = ( *src++ & 0xe79c ) * 3;
@@ -103,17 +103,17 @@ static void draw_TS( uint16_t* fb, int pitch )
 static void invert_s( uint16_t* fb, int pitch, int w, int h )
 {
   int x, y;
-
+  
   for ( y = 0; y < h; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < w; x++ )
     {
       *fb = ~*fb;
       fb++;
     }
-
+    
     fb = save + pitch;
   }
 }
@@ -121,21 +121,21 @@ static void invert_s( uint16_t* fb, int pitch, int w, int h )
 static void invert_S( uint16_t* fb, int pitch, int w, int h )
 {
   int x, y;
-
+  
   for ( y = 0; y < h; y++ )
   {
     uint16_t* save = fb;
-
+    
     for ( x = 0; x < w; x++ )
     {
       fb[         0 ] = ~fb[         0 ];
       fb[         1 ] = ~fb[         1 ];
       fb[ pitch + 0 ] = ~fb[ pitch + 0 ];
       fb[ pitch + 1 ] = ~fb[ pitch + 1 ];
-
+      
       fb += 2;
     }
-
+    
     fb = save + pitch * 2;
   }
 }
@@ -143,7 +143,7 @@ static void invert_S( uint16_t* fb, int pitch, int w, int h )
 static void draw( uint16_t* fb, int pitch, int transp, int scale )
 {
   keybovl_key_t* k;
-
+  
   if ( visible )
   {
     switch ( ( transp << 1 | scale ) & 3 )
@@ -153,18 +153,18 @@ static void draw( uint16_t* fb, int pitch, int transp, int scale )
     case 2: draw_Ts( fb, pitch ); break;
     case 3: draw_TS( fb, pitch ); break;
     }
-
+    
     key->meta |= SELECTED;
-
+    
     for ( k = ovl->keys; k->id != 0xffff; k++ )
     {
       if ( k->meta & ( PRESSED | SELECTED ) )
       {
         uint16_t* dest;
         int x, y, w, h;
-
+        
         ovl->getrect( ovl, k, &x, &y, &w, &h );
-
+        
         if ( scale )
         {
           dest = fb + y * pitch * 2 + x * 2;
@@ -177,7 +177,7 @@ static void draw( uint16_t* fb, int pitch, int transp, int scale )
         }
       }
     }
-
+    
     key->meta &= ~SELECTED;
   }
 }
@@ -185,15 +185,15 @@ static void draw( uint16_t* fb, int pitch, int transp, int scale )
 static void depress( int dt )
 {
   keybovl_key_t* k;
-
+  
   if ( timer > 0 )
   {
     timer -= dt;
-
+    
     if ( timer <= 0 )
     {
       ovl->keyrelease( ovl, key->mapped );
-
+      
       for ( k = ovl->keys; k->id != 0xffff; k++ )
       {
         if ( k->meta & PRESSED )
@@ -208,7 +208,7 @@ static void depress( int dt )
 static keybovl_key_t* findkey( uint16_t id )
 {
   keybovl_key_t* k;
-
+  
   for ( k = ovl->keys; k->id != 0xffff; k++ )
   {
     if ( k->id == id )
@@ -216,7 +216,7 @@ static keybovl_key_t* findkey( uint16_t id )
       return k;
     }
   }
-
+  
   return ovl->keys;
 }
 
@@ -224,16 +224,16 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
 {
   keybovl_key_t* k;
   unsigned       p, i;
-
+  
   // Show/hide the virtual keyboard
-
+  
   for ( p = 0; p < 2; p++ )
   {
     if ( ( devices[ p ] & RETRO_DEVICE_MASK ) != RETRO_DEVICE_JOYPAD )
     {
       continue;
     }
-
+    
     if ( input_cb( p, devices[ p ], 0, RETRO_DEVICE_ID_JOYPAD_SELECT ) )
     {
       if ( !select )
@@ -247,36 +247,36 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
       select = 0;
     }
   }
-
+  
   // Process the joypad
-
+  
   for ( p = 0; p < 2; p++ )
   {
     if ( ( devices[ p ] & RETRO_DEVICE_MASK ) != RETRO_DEVICE_JOYPAD )
     {
       continue;
     }
-
+    
     for ( i = 0; i < 16; i++ ) // where's RETRO_DEVICE_ID_JOYPAD_LAST? :P
     {
       if ( i == RETRO_DEVICE_ID_JOYPAD_SELECT )
       {
         continue;
       }
-
+      
       int16_t  is_down = input_cb( p, devices[ p ], 0, i );
       uint32_t bit = 1 << i;
-
+      
       if ( !visible )
       {
         // regular button press
-
+        
         if ( is_down )
         {
           if ( ( joystate & bit ) == 0 )
           {
             joystate |= bit;
-
+            
             if ( ovl->joymap[ i ] )
             {
               ovl->keypress( ovl, ovl->joymap[ i ] );
@@ -288,7 +288,7 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
           if ( joystate & bit )
           {
             joystate &= ~bit;
-
+            
             if ( ovl->joymap[ i ] )
             {
               ovl->keyrelease( ovl, ovl->joymap[ i ] );
@@ -299,20 +299,20 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
       else if ( timer <= 0 )
       {
         // virtual keyboard navigation
-
+        
         if ( is_down )
         {
           if ( ( joystate & bit ) == 0 )
           {
             joystate |= bit;
-
+            
             switch ( i )
             {
             case RETRO_DEVICE_ID_JOYPAD_UP:    key = findkey( key->up );    break;
             case RETRO_DEVICE_ID_JOYPAD_DOWN:  key = findkey( key->down );  break;
             case RETRO_DEVICE_ID_JOYPAD_LEFT:  key = findkey( key->left );  break;
             case RETRO_DEVICE_ID_JOYPAD_RIGHT: key = findkey( key->right ); break;
-
+            
             case RETRO_DEVICE_ID_JOYPAD_A:
             case RETRO_DEVICE_ID_JOYPAD_B:
               {
@@ -329,7 +329,7 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
                       ovl->keypress( ovl, k->mapped );
                     }
                   }
-
+                  
                   ovl->keypress( ovl, key->mapped );
                   timer = ms;
                 }
@@ -344,9 +344,9 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
       }
     }
   }
-
+  
   // Process the keyboard
-
+  
   if ( !visible )
   {
     for ( p = 0; p < 2; p++ )
@@ -355,7 +355,7 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
       {
         continue;
       }
-
+      
       for ( k = ovl->keys; k->id != 0xffff; k++ )
       {
         int16_t  is_down = input_cb( p, devices[ p ], 0, k->retro );
@@ -393,18 +393,10 @@ void keybovl_set( keybovl_t* ovl_ )
 
 void keybovl_update( retro_input_state_t input_cb, unsigned* devices, uint16_t* fb, int pitch, int transp, int scale, int ms, int dt )
 {
-  static unsigned short l_times;
   if ( ovl )
   {
     depress( dt );
-
-      if ( l_times > 7 )
-      {
-        update( input_cb, devices, ms );
-        l_times = 0;
-      }
-
+    update( input_cb, devices, ms );
     draw( fb, pitch, transp, scale );
-    l_times++;
   }
 }
