@@ -1,6 +1,6 @@
 # 81-libretro
 
-**81-libretro** is an *work in progress* port of the [EightyOne](http://www.chuntey.com/) (a.k.a. THE Sinclair Emulator) to [libretro](http://www.libretro.com/). It's being developed on Windows with MinGW (64 bits) and Debian 8, and tested on RetroArch 1.2 frontend.
+**81-libretro** is an *work in progress* port of the [EightyOne](https://sourceforge.net/projects/eightyone-sinclair-emulator/) (a.k.a. THE Sinclair Emulator) to [libretro](http://www.libretro.com/). It's being developed on Windows with MinGW (64 bits) and Debian 8, and tested on RetroArch 1.2 frontend.
 
 ## Games
 
