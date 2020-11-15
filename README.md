@@ -4,7 +4,7 @@
 
 ## Games
 
-The classic ZX81 games are all over the Internet, but check the [colorized](https://github.com/leiradel/81-libretro/tree/master/colorized) folder for games with Chroma 81 support. There are also many original games for the Zeddy, check [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html) for some high quality games. 
+The classic ZX81 games are all over the Internet, but check the [colorized](https://github.com/leiradel/81-libretro/tree/master/colorized) folder for games with Chroma 81 support. There are also many original games for the Zeddy, check [Bob's Stuff](https://bobs-stuff.itch.io/) for some high quality games. 
 
 ## Emulated Machines
 
