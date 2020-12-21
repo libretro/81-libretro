@@ -1,5 +1,5 @@
 #include <stdio.h>
-#if !defined(__CELLOS_LV2__) && !defined(__APPLE__)
+#if ((!(defined(__PS3__) && !defined(__PSL1GHT))) && !defined(__APPLE__))
 #include <malloc.h>
 #endif
 #include <string.h>
