@@ -1,10 +1,10 @@
 # 81-libretro
 
-**81-libretro** is an *work in progress* port of the [EightyOne](http://www.chuntey.com/) (a.k.a. THE Sinclair Emulator) to [libretro](http://www.libretro.com/). It's being developed on Windows with MinGW (64 bits) and Debian 8, and tested on RetroArch 1.2 frontend.
+**81-libretro** is an *work in progress* port of the [EightyOne](https://sourceforge.net/projects/eightyone-sinclair-emulator/) (a.k.a. THE Sinclair Emulator) to [libretro](http://www.libretro.com/). It's being developed on Windows with MinGW (64 bits) and Debian 8, and tested on RetroArch 1.2 frontend.
 
 ## Games
 
-The classic ZX81 games are all over the Internet, but check the [colorized](https://github.com/leiradel/81-libretro/tree/master/colorized) folder for games with Chroma 81 support. There are also many original games for the Zeddy, check [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html) for some high quality games. 
+The classic ZX81 games are all over the Internet, but check the [colorized](https://github.com/leiradel/81-libretro/tree/master/colorized) folder for games with Chroma 81 support. There are also many original games for the Zeddy, check [Bob's Stuff](https://bobs-stuff.itch.io/) for some high quality games. 
 
 ## Emulated Machines
 
