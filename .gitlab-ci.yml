@@ -7,7 +7,7 @@
 # Core definitions
 .core-defs:
   variables:
-    JNI_PATH: .
+    JNI_PATH: build
     CORENAME: 81
 
 # Inclusion templates, required for the build to work
