@@ -286,9 +286,20 @@ static DWORD Palette[ 256 ], Colours[ 256 ];
 
 #define Plot( x, c ) do { *(uint16_t*)( dest + RasterX + ( x ) ) = Colours[ ( c ) ]; } while ( 0 )
 
-#define DoPal( r, g, b ) ( ( ( ( b > 255 ? 255 : ( b < 0 ? 0 : b ) ) & 0xff ) << 16 ) \
-                         | ( ( ( g > 255 ? 255 : ( g < 0 ? 0 : g ) ) & 0xff ) <<  8 ) \
-                         |   ( ( r > 255 ? 255 : ( r < 0 ? 0 : r ) ) & 0xff ) )
+#if defined(BGR)
+#define RED_SHIFT 16
+#define GREEN_SHIFT 8
+#define BLUE_SHIFT 0
+#else
+#define RED_SHIFT 0
+#define GREEN_SHIFT 8
+#define BLUE_SHIFT 16
+#endif
+
+#define DoPal( r, g, b ) ( ( ( ( b > 255 ? 255 : ( b < 0 ? 0 : b ) ) & 0xff ) << BLUE_SHIFT ) \
+                         | ( ( ( g > 255 ? 255 : ( g < 0 ? 0 : g ) ) & 0xff ) << GREEN_SHIFT ) \
+                         | ( ( ( r > 255 ? 255 : ( r < 0 ? 0 : r ) ) & 0xff ) << RED_SHIFT ) )
+
 
 extern "C" void add_blank( int tstates, BYTE colour )
 {
