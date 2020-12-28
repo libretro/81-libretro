@@ -31,6 +31,10 @@ include:
     file: '/android-jni.yml'
 
   ################################## CONSOLES ################################
+  # PlayStation 2
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ps2-static.yml'
+
   # PlayStation Portable
   - project: 'libretro-infrastructure/ci-templates'
     file: '/psp-static.yml'
@@ -122,6 +126,12 @@ libretro-build-ngc:
 libretro-build-wii:
   extends:
     - .libretro-wii-static-retroarch-master
+    - .core-defs
+
+# PlayStation 2
+libretro-build-ps2:
+  extends:
+    - .libretro-ps2-static-retroarch-master
     - .core-defs
 
 # PlayStation Portable
