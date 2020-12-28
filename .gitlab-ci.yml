@@ -102,9 +102,9 @@ android-x86_64:
 # Android 32-bit x86
 android-x86:
   extends:
-    - .core-defs
     - .libretro-android-jni-x86
-
+    - .core-defs
+    
 ################################### CONSOLES #################################
 # Nintendo 3DS
 libretro-build-3ds:
