@@ -331,9 +331,9 @@ else ifneq (,$(findstring armv,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
 	fpic := -fPIC
 	SHARED := -shared -Wl,-version-script=build/link.T
-	CC = gcc
-	CC_AS = gcc
-	CXX = g++
+	CC ?= gcc
+	CC_AS ?= gcc
+	CXX ?= g++
 	ifneq (,$(findstring cortexa8,$(platform)))
 		PLATFORM_DEFINES += -marm -mcpu=cortex-a8
 	else ifneq (,$(findstring cortexa9,$(platform)))
@@ -386,9 +386,9 @@ else ifeq ($(platform), vita)
 # Windows
 else
 	TARGET := $(TARGET_NAME)_libretro.dll
-	CC = gcc
-	CC_AS = gcc
-	CXX = g++
+	CC ?= gcc
+	CC_AS ?= gcc
+	CXX ?= g++
 	SHARED := -shared -static-libgcc -static-libstdc++ -Wl,-no-undefined -Wl,-version-script=build/link.T
 
 endif
