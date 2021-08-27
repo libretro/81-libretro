@@ -326,6 +326,20 @@ else ifeq ($(platform), classic_armv8_a35)
 	LDFLAGS += -marm -mcpu=cortex-a35 -mfpu=neon-fp-armv8 -mfloat-abi=hard -Ofast -flto -fuse-linker-plugin
 #######################################
 
+# MIYOO 
+else ifeq ($(platform), miyoo)
+	TARGET := $(TARGET_NAME)_libretro.so
+	fpic := -fPIC
+  	SHARED := -shared -Wl,--version-script=build/link.T  -Wl,--no-undefined
+   CC = /opt/miyoo/usr/bin/arm-linux-gcc
+   CC_AS = /opt/miyoo/usr/bin/arm-linux-gcc
+   CXX = /opt/miyoo/usr/bin/arm-linux-g++
+   AR = /opt/miyoo/usr/bin/arm-linux-ar
+   PLATFORM_DEFINES += -D_GNU_SOURCE
+   CFLAGS += -fomit-frame-pointer -ffast-math -march=armv5te -mtune=arm926ej-s
+   CFLAGS += -fno-common -ftree-vectorize -funswitch-loops
+   DEFINES += -std=c99
+
 # ARM
 else ifneq (,$(findstring armv,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
