@@ -83,10 +83,14 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
 
+  # OpenDingux (ARM)
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/dingux-arm32.yml'
+
   # tvOS (AppleTV)
   - project: 'libretro-infrastructure/ci-templates'
     file: '/tvos-arm64.yml'
-    
+
   #################################### MISC ##################################
 
 # Stages for building
@@ -226,4 +230,10 @@ libretro-build-psp:
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
+    - .core-defs
+
+# Miyoo
+libretro-build-miyoo-arm32:
+  extends:
+    - .libretro-miyoo-arm32-make-default
     - .core-defs
