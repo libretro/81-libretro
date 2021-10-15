@@ -489,13 +489,12 @@ void retro_run( void )
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
   uint16_t* fbK = fb;
 
-
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fbK, TVP / 2, state.transp, state.scaled, state.ms, 20 );
 
   int hide_border = coreopt(env_cb, core_vars, state.sha1, "81_hide_border", NULL);
   hide_border += hide_border < 0;
-  
+
   if (hide_border == 1)
   {    
     fb = TVFB + WinLBN + WinTBN * TVP / 2; 
