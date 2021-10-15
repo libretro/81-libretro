@@ -271,6 +271,11 @@ int WinL = NoWinL;
 int WinT = NoWinT;
 int WinB = NoWinB;
 
+int WinRBN=BlWinR;
+int WinLBN=BlWinL;
+int WinTBN=BlWinT;
+int WinBBN=BlWinB;
+
 static int RasterX = 0;
 static int TVW, TVH;
 int TVP;
