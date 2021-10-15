@@ -487,6 +487,7 @@ void retro_run( void )
   input_poll_cb();
   
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
+  uint16_t* fbK = fb;
 
   int hide_border = coreopt(env_cb, core_vars, state.sha1, "81_hide_border", NULL);
   hide_border += hide_border < 0;
@@ -497,7 +498,7 @@ void retro_run( void )
   }
 
   eo_tick();
-  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
+  keybovl_update( input_state_cb, state.devices, fbK, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   if (hide_border == 1)
   {
     video_cb( (void*)fb, WinRBN - WinLBN, WinBBN - WinTBN, TVP );  
