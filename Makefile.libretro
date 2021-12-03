@@ -340,6 +340,27 @@ else ifeq ($(platform), miyoo)
    CFLAGS += -fno-common -ftree-vectorize -funswitch-loops
    DEFINES += -std=c99
 
+# RETROFW 
+else ifeq ($(platform), retrofw)
+	TARGET := $(TARGET_NAME)_libretro.so
+	fpic := -fPIC
+  	SHARED := -shared -Wl,--version-script=build/link.T  -Wl,--no-undefined
+	CC = /opt/retrofw-toolchain/usr/bin/mipsel-linux-gcc
+ 	CC_AS = /opt/retrofw-toolchain/usr/bin/mipsel-linux-gcc
+	CXX = /opt/retrofw-toolchain/usr/bin/mipsel-linux-g++
+	AR = /opt/retrofw-toolchain/usr/bin/mipsel-linux-ar
+	LDFLAGS += -mplt -flto -fuse-linker-plugin -march=mips32 -mtune=mips32 -mhard-float -flto -fPIC
+	PLATFORM_DEFINES += -D_GNU_SOURCE
+	CFLAGS += -fomit-frame-pointer -ffast-math -march=mips32 -mtune=mips32 -mhard-float
+	CFLAGS += -falign-functions=1 -falign-jumps=1 -falign-loops=1
+	CFLAGS += -fomit-frame-pointer -fmerge-all-constants -flto
+	CFLAGS += -funsafe-math-optimizations -fsingle-precision-constant -fexpensive-optimizations
+	CFLAGS += -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops
+	CFLAGS += -fmerge-all-constants -fno-math-errno -fno-stack-protector -fno-ident
+	CXXFLAGS += -flto -fPIC     
+	DEFINES += -std=c99
+	HAVE_COMPAT = 1
+
 # ARM
 else ifneq (,$(findstring armv,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
@@ -419,6 +440,9 @@ ifeq ($(DEBUG), 1)
 else ifeq ($(platform), emscripten)
 	CFLAGS += -O2
 	CXXFLAGS += -O2 -fno-exceptions -fno-rtti -DHAVE_STDINT_H
+else ifeq ($(platform), retrofw)
+	CFLAGS += -Ofast
+	CXXFLAGS += -Ofast -fno-exceptions -fno-rtti -DHAVE_STDINT_H
 else
 	CFLAGS += -O3
 	CXXFLAGS += -O3 -fno-exceptions -fno-rtti -DHAVE_STDINT_H
