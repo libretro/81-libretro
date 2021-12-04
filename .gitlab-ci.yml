@@ -83,6 +83,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/libnx-static.yml'
 
+  # OpenDingux
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/dingux-mips32.yml'
+
   # OpenDingux (ARM)
   - project: 'libretro-infrastructure/ci-templates'
     file: '/dingux-arm32.yml'
@@ -232,6 +236,12 @@ libretro-build-vita:
     - .libretro-vita-static-retroarch-master
     - .core-defs
 
+# RetroFW
+libretro-build-retrofw-mips32:
+  extends:
+    - .libretro-retrofw-mips32-make-default
+    - .core-defs
+    
 # Miyoo
 libretro-build-miyoo-arm32:
   extends:
