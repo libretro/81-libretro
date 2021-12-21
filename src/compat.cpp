@@ -778,7 +778,7 @@ int TStrings::Add( const AnsiString str )
   return list.size();
 }
 
-#if defined( VITA ) || defined(__PS3__) && !defined( __PSL1GHT__ )
+#if defined(__PS3__) && !defined( __PSL1GHT__ )
 
 extern "C" char* getcwd( char* buf, size_t size )
 {
