@@ -364,6 +364,27 @@ else ifeq ($(platform), retrofw)
 	DEFINES += -std=c99
 	HAVE_COMPAT = 1
 
+# GCW0 (OpenDingux and OpenDingux Beta)
+else ifeq ($(platform), gcw0)
+	TARGET := $(TARGET_NAME)_libretro.so
+	fpic := -fPIC
+  	SHARED := -shared -Wl,--version-script=build/link.T  -Wl,--no-undefined
+	CC = /opt/gcw0-toolchain/usr/bin/mipsel-linux-gcc
+	CC_AS = /opt/gcw0-toolchain/usr/bin/mipsel-linux-gcc
+	CXX = /opt/gcw0-toolchain/usr/bin/mipsel-linux-g++
+	AR = /opt/gcw0-toolchain/usr/bin/mipsel-linux-ar
+	LDFLAGS += -mplt -flto -fuse-linker-plugin -march=mips32 -mtune=mips32r2 -mhard-float -flto -fPIC
+	PLATFORM_DEFINES += -D_GNU_SOURCE
+	CFLAGS += -fomit-frame-pointer -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
+	CFLAGS += -falign-functions=1 -falign-jumps=1 -falign-loops=1
+	CFLAGS += -fomit-frame-pointer -fmerge-all-constants -flto
+	CFLAGS += -funsafe-math-optimizations -fsingle-precision-constant -fexpensive-optimizations
+	CFLAGS += -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops
+	CFLAGS += -fmerge-all-constants -fno-math-errno -fno-stack-protector -fno-ident
+	CXXFLAGS += -flto -fPIC     
+	DEFINES += -std=c99
+	HAVE_COMPAT = 1
+	
 # ARM
 else ifneq (,$(findstring armv,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
