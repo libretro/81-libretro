@@ -184,7 +184,7 @@ static int update_variables()
     int option = coreopt( env_cb, core_vars, state.sha1, "81_chroma_81", NULL );
     option += option < 0;
     
-    if ( option )
+    if ( option > 1 )
     {
       state.cfg.Brightness = 128;
       state.cfg.Contrast = 0;
@@ -203,8 +203,8 @@ static int update_variables()
       eo_settv( &state.cfg );
     }
     
-    reset = reset || state.cfg.Chroma81 != option;
-    state.cfg.Chroma81 = option;
+    reset = reset || state.cfg.Chroma81 != (option - 1);
+    state.cfg.Chroma81 = (option - 1) ;
   }
   
   {
