@@ -67,7 +67,8 @@ retro_audio_sample_batch_t audio_cb;
 static retro_input_state_t input_state_cb;
 struct retro_perf_callback perf_cb;
 
-extern int WinR, WinL, WinT, WinB, WinRBN, WinLBN, WinTBN, WinBBN, TVP;
+extern int WinR, WinL, WinT, WinB, WinRSM, WinLSM, WinTSM, WinBSM, WinRBN, WinLBN, WinTBN, WinBBN, TVP;
+
 extern WORD* TVFB;
 extern keybovl_t zx81ovl;
 
@@ -79,7 +80,7 @@ static const struct retro_variable core_vars[] =
 {
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
-  { "81_hide_border",    "Hide Video Border; disabled|enabled" },
+  { "81_border_size",    "Size Video Border; normal|small|none" },
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
@@ -443,19 +444,19 @@ void retro_set_input_poll( retro_input_poll_t cb )
 
 void retro_get_system_av_info( struct retro_system_av_info* info )
 {
-  int hide_border = coreopt(env_cb, core_vars, state.sha1, "81_hide_border", NULL);
-  hide_border += hide_border < 0;
+  int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+  border_size += border_size < 0;
 
-  if (hide_border == 1)
-  {
-    info->geometry.base_width = WinRBN - WinLBN;
-    info->geometry.base_height = WinBBN - WinTBN;
+  if (border_size == 1)
+  {	
+	WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
   }
-  else
+  else if (border_size == 2)
   {
-    info->geometry.base_width = WinR - WinL;
-    info->geometry.base_height = WinB - WinT;
+	WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;	
   }
+  info->geometry.base_width = WinR - WinL;
+  info->geometry.base_height = WinB - WinT;
   info->geometry.max_width = WinR - WinL;
   info->geometry.max_height = WinB - WinT;
   info->geometry.aspect_ratio = 0.0f;
@@ -485,23 +486,23 @@ void retro_run( void )
   }
   
   input_poll_cb();
+
+  int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+  border_size += border_size < 0;
+
+  if (border_size == 1)
+  {	
+	WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
+  }
+  else if (border_size == 2)
+  {
+	WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
+  }
   
-  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
+  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;  
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
-
-  int hide_border = coreopt(env_cb, core_vars, state.sha1, "81_hide_border", NULL);
-  hide_border += hide_border < 0;
-
-  if (hide_border == 1)
-  {    
-    fb = TVFB + WinLBN + WinTBN * TVP / 2; 
-    video_cb( (void*)fb, WinRBN - WinLBN, WinBBN - WinTBN, TVP );  
-  }
-  else
-  {
-    video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );  
-  }
+  video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 
 void retro_deinit( void )
