@@ -237,10 +237,10 @@ BYTE scanline[ 1024 ];
 #define BlWinL 74
 #define BlWinR ( BlWinL + 256 )
 
-#define SmWinT 52
-#define SmWinB ( SmWinT + 200 )
-#define SmWinL 70
-#define SmWinR ( SmWinL + 264 )
+#define SmWinT 42
+#define SmWinB ( SmWinT + 210 )
+#define SmWinL 60
+#define SmWinR ( SmWinL + 274 )
 
 #define NoWinT  32
 #define NoWinB  ( NoWinT + 240 )
@@ -270,6 +270,11 @@ int WinR = NoWinR;
 int WinL = NoWinL;
 int WinT = NoWinT;
 int WinB = NoWinB;
+
+int WinRSM=SmWinR;
+int WinLSM=SmWinL;
+int WinTSM=SmWinT;
+int WinBSM=SmWinB;
 
 int WinRBN=BlWinR;
 int WinLBN=BlWinL;
