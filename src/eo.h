@@ -22,6 +22,7 @@
 #define RAMPACK96   8
 
 #define AY_TYPE_DISABLED 0
+#define AY_TYPE_ENABLED  1
 
 #define LOWRAM_ROMSHADOW 0
 #define LOWRAM_8KRAM     1
