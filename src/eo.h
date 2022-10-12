@@ -42,6 +42,7 @@ typedef struct
   int     HiRes;
   int     SoundCard;
   bool    Chroma81;
+  int     BorderSize;
   
   int Brightness; /* 0 -> 255 */
   int Contrast;   /* 0 -> 255 */

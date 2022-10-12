@@ -215,13 +215,22 @@ static int update_variables()
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
   }
+
+
+  {
+    static int borderSize[] = { BORDERNORMAL, BORDERSMALL, BORDERNONE };
+    int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+    border_size += border_size < 0;
+    reset = reset || state.cfg.BorderSize != borderSize[ border_size ];
+    state.cfg.BorderSize = borderSize[ border_size ];    
+  }
   
   {
     static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ZONX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
     option += option < 0;
-    reset = reset || state.cfg.SoundCard != sound[ option ];
-    state.cfg.SoundCard = sound[ option ];
+    reset = reset || state.cfg.SoundCard != sound[ option + 1];
+    state.cfg.SoundCard = sound[ option + 1];
   }
   
   state.transp = coreopt( env_cb, core_vars, state.sha1, "81_keybovl_transp", NULL ) != 1;
@@ -390,6 +399,7 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.HiRes = HIRESDISABLED;
   state.cfg.SoundCard = AY_TYPE_DISABLED;
   state.cfg.Chroma81 = 0;
+  state.cfg.BorderSize = BORDERNORMAL;
   
   state.scaled = -1;
   TZXFile.AddTextBlock( "" ); // prevent a crash if the user does a LOAD ""
@@ -490,18 +500,22 @@ void retro_run( void )
   int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
   border_size += border_size < 0;
 
+  int TVPKEYB = 1040;
   if (border_size == 1)
-  {	
-	WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
+  {
+    TVPKEYB = 420;
+    WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
   }
   else if (border_size == 2)
   {
-	WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
+    TVPKEYB = 500;
+    WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
   }
-  
-  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;  
+
+  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
+  uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
   eo_tick();
-  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
+  keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 
