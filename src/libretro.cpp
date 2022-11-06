@@ -84,7 +84,7 @@ static const struct retro_variable core_vars[] =
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
-  { "81_sound",          "Sound emulation; auto|none|Zon X-81" },
+  { "81_sound",          "Sound emulation; none|auto|Zon X-81" },
   { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
   { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
   { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
@@ -215,9 +215,18 @@ static int update_variables()
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
   }
+
+
+  {
+    static int borderSize[] = { BORDERNORMAL, BORDERSMALL, BORDERNONE };
+    int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+    border_size += border_size < 0;
+    reset = reset || state.cfg.BorderSize != borderSize[ border_size ];
+    state.cfg.BorderSize = borderSize[ border_size ];    
+  }
   
   {
-    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ZONX };
+    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ENABLED, AY_TYPE_ZONX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
     option += option < 0;
     reset = reset || state.cfg.SoundCard != sound[ option ];
@@ -390,6 +399,7 @@ bool retro_load_game( const struct retro_game_info* info )
   state.cfg.HiRes = HIRESDISABLED;
   state.cfg.SoundCard = AY_TYPE_DISABLED;
   state.cfg.Chroma81 = 0;
+  state.cfg.BorderSize = BORDERNORMAL;
   
   state.scaled = -1;
   TZXFile.AddTextBlock( "" ); // prevent a crash if the user does a LOAD ""
@@ -490,18 +500,22 @@ void retro_run( void )
   int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
   border_size += border_size < 0;
 
+  int TVPKEYB = 1040;
   if (border_size == 1)
-  {	
-	WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
+  {
+    TVPKEYB = 420;
+    WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
   }
   else if (border_size == 2)
   {
-	WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
+    TVPKEYB = 500;
+    WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
   }
-  
-  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;  
+
+  uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
+  uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
   eo_tick();
-  keybovl_update( input_state_cb, state.devices, fb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
+  keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 

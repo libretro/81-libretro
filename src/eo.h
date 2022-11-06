@@ -22,6 +22,7 @@
 #define RAMPACK96   8
 
 #define AY_TYPE_DISABLED 0
+#define AY_TYPE_ENABLED  1
 
 #define LOWRAM_ROMSHADOW 0
 #define LOWRAM_8KRAM     1
@@ -42,6 +43,7 @@ typedef struct
   int     HiRes;
   int     SoundCard;
   bool    Chroma81;
+  int     BorderSize;
   
   int Brightness; /* 0 -> 255 */
   int Contrast;   /* 0 -> 255 */
