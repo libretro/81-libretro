@@ -413,6 +413,7 @@ else ifneq (,$(findstring armv,$(platform)))
 # emscripten
 else ifeq ($(platform), emscripten)
 	TARGET := $(TARGET_NAME)_libretro_$(platform).bc
+    STATIC_LINKING = 1
 
 # CTR (3DS)
 else ifeq ($(platform), ctr)
@@ -463,7 +464,7 @@ ifeq ($(DEBUG), 1)
 	CXXFLAGS += -O0 -g
 else ifeq ($(platform), emscripten)
 	CFLAGS += -O2
-	CXXFLAGS += -O2 -fno-exceptions -fno-rtti -DHAVE_STDINT_H
+	CXXFLAGS += -O2 -fno-exceptions -fno-rtti -DHAVE_STDINT_H -Dregister="" 
 else ifeq ($(platform), retrofw)
 	CFLAGS += -Ofast
 	CXXFLAGS += -Ofast -fno-exceptions -fno-rtti -DHAVE_STDINT_H
