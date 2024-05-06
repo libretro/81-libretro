@@ -74,11 +74,6 @@ extern keybovl_t zx81ovl;
 
 static state_t state;
 
-#define NoWinT  32
-#define NoWinB  (NoWinT+240)
-#define NoWinL  42
-#define NoWinR  (NoWinL+320)
-
 #define ZX81KEYS "auto|default|new line|shift|space|.|0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z"
 
 static const struct retro_variable core_vars[] =
@@ -463,12 +458,14 @@ void retro_set_input_poll( retro_input_poll_t cb )
 
 void retro_get_system_av_info( struct retro_system_av_info* info )
 {
-  WinL = NoWinL; WinR = NoWinR; WinT = NoWinT; WinB = NoWinB;
-  if (state.cfg.BorderSize == BORDERSMALL)
+  int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+  border_size += border_size < 0;
+
+  if (border_size == 1)
   {	
 	WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
   }
-  else if (state.cfg.BorderSize == BORDERNONE)
+  else if (border_size == 2)
   {
 	WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;	
   }
@@ -505,13 +502,12 @@ void retro_run( void )
   input_poll_cb();
 
   int TVPKEYB = 1040;
-  WinL = NoWinL; WinR = NoWinR; WinT = NoWinT; WinB = NoWinB;
-  if (state.cfg.BorderSize == BORDERSMALL)
+  if (border_size == 1)
   {
     TVPKEYB = 420;
     WinL=WinLSM; WinR=WinRSM; WinT=WinTSM; WinB=WinBSM;
   }
-  else if (state.cfg.BorderSize == BORDERNONE)
+  else if (border_size == 2)
   {
     TVPKEYB = 500;
     WinL=WinLBN; WinR=WinRBN; WinT=WinTBN; WinB=WinBBN;
