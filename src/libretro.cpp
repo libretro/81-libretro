@@ -501,6 +501,9 @@ void retro_run( void )
   
   input_poll_cb();
 
+  int border_size = coreopt(env_cb, core_vars, state.sha1, "81_border_size", NULL);
+  border_size += border_size < 0;
+
   int TVPKEYB = 1040;
   if (border_size == 1)
   {
