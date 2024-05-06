@@ -102,6 +102,7 @@ static const struct retro_variable core_vars[] =
   { "81_joypad_r",       "Joypad R button mapping; " ZX81KEYS },
   { "81_joypad_l2",      "Joypad L2 button mapping; " ZX81KEYS },
   { "81_joypad_r2",      "Joypad R2 button mapping; " ZX81KEYS },
+  { "81_joypad_start",   "Joypad START button mapping; " ZX81KEYS },
   { "81_keybovl_transp", "Transparent Keyboard Overlay; enabled|disabled" },
   { "81_key_hold_time",  "Time to Release Key in ms; 100|300|500|1000" },
   { NULL, NULL },
@@ -285,6 +286,9 @@ static int update_variables()
     
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_r2", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_R2 ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+    
+    option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_start", &value );
+    zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_START ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
   }
   
   state.scaled = ( WinR - WinL ) == 640;
