@@ -38,6 +38,7 @@ typedef struct
   size_t   size;
   int      scaled;
   int      transp;
+  int      invert_color;
   int      ms;
   unsigned devices[ 2 ];
   uint32_t sha1[ 5 ];
@@ -83,7 +84,8 @@ static const struct retro_variable core_vars[] =
   { "81_border_size",    "Size Video Border; normal|small|none" },
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
-  { "81_video_presets",  "Video Presets; clean|tv|noisy" },
+  { "81_video_presets",  "Video Presets; clean|tv|noisy" },  
+  { "81_invert_colors",  "Invert colors; enabled|disabled" },
   { "81_sound",          "Sound emulation; none|auto|Zon X-81" },
   { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
   { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
@@ -181,6 +183,8 @@ static int update_variables()
     
     eo_settv( &state.cfg );
   }
+
+  state.invert_color = coreopt( env_cb, core_vars, state.sha1, "81_invert_colors", NULL ) != 0;
 
   {
     int option = coreopt( env_cb, core_vars, state.sha1, "81_chroma_81", NULL );
@@ -520,6 +524,15 @@ void retro_run( void )
   uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
+
+  if (state.invert_color == 0) {
+    uint16_t* pixels = (uint16_t*)fb;
+    int total = (TVP / 2) * (WinB - WinT);
+
+    for (int i = 0; i < total; i++)
+      pixels[i] = ~pixels[i];
+  }
+  
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
 }
 
