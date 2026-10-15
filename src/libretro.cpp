@@ -379,6 +379,9 @@ bool retro_load_game( const struct retro_game_info* info )
 #endif
   
   memset( (void*)&state, 0, sizeof( state ) );
+  // The devices each port starts with, for frontends that never set them
+  state.devices[ 0 ] = RETRO_DEVICE_CURSOR_JOYSTICK;
+  state.devices[ 1 ] = RETRO_DEVICE_SINCLAIR_KEYBOARD;
   state.size = info->size;
   state.data = malloc( info->size );
   
