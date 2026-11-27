@@ -8,9 +8,6 @@
 #include <zx81config.h>
 #include <sound/sound.h>
 
-#define MACHINETS1000 100
-#define MACHINER470   101
-#define MACHINETK85   102
 
 #define RAMPACKNONE 0
 #define RAMPACK2    1

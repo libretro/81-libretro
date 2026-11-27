@@ -19,7 +19,9 @@ EightyOne emulates a number of ZX80, ZX81, clones, and other computers based on 
 * MicroDigital TK85
 * Jupiter ACE
 
-However, **81-libretro** only emulates the Sinclair ZX81 with 16Kb RAM for now. Other machines will be added as time permits. Push requests are welcome.
+**81-libretro** emulates the Sinclair ZX81 with 16Kb RAM, and the Sinclair ZX80 for `o` and `80` files (LOAD and RUN are typed in after the ZX80 has booted, as a ZX80 program doesn't start itself). Other machines will be added as time permits. Push requests are welcome.
+
+The ZX80 and ZX81 emulation is EightyOne 1.41's ([github.com/charlierobson/EightyOne](https://github.com/charlierobson/EightyOne)), in `eo/`: the Z80, the ZX80/ZX81 machine with its separate ZX80 display timing (flicker-free ZX80 games), Chroma 81 and the ROM patches for fast tape loading. The parts of the Windows program it calls but this core doesn't have (ZXpand, ROM cartridges, IDE, floppies, speech, the debugger) are no-ops in `eo/shim` and `src/eo_stubs.cpp`. A tape is loaded by typing `LOAD ""` once the ZX81 has booted, about four seconds after the start.
 
 The port correctly loads and runs ~~some~~ many games I have around in the `p` format. `tzx` format is also supported.
 

@@ -53,7 +53,7 @@ bool TTZXFile::EventTurbo(void)
                         data=Tape[CurBlock].Data.Data;
                         DataLen=Tape[CurBlock].Head.ROM.DataLen;
 
-                        if (zx81.machine==MACHINEACE)
+                        if (emulator.machine==MACHINEACE)
                         {
                                 PilotLen=TZXSCALE(2011);
                                 PilotPulses=(data[0]!=0)? 1024:8192;

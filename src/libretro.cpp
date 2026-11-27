@@ -43,7 +43,7 @@ typedef struct
   unsigned devices[ 2 ];
   uint32_t sha1[ 5 ];
   int      zx80;      // the content is a ZX80 program (.o, .80)
-  int      autotype;  // ZX80: frames since reset, while LOAD and RUN are typed
+  int      autotype;  // frames since reset, while LOAD (and RUN) are typed
   int      tapeseen;  // ZX80: the tape has started playing
 }
 state_t;
@@ -294,7 +294,7 @@ static int update_variables()
   return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
 }
 
-#define VERSION "1.0a"
+#define VERSION "1.41"
 #ifdef GIT_VERSION
 static char version[] = VERSION " " GIT_VERSION;
 #else
@@ -365,24 +365,46 @@ void retro_init( void )
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
-/* ZX80: a program on tape doesn't start itself, so type LOAD (the W key
-   gives the keyword) and NEW LINE once the ROM has booted, and RUN (R) and
-   NEW LINE after the tape has played and stopped. -1 = done. */
-static void zx80_autotype( void )
+/* The tape is loaded the way a user would: once the ROM has booted, type
+   LOAD (ZX80: W; ZX81: J, then "" with SHIFT P twice) and NEW LINE. A ZX81
+   program usually starts itself; a ZX80 one never does, so RUN (R) and NEW
+   LINE follow after the tape has played and stopped. -1 = done. */
+static void autotype( void )
 {
-  if ( !state.zx80 || state.autotype < 0 )
+  if ( !state.size || state.autotype < 0 )
   {
     return;
   }
   
   int t = state.autotype++;
   
-  switch ( t )
+  if ( state.zx80 )
   {
-  case 50: PCKeyDown( 'W' ); break;
-  case 55: PCKeyUp( 'W' ); break;
-  case 60: PCKeyDown( VK_RETURN ); break;
-  case 65: PCKeyUp( VK_RETURN ); break;
+    switch ( t )
+    {
+    case 50: PCKeyDown( 'W' ); break;
+    case 55: PCKeyUp( 'W' ); break;
+    case 60: PCKeyDown( VK_RETURN ); break;
+    case 65: PCKeyUp( VK_RETURN ); break;
+    }
+  }
+  else
+  {
+    switch ( t )
+    {
+    case 200: PCKeyDown( 'J' ); break;
+    case 205: PCKeyUp( 'J' ); break;
+    case 210: PCKeyDown( VK_SHIFT ); break;
+    case 212: PCKeyDown( 'P' ); break;
+    case 217: PCKeyUp( 'P' ); break;
+    case 222: PCKeyDown( 'P' ); break;
+    case 227: PCKeyUp( 'P' ); break;
+    case 229: PCKeyUp( VK_SHIFT ); break;
+    case 235: PCKeyDown( VK_RETURN ); break;
+    case 240: PCKeyUp( VK_RETURN ); state.autotype = -1; break;
+    }
+    
+    return;
   }
   
   if ( t < 66 )
@@ -586,7 +608,7 @@ void retro_run( void )
 
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
   uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
-  zx80_autotype();
+  autotype();
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
@@ -614,25 +636,23 @@ void retro_reset( void )
 {
   eo_init( &state.cfg );
   
-  if ( state.size && state.zx80 )
+  if ( state.size )
   {
-    // There is no ZX80 snapshot sitting at LOAD: the ROM boots, and
-    // zx80_autotype() types LOAD and RUN. The tape starts when the ROM
-    // asks for its first byte (rompatch.c).
-    zx81.TZXin = 1;
-    TZXFile.LoadOFile( state.data, state.size, false );
+    // No snapshot sitting at LOAD: the ROM boots and autotype() types LOAD.
+    // The tape starts when the ROM asks for its first byte (rompatch.cpp).
+    emulator.TZXin = 1;
+    
+    if ( state.zx80 )
+    {
+      TZXFile.LoadOFile( state.data, state.size, false );
+    }
+    else
+    {
+      TZXFile.LoadFile( state.data, state.size, false );
+    }
+    
     state.autotype = 0;
     state.tapeseen = 0;
-  }
-  else if ( state.size )
-  {
-    load_snap( "zx81_16k.z81" );
-    
-    zx81.TZXin = 1;
-    TZXFile.LoadFile( state.data, state.size, false );
-    TZXFile.Start();
-    
-    //eo_loadp( state.data, state.size );
   }
 }
 
