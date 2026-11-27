@@ -89,7 +89,6 @@ The core comes with auto-configuration for all homebrew games from [Bob's Stuff]
 
 ## Known Issues
 
-* Panic HR and Missile Command, written for the TK85, show their title text with the game's graphics font on the ZX81. They change the I register line by line, timed for the TK85 ROM's display routine. On the TK85 they load, but the picture rolls: the TK85's 10K ROM covers 8K-10K, where these games put their characters.
 * With ZXpand on, the RetroPad of port 1 is also the ZXpand+ joystick (directions and A/B as fire), on top of its key mappings.
 
 ## Thanks
