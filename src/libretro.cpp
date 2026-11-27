@@ -94,6 +94,7 @@ static const struct retro_variable core_vars[] =
   { "81_zxpand",         "ZXpand (Restart); auto|disabled|enabled" },
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
+  { "81_chrgen",         "Character Generator (Restart); auto|Sinclair|CHR$128 / UDG-4-ZXpand" },
   { "81_border_size",    "Size Video Border; normal|small|none" },
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
@@ -164,6 +165,16 @@ static int update_variables()
     option = option > 0 && option < 4 ? option : 0;
     reset = reset || state.cfg.LowRAMContents != lowram[ option ];
     state.cfg.LowRAMContents = lowram[ option ];
+  }
+
+  {
+    /* auto (0), Sinclair (1), CHR$128 (2): the 128 characters of the
+       CHR$128 mod, or the UDG-4-ZXpand board, read from RAM at 8K-16K
+       (Zedragon); auto without a game database entry is Sinclair */
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_chrgen", NULL );
+    int chrgen = option == 2 ? CHRGENCHR128 : CHRGENSINCLAIR;
+    reset = reset || state.cfg.ChrGen != chrgen;
+    state.cfg.ChrGen = chrgen;
   }
 
   {

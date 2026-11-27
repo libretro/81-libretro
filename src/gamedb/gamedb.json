@@ -769,6 +769,34 @@
         "81_joypad_up": "Up/Jump",
         "81_joypad_down": "Down/Dig"
       }
+    },
+    {
+      "name": "Zedragon",
+      "author": "Charlie Robson",
+      "url": "https://github.com/charlierobson/zedragon",
+      "year": "2018",
+      "file": "zedragon.p",
+      "sha1": "b45a451a9760a7d280814b7cfc5cff04ad73f3fe",
+      "settings": {
+        "81_zxpand": "enabled",
+        "81_8_16_contents": "RAM",
+        "81_chrgen": "CHR$128 / UDG-4-ZXpand",
+        "81_sound": "Zon X-81",
+        "81_joypad_up": "q",
+        "81_joypad_down": "a",
+        "81_joypad_left": "n",
+        "81_joypad_right": "m",
+        "81_joypad_a": "space",
+        "81_joypad_b": "space"
+      },
+      "labels": {
+        "81_joypad_up": "Up",
+        "81_joypad_down": "Down",
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_a": "Fire",
+        "81_joypad_b": "Fire"
+      }
     }
   ]
 }

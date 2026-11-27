@@ -13,7 +13,7 @@ io.write( '#include <libretro.h>\n\n' )
 io.write( 'typedef struct\n' )
 io.write( '{\n' )
 io.write( '  uint32_t sha1[ 5 ];\n' )
-io.write( '  struct retro_variable vars[ 16 ];\n' )
+io.write( '  struct retro_variable vars[ 18 ];\n' )
 io.write( '}\n' )
 io.write( 'overrides_t;\n\n' )
 
@@ -40,9 +40,11 @@ for i = 1, #obj.games do
   local unused =
   {
     [ '81_8_16_contents' ] = 'ROM shadow',
+    [ '81_chrgen' ] = 'Sinclair',
     [ '81_chroma_81' ] = 'disabled',
     [ '81_highres' ] = 'none',
     [ '81_sound' ] = 'none',
+    [ '81_zxpand' ] = 'disabled',
     
     [ '81_joypad_a' ] = 'default',
     [ '81_joypad_b' ] = 'default',
