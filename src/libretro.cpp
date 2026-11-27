@@ -11,7 +11,9 @@
 #include <keys.h>
 #include <snap.h>
 #include <zx81.h>
+#include <z80.h>
 #include <tzx/TZXFILE.h>
+#include <kbstatus.h>
 
 extern "C"
 {
@@ -41,6 +43,15 @@ typedef struct
   int      ms;
   unsigned devices[ 2 ];
   uint32_t sha1[ 5 ];
+  int      zx80;      // the content is a ZX80 program (.o, .80)
+  int      ace;       // the content is for the Jupiter Ace (.ace, .tap)
+  int      acesnap;   // ... and an .ace snapshot
+  int      autotype;  // frames since reset, while LOAD (and RUN) are typed
+  int      tapeseen;  // ZX80: the tape has started playing
+  int      ready;      // frame the ROM was found ready for keys (0: not yet)
+  int      lastframes; // FRAMES at the previous frame
+  int      framesrun;  // frames FRAMES has been counting
+  char     zxpname[ 16 ]; // ZXpand: the file's name on the card, for LOAD "NAME"
 }
 state_t;
 
@@ -71,6 +82,7 @@ extern int WinR, WinL, WinT, WinB, WinRSM, WinLSM, WinTSM, WinBSM, WinRBN, WinLB
 
 extern WORD* TVFB;
 extern keybovl_t zx81ovl;
+extern keybovl_t aceovl;
 
 static state_t state;
 
@@ -78,13 +90,16 @@ static state_t state;
 
 static const struct retro_variable core_vars[] =
 {
+  { "81_machine",        "Machine (Restart); auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85|Jupiter Ace" },
+  { "81_zxpand",         "ZXpand (Restart); auto|disabled|enabled" },
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
+  { "81_chrgen",         "Character Generator (Restart); auto|Sinclair|CHR$128 / UDG-4-ZXpand" },
   { "81_border_size",    "Size Video Border; normal|small|none" },
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
-  { "81_sound",          "Sound emulation; none|auto|Zon X-81" },
+  { "81_sound",          "Sound emulation; auto|none|Zon X-81|Quicksilva" },
   { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
   { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
   { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
@@ -110,15 +125,56 @@ static int update_variables()
 {
   int reset = 0;
   int old_scaled = state.scaled;
+  int old_ntsc = state.cfg.NTSC;
+
+  {
+    /* auto: the ZX80 for .o and .80 files, else the ZX81. The machines other
+       than these two read their ROM from the system folder (eo_files.cpp). */
+    static const int machines[] = { -1, MACHINEZX81, MACHINEZX80, MACHINETS1000,
+      MACHINETS1500, MACHINELAMBDA, MACHINER470, MACHINETK85, MACHINEACE };
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_machine", NULL );
+    int m = option > 0 && option < 9 ? machines[ option ] : -1;
+
+    if ( m < 0 )
+    {
+      m = state.ace ? MACHINEACE : state.zx80 ? MACHINEZX80 : MACHINEZX81;
+    }
+
+    /* the US, Brazilian and Hong Kong machines are 60 Hz, as in EightyOne */
+    int ntsc = m != MACHINEZX80 && m != MACHINEZX81 && m != MACHINEACE;
+    reset = reset || state.cfg.machine != m || state.cfg.NTSC != ntsc;
+    state.cfg.machine = (CFGBYTE)m;
+    state.cfg.NTSC = ntsc;
+  }
+
+  {
+    /* ZXpand: an SD card interface; auto leaves it to the game database */
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_zxpand", NULL );
+    bool zxpand = option == 2;
+    reset = reset || state.cfg.ZXpand != zxpand;
+    state.cfg.ZXpand = zxpand;
+  }
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
   
   {
-    static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
+    /* the option's values start with auto (0): ROM shadow is 1, RAM 2,
+       dK'tronics 3; auto without a game database entry is ROM shadow */
+    static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_8_16_contents", NULL );
-    option += option < 0;
+    option = option > 0 && option < 4 ? option : 0;
     reset = reset || state.cfg.LowRAMContents != lowram[ option ];
     state.cfg.LowRAMContents = lowram[ option ];
+  }
+
+  {
+    /* auto (0), Sinclair (1), CHR$128 (2): the 128 characters of the
+       CHR$128 mod, or the UDG-4-ZXpand board, read from RAM at 8K-16K
+       (Zedragon); auto without a game database entry is Sinclair */
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_chrgen", NULL );
+    int chrgen = option == 2 ? CHRGENCHR128 : CHRGENSINCLAIR;
+    reset = reset || state.cfg.ChrGen != chrgen;
+    state.cfg.ChrGen = chrgen;
   }
 
   {
@@ -210,9 +266,11 @@ static int update_variables()
   }
   
   {
-    static int hires[] = { HIRESDISABLED, HIRESWRX };
+    /* auto (0), none (1), WRX (2); auto without a game database entry is
+       none */
+    static int hires[] = { HIRESDISABLED, HIRESDISABLED, HIRESWRX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_highres", NULL );
-    option += option < 0;
+    option = option > 0 && option < 3 ? option : 0;
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
   }
@@ -227,9 +285,13 @@ static int update_variables()
   }
   
   {
-    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ENABLED, AY_TYPE_ZONX };
+    /* auto (0, the default, so the game database's sound applies), none
+       (1), Zon X-81 (2), Quicksilva (3); auto without a game database
+       entry is none. It was the Quicksilva board, which takes writes to
+       0x7FFE-0x7FFF, the top of 16K RAM, as sound. */
+    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_DISABLED, AY_TYPE_ZONX, AY_TYPE_QUICKSILVA };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
-    option += option < 0;
+    option = option >= 0 && option < 4 ? option : 0;
     reset = reset || state.cfg.SoundCard != sound[ option ];
     state.cfg.SoundCard = sound[ option ];
   }
@@ -284,13 +346,16 @@ static int update_variables()
     
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_start", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_START ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+
+    /* the Jupiter ACE's overlay maps the pad the same way */
+    memcpy( aceovl.joymap, zx81ovl.joymap, sizeof( aceovl.joymap ) );
   }
   
   state.scaled = ( WinR - WinL ) == 640;
-  return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
+  return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled || old_ntsc != state.cfg.NTSC ? UPDATE_AV : 0 );
 }
 
-#define VERSION "1.0a"
+#define VERSION "1.41"
 #ifdef GIT_VERSION
 static char version[] = VERSION " " GIT_VERSION;
 #else
@@ -307,7 +372,7 @@ void retro_get_system_info( struct retro_system_info* info )
   info->library_version = version;
   info->need_fullpath = false;
   info->block_extract = false;
-  info->valid_extensions = "p|tzx|t81";
+  info->valid_extensions = "p|tzx|t81|o|80|ace|tap";
 }
 
 void retro_set_environment( retro_environment_t cb )
@@ -361,6 +426,244 @@ void retro_init( void )
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
+/* ZXpand+'s joystick port (zxpandcore.cpp, GETJS): the RetroPad of port 1,
+   in EightyOne's JOYSTICK_ZXPAND bits, 0 = pressed. The pad's buttons keep
+   their keyboard mappings too. */
+BYTE ReadJoystick1( void )
+{
+  BYTE result = 0xff;
+
+  if ( !input_state_cb || !state.cfg.ZXpand )
+  {
+    return result;
+  }
+
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP ) )    result &= 0x7f;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN ) )  result &= 0xbf;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT ) )  result &= 0xdf;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT ) ) result &= 0xef;
+
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A )
+    || input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B ) )
+  {
+    result &= 0xf7;
+  }
+
+  return result;
+}
+
+/* The tape is loaded the way a user would: once the ROM has booted, type
+   LOAD (ZX80: W; ZX81: J, then "" with SHIFT P twice) and NEW LINE. A ZX81
+   program usually starts itself; a ZX80 one never does, so RUN (R) and NEW
+   LINE follow after the tape has played and stopped. -1 = done. */
+static void autotype( void )
+{
+  if ( !state.size || state.autotype < 0 )
+  {
+    return;
+  }
+  
+  int t = state.autotype++;
+
+
+  
+  if ( state.cfg.machine == MACHINEACE )
+  {
+    /* FORTH has no LOAD "": LOAD takes the name from the tape's header
+       (2 bytes of length, the type, 10 of name; 0 = a dictionary) once the
+       Ace has booted, about a second; the dictionary's own word that starts
+       it is the user's to type */
+    static char acekeys[ 24 ];
+
+    if ( t == 0 )
+    {
+      const unsigned char* d = (const unsigned char*)state.data;
+      int n = 0;
+
+      acekeys[ 0 ] = 0;
+
+      if ( state.size > 13 && d[ 0 ] == 26 && d[ 2 ] == 0 )
+      {
+        n = snprintf( acekeys, sizeof( acekeys ), "LOAD " );
+
+        for ( int i = 3; i < 13 && d[ i ] != ' ' && isalnum( d[ i ] ); i++ )
+        {
+          acekeys[ n++ ] = (char)d[ i ];
+        }
+
+        acekeys[ n++ ] = '\n';
+        acekeys[ n ] = 0;
+      }
+
+      if ( !acekeys[ 0 ] )
+      {
+        state.autotype = -1;
+      }
+
+      return;
+    }
+
+    int k = ( t - 100 ) / 16;
+    int phase = ( t - 100 ) % 16;
+
+    if ( t < 100 )
+    {
+      return;
+    }
+
+    if ( !acekeys[ k ] )
+    {
+      state.autotype = -1;
+      return;
+    }
+
+    /* the Ace types small letters; a capital is SHIFT and the letter */
+    int c = acekeys[ k ];
+    int key = c == '\n' ? VK_RETURN : c == ' ' ? VK_SPACE : toupper( c );
+    bool shift = c >= 'A' && c <= 'Z';
+
+    if ( phase == 0 )
+    {
+      if ( shift ) PCKeyDown( VK_SHIFT );
+      PCKeyDown( key );
+    }
+    else if ( phase == 8 )
+    {
+      PCKeyUp( key );
+      if ( shift ) PCKeyUp( VK_SHIFT );
+    }
+
+    return;
+  }
+
+  if ( state.cfg.machine == MACHINEZX80 )
+  {
+    switch ( t )
+    {
+    case 50: PCKeyDown( 'W' ); break;
+    case 55: PCKeyUp( 'W' ); break;
+    case 60: PCKeyDown( VK_RETURN ); break;
+    case 65: PCKeyUp( VK_RETURN ); break;
+    }
+  }
+  else
+  {
+    /* The ROM is ready for keys once it waits in the editor: the edit line
+       at E_LINE (0x4014) holds the cursor (0x7F) and NEW LINE. The machines
+       boot in 2-6 s; after 15 s the keys go in anyway. */
+    if ( state.ready == 0 )
+    {
+      int eline = memory[ 0x4014 ] | memory[ 0x4015 ] << 8;
+      int editing = eline > 0x4000 && eline < 0xffff && memory[ eline ] == 0x7f && memory[ eline + 1 ] == 0x76;
+      state.framesrun = editing ? state.framesrun + 1 : 0;
+
+      if ( state.framesrun >= 25 || t >= 900 )
+      {
+        state.ready = t;
+      }
+
+      return;
+    }
+
+    t -= state.ready;
+
+    /* LOAD "" and NEW LINE, in the keys of each keyboard: J gives LOAD on
+       the ZX81 and its relatives, A on the Ringo R470 (its keywords are in
+       alphabetical order), and the Lambda 8300 takes the word letter by
+       letter. " is SHIFT P, but SHIFT 5 on the Lambda (KBLAMBDA). */
+    static const char zx81keys[] = { 'J', '"', '"', '\n', 0 };
+    static const char ringokeys[] = { 'A', '"', '"', '\n', 0 };
+    static const char lambdakeys[] = { 'L', 'O', 'A', 'D', '"', '"', '\n', 0 };
+    const char* keys = zx81keys;
+
+    /* ZXpand: LOAD "NAME" loads NAME.P from the card */
+    static char zxpandkeys[ 24 ];
+
+    if ( state.cfg.ZXpand && state.zxpname[ 0 ] && state.cfg.machine != MACHINER470 )
+    {
+      snprintf( zxpandkeys, sizeof( zxpandkeys ), "J\"%s\"\n", state.zxpname );
+      keys = zxpandkeys;
+    }
+
+
+    if ( state.cfg.machine == MACHINER470 )
+    {
+      keys = ringokeys;
+    }
+    else if ( state.cfg.machine == MACHINELAMBDA )
+    {
+      keys = lambdakeys;
+    }
+
+    /* one key every 16 frames: down at 0, up at 8 (SHIFT around it) */
+    int k = t / 16 - 1;
+    int phase = t % 16;
+
+    if ( k < 0 )
+    {
+      return;
+    }
+
+    if ( !keys[ k ] )
+    {
+      state.autotype = -1;
+      return;
+    }
+
+    int quote = state.cfg.machine == MACHINELAMBDA ? '5' : 'P';
+    int key = keys[ k ] == '"' ? quote : keys[ k ] == '\n' ? VK_RETURN : keys[ k ];
+
+    if ( phase == 0 )
+    {
+      if ( keys[ k ] == '"' ) PCKeyDown( VK_SHIFT );
+      PCKeyDown( key );
+    }
+    else if ( phase == 8 )
+    {
+      PCKeyUp( key );
+      if ( keys[ k ] == '"' ) PCKeyUp( VK_SHIFT );
+    }
+
+    return;
+  }
+
+  if ( t < 66 )
+  {
+    return;
+  }
+  
+  if ( TZXFile.Playing )
+  {
+    state.tapeseen = 1;
+    return;
+  }
+  
+  if ( !state.tapeseen )
+  {
+    if ( t > 50 * 60 )
+    {
+      state.autotype = -1; // the tape never started: leave it to the user
+    }
+    
+    return;
+  }
+  
+  // the tape has played and stopped: count again from here
+  if ( t < 100000 )
+  {
+    state.autotype = 100000;
+    return;
+  }
+  
+  switch ( t - 100000 )
+  {
+  case 25: PCKeyDown( 'R' ); break;
+  case 30: PCKeyUp( 'R' ); break;
+  case 35: PCKeyDown( VK_RETURN ); break;
+  case 40: PCKeyUp( VK_RETURN ); state.autotype = -1; break;
+  }
+}
+
 bool retro_load_game( const struct retro_game_info* info )
 {
   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
@@ -390,12 +693,22 @@ bool retro_load_game( const struct retro_game_info* info )
   
   memcpy( state.data, info->data, state.size );
   
-  state.cfg.machine = MACHINEZX81;
+  {
+    // ZX80 programs come as .o or .80 files: a memory image from 0x4000,
+    // the same bytes the ZX80 puts on tape, with no name in front.
+    const char* ext = info->path ? strrchr( info->path, '.' ) : NULL;
+    state.zx80 = ext && ( ( tolower( ext[ 1 ] ) == 'o' && !ext[ 2 ] ) || !strcmp( ext, ".80" ) );
+    std::string lext = ext ? ext : "";
+    for ( size_t i = 0; i < lext.size(); i++ ) lext[ i ] = (char)tolower( (unsigned char)lext[ i ] );
+    state.ace = lext == ".ace" || lext == ".tap";
+    state.acesnap = lext == ".ace";
+  }
+  
+  state.cfg.machine = state.zx80 ? MACHINEZX80 : MACHINEZX81; /* update_variables() may change it */
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
   state.cfg.ProtectROM = 1;
   state.cfg.ZXPrinter = 0;
-  state.cfg.NTSC = 0;
   state.cfg.M1Not = 0;
   state.cfg.TS2050 = 0;
   state.cfg.ChrGen = CHRGENSINCLAIR;
@@ -415,9 +728,104 @@ bool retro_load_game( const struct retro_game_info* info )
   SHA1Result( &sha1 );
   memcpy( state.sha1, sha1.Message_Digest, sizeof(state.sha1) );
   
+  {
+    const char* dir = NULL;
+
+    if ( env_cb( RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, (void*)&dir ) && dir )
+    {
+      strncpy( eo_system_dir, dir, sizeof( eo_system_dir ) - 1 );
+    }
+
+    /* the user's additions to the game database (#23) */
+    if ( *eo_system_dir )
+    {
+      coreopt_load_user( ( std::string( eo_system_dir ) + "/EightyOne/gamedb.json" ).c_str() );
+    }
+
+    dir = NULL;
+
+    if ( env_cb( RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, (void*)&dir ) && dir )
+    {
+      strncpy( eo_save_dir, dir, sizeof( eo_save_dir ) - 1 );
+    }
+  }
+
+  {
+    /* ZXpand's SD card is the folder the file was loaded from (the
+       archive's folder for a file inside one), and the file is loaded from
+       it by name: LOAD "NAME" for NAME.P */
+    std::string path = info->path ? info->path : "";
+    size_t hash = path.find( '#' );
+    if ( hash != std::string::npos ) path = path.substr( 0, hash );
+    size_t slash = path.find_last_of( "/\\" );
+    eo_zxpand_base = slash != std::string::npos ? path.substr( 0, slash + 1 ) : "";
+
+    std::string name = info->path ? info->path : "";
+    slash = name.find_last_of( "/\\#" );
+    if ( slash != std::string::npos ) name = name.substr( slash + 1 );
+    size_t dot = name.rfind( '.' );
+    std::string ext = dot != std::string::npos ? name.substr( dot ) : "";
+    if ( dot != std::string::npos ) name = name.substr( 0, dot );
+
+    state.zxpname[ 0 ] = 0;
+
+    if ( name.size() < sizeof( state.zxpname ) && ( ext == ".p" || ext == ".P" ) )
+    {
+      size_t i;
+
+      for ( i = 0; i < name.size() && isalnum( (unsigned char)name[ i ] ); i++ )
+      {
+        state.zxpname[ i ] = (char)toupper( (unsigned char)name[ i ] );
+      }
+
+      state.zxpname[ i == name.size() ? i : 0 ] = 0;
+    }
+  }
+
   update_variables();
+
+  {
+    /* every machine but the ZX80 and the ZX81 needs its ROM in the system
+       folder */
+    const char* rom = NULL;
+
+    switch ( state.cfg.machine )
+    {
+    case MACHINETS1500: rom = "ts1500.rom"; break;
+    case MACHINELAMBDA: rom = "lambda8300.rom"; break;
+    case MACHINER470:   rom = "ringo470.rom"; break;
+    case MACHINETK85:   rom = "tk85.rom"; break;
+    case MACHINEACE:    rom = "jupiterace.rom"; break;
+    }
+
+    if ( state.cfg.machine == MACHINELAMBDA && eo_rom_exists( rom ) )
+    {
+      rom = "lambda8300characterset.bin";
+    }
+
+    /* ZXpand needs EightyOne's overlay of the machine's ROM */
+    if ( !rom && state.cfg.ZXpand )
+    {
+      if ( state.cfg.machine == MACHINEZX80 ) rom = "zx80.zxpand.ovl";
+      else if ( state.cfg.machine == MACHINETS1500 ) rom = "ts1500.zxpand.ovl";
+      else if ( state.cfg.machine == MACHINEZX81 || state.cfg.machine == MACHINETS1000 ) rom = "zx81.zxpand.ovl";
+    }
+
+    if ( rom && !eo_rom_exists( rom ) )
+    {
+      static char msg_text[ 256 ];
+      struct retro_message msg;
+
+      snprintf( msg_text, sizeof( msg_text ), "%s is missing in system/EightyOne", rom );
+      msg.msg = msg_text;
+      msg.frames = 360;
+      env_cb( RETRO_ENVIRONMENT_SET_MESSAGE, &msg );
+      log_cb( RETRO_LOG_ERROR, "%s\n", msg_text );
+      return false;
+    }
+  }
+
   retro_reset();
-  keybovl_set( &zx81ovl );
   return true;
 }
 
@@ -474,7 +882,7 @@ void retro_get_system_av_info( struct retro_system_av_info* info )
   info->geometry.max_width = WinR - WinL;
   info->geometry.max_height = WinB - WinT;
   info->geometry.aspect_ratio = 0.0f;
-  info->timing.fps = 50.0;
+  info->timing.fps = state.cfg.NTSC ? 60.0 : 50.0;
   info->timing.sample_rate = 44100.0;
 }
 
@@ -518,6 +926,7 @@ void retro_run( void )
 
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
   uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
+  autotype();
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
@@ -544,16 +953,40 @@ void retro_set_controller_port_device( unsigned port, unsigned device )
 void retro_reset( void )
 {
   eo_init( &state.cfg );
+  keybovl_set( state.cfg.machine == MACHINEACE ? &aceovl : &zx81ovl );
   
   if ( state.size )
   {
-    load_snap( "zx81_16k.z81" );
+    // No snapshot sitting at LOAD: the ROM boots and autotype() types LOAD.
+    // The tape starts when the ROM asks for its first byte (rompatch.cpp).
+    emulator.TZXin = 1;
     
-    zx81.TZXin = 1;
-    TZXFile.LoadFile( state.data, state.size, false );
-    TZXFile.Start();
+    state.autotype = 0;
+
+    if ( state.cfg.machine == MACHINEACE && state.acesnap )
+    {
+      // an .ace snapshot is the machine's memory and registers: it runs
+      load_snap_ace( (const unsigned char*)state.data, state.size );
+      state.autotype = -1;
+    }
+    else if ( state.cfg.machine == MACHINEACE )
+    {
+      // an Ace .tap: autotype() types LOAD and the name in its header
+      TZXFile.LoadAceTAPFile( state.data, state.size, false );
+    }
+    else if ( state.zx80 )
+    {
+      TZXFile.LoadOFile( state.data, state.size, false );
+    }
+    else
+    {
+      TZXFile.LoadFile( state.data, state.size, false );
+    }
     
-    //eo_loadp( state.data, state.size );
+    state.tapeseen = 0;
+    state.ready = 0;
+    state.framesrun = 0;
+    state.lastframes = -1;
   }
 }
 
@@ -597,6 +1030,7 @@ void retro_unload_game( void )
 {
   free( state.data );
   state.data = NULL;
+  coreopt_free_user();
 }
 
 unsigned retro_get_region( void )

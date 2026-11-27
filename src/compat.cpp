@@ -1,4 +1,5 @@
 #include <zx81config.h>
+#include <eo_upstream.h>
 #include <TZXFILE.h>
 
 #include <libretro.h>
@@ -26,14 +27,14 @@
 
 TTZXFile TZXFile;
 
-extern "C" int FlashSaveable( void )
+extern "C" int IsFlashSaveable( void )
 {
-  return zx81.TZXout != 0;
+  return emulator.TZXout != 0;
 }
 
-extern "C" int FlashLoadable( void )
+extern "C" int IsFlashLoadable( void )
 {
-  return zx81.TZXin ? TZXFile.FlashLoadable : 0;
+  return emulator.TZXin ? TZXFile.FlashLoadable : 0;
 }
 
 extern "C" void WavClockTick( int TStates, int MicState )
@@ -48,7 +49,7 @@ extern "C" void WavClockTick( int TStates, int MicState )
 
 extern "C" int WavPlaying()
 {
-  return zx81.TZXin ? TZXFile.Playing : 0;
+  return emulator.TZXin ? TZXFile.Playing : 0;
 }
 
 extern "C" void WavStop( void )
@@ -77,7 +78,7 @@ extern "C" void WavRecordByte( int Byte )
 
 extern "C" int GetEarState()
 {
-  return zx81.TZXin ? TZXFile.GetEarState() : 0;
+  return emulator.TZXin ? TZXFile.GetEarState() : 0;
 }
 
 /*
@@ -112,8 +113,9 @@ extern "C" void ZXPrinterWritePort( unsigned char Data )
   (void)Data;
 }
 
-extern "C" unsigned char ZXPrinterReadPort( void )
+extern "C" unsigned char ZXPrinterReadPort( unsigned char idle )
 {
+  (void)idle;
   return 0;
 }
 
@@ -226,11 +228,7 @@ extern "C" void d8251reset( void )
 */
 
 long noise;
-int scanline_len;
-int sync_len;
-int sync_valid;
 int RasterY = 0;
-BYTE scanline[ 1024 ];
 
 #define BlWinT 56
 #define BlWinB ( BlWinT + 192 )
@@ -257,8 +255,9 @@ BYTE scanline[ 1024 ];
 #define FuWinL 0
 #define FuWinR ( FuWinL + 413 )
 
-#define HTOL 405
-#define VTOL 290
+#define HTOL 390
+#define VTOLMIN 283
+#define VTOLMAX 323
 #define HMIN 10
 #define VMIN 350
 
@@ -287,10 +286,11 @@ int TVP;
 static int BPP, ScanLen;
 static int Paletteised, Scale;
 
-static int HSYNC_TOLLERANCE = HTOL;
-static int VSYNC_TOLLERANCE = VTOL;
-static int HSYNC_MINLEN = HMIN;
-static int VSYNC_MINLEN = VMIN;
+int HSYNC_TOLLERANCE = HTOL;
+int VSYNC_TOLLERANCEMIN = VTOLMIN;
+int VSYNC_TOLLERANCEMAX = VTOLMAX;
+int HSYNC_MINLEN = HMIN;
+int VSYNC_MINLEN = VMIN;
 
 static DWORD Palette[ 256 ], Colours[ 256 ];
 
@@ -311,12 +311,12 @@ static DWORD Palette[ 256 ], Colours[ 256 ];
                          | ( ( ( r > 255 ? 255 : ( r < 0 ? 0 : r ) ) & 0xff ) << RED_SHIFT ) )
 
 
-extern "C" void add_blank( int tstates, BYTE colour )
+void add_blank( SCANLINE* CurScanLine, int tstates, BYTE colour )
 {
   while ( tstates-- > 0 )
   {
-    scanline[ scanline_len++ ] = colour;
-    scanline[ scanline_len++ ] = colour;
+    CurScanLine->scanline[ CurScanLine->scanline_len++ ] = colour;
+    CurScanLine->scanline[ CurScanLine->scanline_len++ ] = colour;
   }
 }
 
@@ -361,12 +361,12 @@ static void compute_palette( CONFIG* cfg )
   {
     int colour = i;
 
-    if ( zx81.inverse )
+    if ( emulator.inverse )
     {
       colour = ( i & 8 ) + ( 7 - ( colour & 7 ) );
     }
 
-    if ( !zx81.Chroma81 )
+    if ( machine.colour != COLOURCHROMA )
     {
       int difference = ( 1000 * ( ( ( colour > 7 ) ? HiBrightLevel : ContrastLevel ) - BrightnessLevel ) ) / 16;
       int basecolour = ( difference * ( ( colour & 7 ) + 9 ) ) / 1000;
@@ -494,14 +494,14 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   Paletteised = false;
   Scale = tv.AdvancedEffects ? 2 : 1;
 
-  ScanLen = ( 2 + machine.tperscanline * 2 ) * BPP;
+  ScanLen = ( machine.tperscanline * 2 ) * BPP;
 
-  switch ( zx81.bordersize )
+  switch ( emulator.bordersize )
   {
   case BORDERNONE:
     WinL = BlWinL; WinR = BlWinR; WinT = BlWinT; WinB = BlWinB;
 
-    if ( zx81.NTSC )
+    if ( machine.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
@@ -511,7 +511,7 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   case BORDERSMALL:
     WinL = SmWinL; WinR = SmWinR; WinT = SmWinT; WinB = SmWinB;
 
-    if ( zx81.NTSC )
+    if ( machine.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
@@ -521,7 +521,7 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   case BORDERNORMAL:
     WinL = NoWinL; WinR = NoWinR; WinT = NoWinT; WinB = NoWinB;
 
-    if ( zx81.NTSC )
+    if ( machine.NTSC )
     {
       WinT -= 24; WinB -= 24;
     }
@@ -531,7 +531,7 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   case BORDERLARGE:
     WinL = LaWinL; WinR = LaWinR; WinT = LaWinT; WinB = LaWinB;
 
-    if ( zx81.NTSC )
+    if ( machine.NTSC )
     {
       WinB -= 24;
     }
@@ -541,7 +541,7 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   case BORDERFULL:
     WinL = FuWinL; WinR = FuWinR; WinT = FuWinT; WinB = FuWinB;
 
-    if ( zx81.NTSC )
+    if ( machine.NTSC )
     {
       WinB -= 51;
     }
@@ -550,25 +550,38 @@ extern "C" int AccurateInit( CONFIG* cfg, int resize )
   }
 
 
+  if ( emulator.bordersize <= BORDERNORMAL )
+  {
+    if ( emulator.machine == MACHINEZX80 )
+    {
+      WinL += 2; WinR += 2;
+    }
+    else
+    {
+      WinL += 4; WinR += 4;
+    }
+  }
+
   if ( tv.AdvancedEffects )
   {
     WinL *= 2; WinR *= 2; WinT *= 2; WinB *= 2; ScanLen *= 2;
     TVW = 1024;
     TVH = 768;
     HSYNC_TOLLERANCE = HTOL * 2; HSYNC_MINLEN = 10;
-    VSYNC_TOLLERANCE = VTOL * 2; VSYNC_MINLEN = 350;
+    VSYNC_TOLLERANCEMIN = VTOLMIN * 2; VSYNC_TOLLERANCEMAX = VTOLMAX * 2; VSYNC_MINLEN = 350;
   }
   else
   {
     TVW = 520;
     TVH = 380;
     HSYNC_TOLLERANCE = HTOL; HSYNC_MINLEN = 10;
-    VSYNC_TOLLERANCE = VTOL; VSYNC_MINLEN = 350;
+    VSYNC_TOLLERANCEMIN = VTOLMIN; VSYNC_TOLLERANCEMAX = VTOLMAX; VSYNC_MINLEN = 350;
   }
 
-  if ( zx81.NTSC )
+  if ( machine.NTSC )
   {
-    VSYNC_TOLLERANCE -= 60;
+    VSYNC_TOLLERANCEMIN -= 60;
+    VSYNC_TOLLERANCEMAX -= 60;
   }
 
   dest = buffer = (unsigned char*)malloc( TVW * TVH * 2 );
@@ -608,20 +621,22 @@ static void CompleteFrame(void)
   }
 }
 
-extern "C" void AccurateDraw( void )
+/* AccDraw_.cpp's AccurateDraw of EightyOne 1.41: one scanline at a time,
+   into the core's frame buffer */
+int AccurateDraw( SCANLINE* Line )
 {
   static int FrameNo = 0;
   static int LastVSyncLen = 0, Shade = 0;
-  register int i, c;
+  int i, c;
 
   if ( !dest )
   {
-    return;
+    return 0;
   }
 
-  for ( i = 0; i < scanline_len; i++ )
+  for ( i = 0; i < Line->scanline_len; i++ )
   {
-    c = scanline[ i ];
+    c = Line->scanline[ i ];
 
     Plot( FrameNo * TVP, c + Shade );
 
@@ -632,25 +647,23 @@ extern "C" void AccurateDraw( void )
         Plot( TVP, c + 8 - Shade );
       }
 
-      if ( zx81.machine != MACHINESPEC48 )
-      {
-        RasterX += BPP;
-        Plot( FrameNo * TVP, c + Shade );
+      RasterX += BPP;
+      Plot( FrameNo * TVP, c + Shade );
 
-        if ( !tv.Interlaced )
-        {
-          Plot( TVP, c + 8 - Shade );
-        }
+      if ( !tv.Interlaced )
+      {
+        Plot( TVP, c + 8 - Shade );
       }
     }
 
     RasterX += BPP;
 
-    if ( RasterX > ScanLen )
+    if ( RasterX >= ScanLen )
     {
       RasterX = 0;
       dest += TVP * Scale;
       RasterY += Scale;
+
       if ( !tv.AdvancedEffects )
       {
         Shade = 8 - Shade;
@@ -658,25 +671,26 @@ extern "C" void AccurateDraw( void )
 
       if ( RasterY >= TVH )
       {
-        //RasterX = 0;
-        //RasterY = 0;
-        //dest = buffer;
-        i = scanline_len + 1;
-        sync_valid = true;
+        i = Line->scanline_len + 1;
+        Line->sync_type = SYNCTYPEV;
+
+        if ( Line->sync_len < HSYNC_MINLEN )
+        {
+          Line->sync_len = HSYNC_MINLEN;
+        }
       }
     }
   }
 
-  if ( sync_len < HSYNC_MINLEN )
+  if ( Line->sync_len < HSYNC_MINLEN )
   {
-    sync_valid = 0;
+    Line->sync_type = 0;
   }
 
-  if ( sync_valid )
+  if ( Line->sync_type )
   {
     if ( RasterX > ( HSYNC_TOLLERANCE * BPP ) )
     {
-      //scanlen[ RasterY ] = RasterX;
       RasterX = 0;
       RasterY += Scale;
 
@@ -688,48 +702,34 @@ extern "C" void AccurateDraw( void )
       dest += TVP * Scale;
     }
 
-    if ( RasterY >= TVH || ( sync_len > VSYNC_MINLEN && RasterY > VSYNC_TOLLERANCE ) )
+    if ( RasterY >= TVH || RasterY >= VSYNC_TOLLERANCEMAX
+       || ( Line->sync_len > VSYNC_MINLEN && RasterY > VSYNC_TOLLERANCEMIN ) )
     {
       CompleteFrame();
       RasterX = RasterY = 0;
       dest = buffer;
 
       if ( tv.Interlaced )
-        {
+      {
         FrameNo = 1 - FrameNo;
         Shade = FrameNo * 8;
 
-        if ( scanline_len >= ( ( LastVSyncLen * 5 ) / 4 ) )
+        if ( Line->scanline_len >= ( ( LastVSyncLen * 5 ) / 4 ) )
         {
           FrameNo = 0;
         }
 
-        LastVSyncLen = scanline_len;
+        LastVSyncLen = Line->scanline_len;
       }
       else
       {
         FrameNo = 0;
         Shade = 0;
       }
-
-      //AccurateUpdateDisplay( false );
     }
-
-    sync_len = 0;
-    sync_valid = -1;
   }
 
-  if ( zx81.single_step )
-  {
-    int i;
-
-    for ( i = 0; i < 8; i++ )
-    {
-      *(uint16_t*)( dest + RasterX + i * BPP ) = Colours[ 15 ];
-    }
-
-    //AccurateUpdateDisplay( true );
-  }
+  return 0;
 }
 
 /*

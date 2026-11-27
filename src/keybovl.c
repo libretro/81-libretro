@@ -3,9 +3,9 @@
 static keybovl_t*     ovl = NULL; // the current overlay
 static keybovl_key_t* key;        // the selected key
 static int            visible;    // true if the overlay is visible
-static int            select;     // true if the select joy button is pressed
+static int            select[ 2 ]; // true if the select joy button is pressed, per port
 static int            timer;      // milliseconds counter to release the key
-static uint32_t       joystate = 0; // joystick button states
+static uint32_t       joystate[ 2 ] = { 0, 0 }; // joystick button states, per port
 static uint32_t       keystate[ ( RETROK_LAST + 31 ) / 32 ] = { 0 }; // key states
 
 #define TOGGLE   1
@@ -236,15 +236,15 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
     
     if ( input_cb( p, devices[ p ], 0, RETRO_DEVICE_ID_JOYPAD_SELECT ) )
     {
-      if ( !select )
+      if ( !select[ p ] )
       {
-        select = 1;
+        select[ p ] = 1;
         visible = !visible;
       }
     }
     else
     {
-      select = 0;
+      select[ p ] = 0;
     }
   }
   
@@ -273,9 +273,9 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
         
         if ( is_down )
         {
-          if ( ( joystate & bit ) == 0 )
+          if ( ( joystate[ p ] & bit ) == 0 )
           {
-            joystate |= bit;
+            joystate[ p ] |= bit;
             
             if ( ovl->joymap[ i ] )
             {
@@ -285,9 +285,9 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
         }
         else
         {
-          if ( joystate & bit )
+          if ( joystate[ p ] & bit )
           {
-            joystate &= ~bit;
+            joystate[ p ] &= ~bit;
             
             if ( ovl->joymap[ i ] )
             {
@@ -302,9 +302,9 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
         
         if ( is_down )
         {
-          if ( ( joystate & bit ) == 0 )
+          if ( ( joystate[ p ] & bit ) == 0 )
           {
-            joystate |= bit;
+            joystate[ p ] |= bit;
             
             switch ( i )
             {
@@ -339,7 +339,7 @@ static void update( retro_input_state_t input_cb, unsigned* devices, int ms )
         }
         else
         {
-          joystate &= ~bit;
+          joystate[ p ] &= ~bit;
         }
       }
     }

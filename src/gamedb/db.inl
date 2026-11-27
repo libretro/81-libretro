@@ -4,7 +4,7 @@
 typedef struct
 {
   uint32_t sha1[ 5 ];
-  struct retro_variable vars[ 16 ];
+  struct retro_variable vars[ 18 ];
 }
 overrides_t;
 
@@ -15,6 +15,7 @@ static overrides_t s_overrides[] =
     { 0x0f7a62faU, 0x0d575d59U, 0x5857aafdU, 0xefc78b33U, 0xa207be91U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -30,6 +31,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "d" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -37,6 +39,7 @@ static overrides_t s_overrides[] =
     { 0x11c5fe8dU, 0x44763d94U, 0xa3eedf59U, 0x7b6daf04U, 0x38364e22U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -52,6 +55,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -59,6 +63,7 @@ static overrides_t s_overrides[] =
     { 0x17c49e4aU, 0xc9179ed0U, 0xd08c18c6U, 0x71f3db53U, 0x43bad3ccU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -74,6 +79,31 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "p" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
+    },
+  },
+  {
+    /* Panic HR, 2010, Kelly Abrantes Murta, https://zx81.eu5.org/toddysofte.html */
+    { 0x17d4513bU, 0x5de3ebf7U, 0x46817180U, 0x6b7a65d1U, 0xcbd820e8U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chrgen", "Sinclair" },
+      { "81_chroma_81", "disabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -81,6 +111,7 @@ static overrides_t s_overrides[] =
     { 0x1b4fc9ebU, 0x5cd3373aU, 0x9986fcd3U, 0x95d0117cU, 0x6b3c4718U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "c" },
@@ -96,6 +127,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "g" },
       { "81_joypad_y", "b" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -103,6 +135,7 @@ static overrides_t s_overrides[] =
     { 0x28afa426U, 0xe660186aU, 0x1c1c56d7U, 0x4251b604U, 0xe25bb2a1U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -118,6 +151,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "r" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -125,6 +159,7 @@ static overrides_t s_overrides[] =
     { 0x32be2ea8U, 0x37e86188U, 0x98312ec5U, 0x8526d4e9U, 0xc30e542cU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -140,6 +175,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "c" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -147,6 +183,7 @@ static overrides_t s_overrides[] =
     { 0x3c74569eU, 0xf70327ecU, 0xf17db982U, 0xef92b455U, 0x7c17b538U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -162,6 +199,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "c" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -169,6 +207,7 @@ static overrides_t s_overrides[] =
     { 0x4d238823U, 0xfce7e4f2U, 0x2f198bb3U, 0xd85bb07bU, 0x2ad58c6aU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -184,6 +223,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "default" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -191,6 +231,7 @@ static overrides_t s_overrides[] =
     { 0x548cde66U, 0xe0d65e43U, 0x7dca54b8U, 0x8ef69be8U, 0xdb0dd556U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -206,6 +247,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "r" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -213,6 +255,7 @@ static overrides_t s_overrides[] =
     { 0x54db0c53U, 0x05f89a62U, 0x9a19e5e1U, 0x07f34e65U, 0xd2bfbd93U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -228,6 +271,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "c" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -235,6 +279,7 @@ static overrides_t s_overrides[] =
     { 0x5642ddd9U, 0x4d1c6649U, 0xbc2e01caU, 0x112b7d76U, 0xf376c826U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -250,6 +295,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "c" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -257,6 +303,7 @@ static overrides_t s_overrides[] =
     { 0x59dae098U, 0x079f00c3U, 0xe72ec464U, 0x7ccbd2edU, 0x99b979f1U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -272,6 +319,31 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
+    },
+  },
+  {
+    /* Panic HR, 2010, Kelly Abrantes Murta, https://zx81.eu5.org/toddysofte.html */
+    { 0x5c57aa75U, 0xdb583c46U, 0x577f61abU, 0xf8383386U, 0xa9d7c2d8U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chrgen", "Sinclair" },
+      { "81_chroma_81", "disabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -279,6 +351,7 @@ static overrides_t s_overrides[] =
     { 0x6abc2d4dU, 0xe5bb40aaU, 0xc8f3703eU, 0x5c33a9ceU, 0x3a31be75U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -294,6 +367,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -301,6 +375,7 @@ static overrides_t s_overrides[] =
     { 0x6e25de78U, 0x48488836U, 0x1a685f50U, 0x4245025aU, 0x598b4418U },
     {
       { "81_8_16_contents", "RAM" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -316,6 +391,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "new line" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -323,6 +399,7 @@ static overrides_t s_overrides[] =
     { 0x73b76ddcU, 0xda52cc08U, 0x1b18e40cU, 0x6186d90dU, 0xd847cf60U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -338,6 +415,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "c" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -345,6 +423,7 @@ static overrides_t s_overrides[] =
     { 0x785b0b5cU, 0xfb17e01fU, 0x9279d032U, 0xa34306daU, 0x51a2e7bfU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -360,6 +439,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "k" },
       { "81_joypad_y", "c" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -367,6 +447,7 @@ static overrides_t s_overrides[] =
     { 0x7bd65421U, 0x239915daU, 0xd4137206U, 0xc0c7572fU, 0x31c6ac5aU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -382,6 +463,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "p" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -389,6 +471,7 @@ static overrides_t s_overrides[] =
     { 0x7be46275U, 0xf1048dc2U, 0x6216f9deU, 0xd649e2c2U, 0xf88083d3U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "l" },
@@ -404,6 +487,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "d" },
       { "81_joypad_y", "s" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -411,6 +495,7 @@ static overrides_t s_overrides[] =
     { 0x80c554a9U, 0xe303794cU, 0x62ee3352U, 0xa926f8bcU, 0xa5393996U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -426,6 +511,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "default" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -433,6 +519,7 @@ static overrides_t s_overrides[] =
     { 0x81dc34adU, 0xb69d5605U, 0x0839de09U, 0xa90b5ff4U, 0x157e89c7U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -448,6 +535,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "default" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -455,6 +543,7 @@ static overrides_t s_overrides[] =
     { 0x8e8ee9c4U, 0xfc589f38U, 0x6596ef3bU, 0x3e8fab9bU, 0x9ee799efU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -470,6 +559,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "n" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -477,6 +567,7 @@ static overrides_t s_overrides[] =
     { 0x98ef4e7aU, 0x24f87c9dU, 0x253da0dcU, 0x68698850U, 0xdcd2752fU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "default" },
@@ -492,6 +583,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "p" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -499,6 +591,7 @@ static overrides_t s_overrides[] =
     { 0x9f9cb099U, 0xb26ac2a5U, 0x324da8f8U, 0x70989ab8U, 0x63c83abaU },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "3" },
@@ -514,6 +607,31 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "2" },
       { "81_joypad_y", "1" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
+    },
+  },
+  {
+    /* Zedragon, 2018, Charlie Robson, https://github.com/charlierobson/zedragon */
+    { 0xb45a451aU, 0x9760a7d2U, 0x80814b7cU, 0xfc5cff04U, 0xad73f3feU },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chrgen", "CHR$128 / UDG-4-ZXpand" },
+      { "81_chroma_81", "disabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "space" },
+      { "81_joypad_b", "space" },
+      { "81_joypad_down", "a" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "n" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "m" },
+      { "81_joypad_up", "q" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "Zon X-81" },
+      { "81_zxpand", "enabled" },
     },
   },
   {
@@ -521,6 +639,7 @@ static overrides_t s_overrides[] =
     { 0xbf885a77U, 0x6d2f03e9U, 0x24b2a23aU, 0xff3b6375U, 0xa8328241U },
     {
       { "81_8_16_contents", "RAM" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -536,6 +655,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "new line" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -543,6 +663,7 @@ static overrides_t s_overrides[] =
     { 0xcc0494b9U, 0x4aad9d36U, 0x69ec75a2U, 0xb51594c8U, 0x4f8af336U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "enabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -558,6 +679,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "new line" },
       { "81_joypad_y", "p" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
   {
@@ -565,6 +687,7 @@ static overrides_t s_overrides[] =
     { 0xd7e40348U, 0xcc9181d2U, 0x033c63e1U, 0x7e8fe075U, 0x89e90c64U },
     {
       { "81_8_16_contents", "ROM shadow" },
+      { "81_chrgen", "Sinclair" },
       { "81_chroma_81", "disabled" },
       { "81_highres", "none" },
       { "81_joypad_a", "0" },
@@ -580,6 +703,7 @@ static overrides_t s_overrides[] =
       { "81_joypad_x", "default" },
       { "81_joypad_y", "default" },
       { "81_sound", "none" },
+      { "81_zxpand", "disabled" },
     },
   },
 };

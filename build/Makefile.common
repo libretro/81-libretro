@@ -1,4 +1,9 @@
 INCLUDES += -I$(CORE_DIR) \
+            -I$(CORE_DIR)/eo/shim \
+            -I$(CORE_DIR)/eo \
+            -I$(CORE_DIR)/eo/zx81 \
+            -I$(CORE_DIR)/eo/z80 \
+            -I$(CORE_DIR)/eo/Chroma \
             -I$(CORE_DIR)/src \
             -I$(CORE_DIR)/81/Ace \
             -I$(CORE_DIR)/81/ide \
@@ -12,7 +17,6 @@ INCLUDES += -I$(CORE_DIR) \
             -I$(CORE_DIR)/81
 
 SOURCES_CXX += $(CORE_DIR)/81/kbstatus.cpp
-SOURCES_CXX += $(CORE_DIR)/81/ide/ide.cpp
 SOURCES_CXX += $(CORE_DIR)/81/Utils.cpp
 SOURCES_CXX += $(CORE_DIR)/81/tzx/TZXFILE.cpp
 SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxadd.cpp
@@ -22,27 +26,39 @@ SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventGeneral.cpp
 SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventTurbo.cpp
 SOURCES_CXX += $(CORE_DIR)/81/tzx/tzxEventMisc.cpp
 
-SOURCES_C += $(CORE_DIR)/81/zx81config.c
 SOURCES_C += $(CORE_DIR)/81/sound/sound.c
-SOURCES_C += $(CORE_DIR)/81/sp0256.c
-SOURCES_C += $(CORE_DIR)/81/peripherals/dev8255.c
-SOURCES_C += $(CORE_DIR)/81/Ace/ace.c
-SOURCES_C += $(CORE_DIR)/81/zx81/zx81.c
-SOURCES_C += $(CORE_DIR)/81/zx81/rompatch.c
-SOURCES_C += $(CORE_DIR)/81/zx81/snap.c
-SOURCES_C += $(CORE_DIR)/81/z80/z80.c
-SOURCES_C += $(CORE_DIR)/81/z80/z80_ops.c
 
 SOURCES_CXX += $(CORE_DIR)/src/libretro.cpp
 SOURCES_C += $(CORE_DIR)/src/coreopt.c
 SOURCES_C += $(CORE_DIR)/src/keybovl.c
-SOURCES_C += $(CORE_DIR)/src/eo.c
+SOURCES_CXX += $(CORE_DIR)/src/eo.cpp
+SOURCES_CXX += $(CORE_DIR)/src/eo_config.cpp
+SOURCES_CXX += $(CORE_DIR)/src/eo_files.cpp
+SOURCES_CXX += $(CORE_DIR)/src/eo_stubs.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zx81/zx81.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zx81/rompatch.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/z80/z80.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/z80/z80_ops.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/Chroma/Chroma.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/dev8255.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/Ace/ace.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/ZXpand-emu.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/dirlib.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/diskio.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/ff.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/smbsd.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/wildcard.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandclass.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandcom.cpp
+SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandcore.cpp
 SOURCES_C += $(CORE_DIR)/src/kbds/zx81kbd.c
+SOURCES_C += $(CORE_DIR)/src/kbds/acekbd.c
 SOURCES_C += $(CORE_DIR)/src/version.c
 SOURCES_C += $(CORE_DIR)/src/gamedb/sha1.c
 SOURCES_CXX += $(CORE_DIR)/src/compat.cpp
 
 ROMS += $(CORE_DIR)/bin/ROM/zx81.rom
+ROMS += $(CORE_DIR)/bin/ROM/zx80.rom
 ROMS += $(CORE_DIR)/bin/ROM/dkchr.rom
 
 SNAPS += $(CORE_DIR)/src/snaps/zx81_16k.z81

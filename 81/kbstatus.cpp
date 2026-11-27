@@ -23,6 +23,20 @@
 
 #include "kbstatus.h"
 #include "zx81.h"
+#define kbD0 1
+#define kbD1 2
+#define kbD2 4
+#define kbD3 8
+#define kbD4 16
+#define kbD5 32
+#define kbA8  0
+#define kbA9  1
+#define kbA10 2
+#define kbA11 3
+#define kbA12 4
+#define kbA13 5
+#define kbA14 6
+#define kbA15 7
 #include "zx81config.h"
 
 #include <keys.h>
@@ -503,13 +517,13 @@ void PCKbInit(void)
 
         for(i=0;i<8;i++) ZXKeyboard[i]=0;
 
-        switch(zx81.machine)
+        switch(emulator.machine)
         {
         case MACHINEZX80:
                 KeyMap=KBZX80;
                 break;
 
-        case MACHINESPEC48:
+        case MACHINESPECTRUM:
                 KeyMap=KBSPEC;
                 break;
 
@@ -568,8 +582,8 @@ void PCKeySetCTRL(char key)
 {
         int Kctrl;
 
-        if (zx81.machine==MACHINESPEC48
-                || zx81.machine==MACHINEACE) return;
+        if (emulator.machine==MACHINESPECTRUM
+                || emulator.machine==MACHINEACE) return;
 
         if (!key)
         {
@@ -611,7 +625,7 @@ void PCKeyDown(WORD key)
                 if ((KeyMap[i].WinKey == key) &&
                         ((KeyMap[i].Shift==PCShift) || (KeyMap[i].Shift==0)))
                 {
-                        if (key>=186 && key<=222 && zx81.machine==MACHINESPEC48)
+                        if (key>=186 && key<=222 && emulator.machine==MACHINESPECTRUM)
                                 ZXKeyboard[kbA8] &= ~kbD0;
 
                         ZXKeyboard[KeyMap[i].Addr1] |= KeyMap[i].Data1;

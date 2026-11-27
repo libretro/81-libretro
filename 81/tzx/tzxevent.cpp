@@ -39,7 +39,7 @@ bool TTZXFile::Start(void)
 
         if (CurBlock==Blocks)
         {
-                if (zx81.machine==MACHINESPEC48) return(false);
+                if (emulator.machine==MACHINESPECTRUM) return(false);
                 else CurBlock=0;
         }
 
@@ -52,7 +52,7 @@ bool TTZXFile::Start(void)
         //Pause=250;
 
         //EarState=1;
-        if (zx81.machine==MACHINESPEC48) EarState=1;
+        if (emulator.machine==MACHINESPECTRUM) EarState=1;
         else EarState=0;
 
         Stopping=false;
@@ -184,7 +184,7 @@ bool TTZXFile::EventPause(void)
 
 bool TTZXFile::EventStop48k(void)
 {
-        if (zx81.machine==MACHINESPEC48 && spectrum.machine<SPECCY128)
+        if (emulator.machine==MACHINESPECTRUM && spectrum.model<SPECCY128)
                 Stop(true);
         EventNextBlock();
         return(true);

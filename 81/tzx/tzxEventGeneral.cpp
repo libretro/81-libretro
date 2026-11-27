@@ -63,7 +63,7 @@ bool TTZXFile::EventGeneral(void)
                 NPD=Tape[CurBlock].Head.General.NPD;
                 ASD=Tape[CurBlock].Head.General.ASD;
 
-                if (FlashLoad && zx81.machine!=MACHINESPEC48) data++;
+                if (FlashLoad && emulator.machine!=MACHINESPECTRUM) data++;
 
                 Syms=ASD; if (Syms) Syms -= 1;
                 SymbolSize=0;
@@ -84,7 +84,7 @@ bool TTZXFile::EventGeneral(void)
 
                 if (TOTP==0) phase=2;
 
-                if (FlashLoad && zx81.machine!=MACHINESPEC48) phase=5;
+                if (FlashLoad && emulator.machine!=MACHINESPECTRUM) phase=5;
 
                 TZXByte=TZX_BYTE_EMPTY;
                 FlashLoadable=1;
@@ -125,7 +125,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
+                if (emulator.machine != MACHINESPECTRUM) EarState=!EarState;
                 PulseCount=1;
                 phase=1;
         }
@@ -160,7 +160,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
+                if (emulator.machine != MACHINESPECTRUM) EarState=!EarState;
                 PulseCount=1;
                 return(false);
         }
@@ -194,7 +194,7 @@ bool TTZXFile::EventGeneral(void)
                 case 2: EarState = 0; PulseList++; break;
                 case 3: EarState = 1; PulseList++; break;
                 }
-                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
+                if (emulator.machine != MACHINESPECTRUM) EarState=!EarState;
                 PulseCount=1;
                 phase=3;
         }
@@ -245,7 +245,7 @@ bool TTZXFile::EventGeneral(void)
                         case 2: EarState = 0; PulseList++; break;
                         case 3: EarState = 1; PulseList++; break;
                 }
-                if (zx81.machine != MACHINESPEC48) EarState=!EarState;
+                if (emulator.machine != MACHINESPECTRUM) EarState=!EarState;
                 return(false);
         }
 
@@ -301,7 +301,7 @@ bool TTZXFile::EventGeneral(void)
 
                 CurrentBitCount=0;
                 EarState= !(Flags&1);
-                if (zx81.machine==MACHINESPEC48) EarState=!EarState;
+                if (emulator.machine==MACHINESPECTRUM) EarState=!EarState;
 
                 CurrentByte=(data[0]<<8) | data[1];
                 data++;
@@ -331,7 +331,7 @@ bool TTZXFile::EventGeneral(void)
                 return(false);
         }
 
-        if (FlashLoad && zx81.machine!=MACHINESPEC48)
+        if (FlashLoad && emulator.machine!=MACHINESPECTRUM)
         {
                 if (TZXByte==TZX_BYTE_EMPTY)
                 {

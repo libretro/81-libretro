@@ -8,9 +8,6 @@
 #include <zx81config.h>
 #include <sound/sound.h>
 
-#define MACHINETS1000 100
-#define MACHINER470   101
-#define MACHINETK85   102
 
 #define RAMPACKNONE 0
 #define RAMPACK2    1
@@ -21,8 +18,8 @@
 #define RAMPACK48   7
 #define RAMPACK96   8
 
-#define AY_TYPE_DISABLED 0
-#define AY_TYPE_ENABLED  1
+#define AY_TYPE_DISABLED   0
+#define AY_TYPE_QUICKSILVA 1  /* EightyOne's AY_TYPE_QUICKSILVA */
 
 #define LOWRAM_ROMSHADOW 0
 #define LOWRAM_8KRAM     1
@@ -43,6 +40,7 @@ typedef struct
   int     HiRes;
   int     SoundCard;
   bool    Chroma81;
+  bool    ZXpand;
   int     BorderSize;
   
   int Brightness; /* 0 -> 255 */

@@ -1,0 +1,18 @@
+# Line endings (issue #51): text files are stored with LF, whatever the
+# platform. The 81/ folder is the original EightyOne source as released
+# (CRLF) and is left as it is.
+*               text=auto eol=lf
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+81/**           -text
+*.p             binary
+*.P             binary
+*.o             binary
+*.80            binary
+*.ace           binary
+*.tap           binary
+*.tzx           binary
+*.rom           binary
+*.bin           binary
+*.png           binary
+*.z81           binary

@@ -397,6 +397,8 @@ public:
         bool Stopping;
 
         bool LoadFile(const void* data, size_t size, bool Insert);
+        bool LoadOFile(const void* data, size_t size, bool Insert);
+        bool LoadAceTAPFile(const void* data, size_t size, bool Insert) { return LoadTAPFile(data, size, Insert); }
         bool SaveFile(AnsiString FileName);
         void EraseBlock(int BlockNo);
         void InsertBlock(int Position);

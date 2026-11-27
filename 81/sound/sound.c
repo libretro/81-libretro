@@ -68,7 +68,7 @@ int temp1,temp2,temp3;
 #endif
 
 extern int frametstates;
-int SelectAYReg;
+extern int SelectAYReg;
 
 /* configuration */
 int sound_enabled=1;
@@ -172,7 +172,7 @@ void sound_ay_init(void)
         for(f=0;f<3;f++)
                 ay_tone_tick[f]=ay_tone_period[f]=0;
 
-        switch(zx81.aytype)
+        switch(machine.aytype)
         {
         case AY_TYPE_QUICKSILVA:
                 clock=AY_CLOCK_QUICKSILVA;
@@ -560,7 +560,7 @@ void sound_frame(void)
                 /* must be AY then, so `zero' buffer ready for it */
         //        memset(sound_buf,128,sound_framesiz*(sound_stereo+1));
 
-        if(zx81.aysound )
+        if(machine.aytype != 0 )
                 sound_ay_overlay();
 
         sound_lowlevel_frame(sound_buf,sound_framesiz*(sound_stereo+1));
