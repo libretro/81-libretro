@@ -157,9 +157,11 @@ static int update_variables()
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
   
   {
-    static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
+    /* the option's values start with auto (0): ROM shadow is 1, RAM 2,
+       dK'tronics 3; auto without a game database entry is ROM shadow */
+    static int lowram[] = { LOWRAM_ROMSHADOW, LOWRAM_ROMSHADOW, LOWRAM_8KRAM, LOWRAM_DK };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_8_16_contents", NULL );
-    option += option < 0;
+    option = option > 0 && option < 4 ? option : 0;
     reset = reset || state.cfg.LowRAMContents != lowram[ option ];
     state.cfg.LowRAMContents = lowram[ option ];
   }
@@ -253,9 +255,11 @@ static int update_variables()
   }
   
   {
-    static int hires[] = { HIRESDISABLED, HIRESWRX };
+    /* auto (0), none (1), WRX (2); auto without a game database entry is
+       none */
+    static int hires[] = { HIRESDISABLED, HIRESDISABLED, HIRESWRX };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_highres", NULL );
-    option += option < 0;
+    option = option > 0 && option < 3 ? option : 0;
     reset = reset || state.cfg.HiRes != hires[ option ];
     state.cfg.HiRes = hires[ option ];
   }
