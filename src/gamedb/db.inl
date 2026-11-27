@@ -77,6 +77,28 @@ static overrides_t s_overrides[] =
     },
   },
   {
+    /* Panic HR, 2010, Kelly Abrantes Murta, https://zx81.eu5.org/toddysofte.html */
+    { 0x17d4513bU, 0x5de3ebf7U, 0x46817180U, 0x6b7a65d1U, 0xcbd820e8U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chroma_81", "disabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
+      { "81_sound", "none" },
+    },
+  },
+  {
     /* Ant Attack, 2013, Bob Smith, http://www.bobs-stuff.co.uk/zx81.html */
     { 0x1b4fc9ebU, 0x5cd3373aU, 0x9986fcd3U, 0x95d0117cU, 0x6b3c4718U },
     {
@@ -271,6 +293,28 @@ static overrides_t s_overrides[] =
       { "81_joypad_up", "default" },
       { "81_joypad_x", "default" },
       { "81_joypad_y", "s" },
+      { "81_sound", "none" },
+    },
+  },
+  {
+    /* Panic HR, 2010, Kelly Abrantes Murta, https://zx81.eu5.org/toddysofte.html */
+    { 0x5c57aa75U, 0xdb583c46U, 0x577f61abU, 0xf8383386U, 0xa9d7c2d8U },
+    {
+      { "81_8_16_contents", "RAM" },
+      { "81_chroma_81", "disabled" },
+      { "81_highres", "none" },
+      { "81_joypad_a", "default" },
+      { "81_joypad_b", "default" },
+      { "81_joypad_down", "6" },
+      { "81_joypad_l", "default" },
+      { "81_joypad_l2", "default" },
+      { "81_joypad_left", "5" },
+      { "81_joypad_r", "default" },
+      { "81_joypad_r2", "default" },
+      { "81_joypad_right", "8" },
+      { "81_joypad_up", "7" },
+      { "81_joypad_x", "default" },
+      { "81_joypad_y", "default" },
       { "81_sound", "none" },
     },
   },

@@ -727,6 +727,48 @@
         "81_joypad_x": "List",
         "81_joypad_b": "Stop"
       }
+    },
+    {
+      "name": "Panic HR",
+      "author": "Kelly Abrantes Murta",
+      "url": "https://zx81.eu5.org/toddysofte.html",
+      "year": "2010",
+      "file": "panicohr.p",
+      "sha1": "17d4513b5de3ebf7468171806b7a65d1cbd820e8",
+      "settings": {
+        "81_8_16_contents": "RAM",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up/Jump",
+        "81_joypad_down": "Down/Dig"
+      }
+    },
+    {
+      "name": "Panic HR",
+      "author": "Kelly Abrantes Murta",
+      "url": "https://zx81.eu5.org/toddysofte.html",
+      "year": "2010",
+      "file": "panicohr.p",
+      "sha1": "5c57aa75db583c46577f61abf8383386a9d7c2d8",
+      "settings": {
+        "81_8_16_contents": "RAM",
+        "81_joypad_left": "5",
+        "81_joypad_right": "8",
+        "81_joypad_up": "7",
+        "81_joypad_down": "6"
+      },
+      "labels": {
+        "81_joypad_left": "Left",
+        "81_joypad_right": "Right",
+        "81_joypad_up": "Up/Jump",
+        "81_joypad_down": "Down/Dig"
+      }
     }
   ]
 }
