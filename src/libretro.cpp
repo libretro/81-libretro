@@ -49,6 +49,7 @@ typedef struct
   int      ready;      // frame the ROM was found ready for keys (0: not yet)
   int      lastframes; // FRAMES at the previous frame
   int      framesrun;  // frames FRAMES has been counting
+  char     zxpname[ 16 ]; // ZXpand: the file's name on the card, for LOAD "NAME"
 }
 state_t;
 
@@ -87,6 +88,7 @@ static state_t state;
 static const struct retro_variable core_vars[] =
 {
   { "81_machine",        "Machine (Restart); auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85" },
+  { "81_zxpand",         "ZXpand (Restart); auto|disabled|enabled" },
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
   { "81_border_size",    "Size Video Border; normal|small|none" },
@@ -139,6 +141,14 @@ static int update_variables()
     reset = reset || state.cfg.machine != m || state.cfg.NTSC != ntsc;
     state.cfg.machine = (CFGBYTE)m;
     state.cfg.NTSC = ntsc;
+  }
+
+  {
+    /* ZXpand: an SD card interface; auto leaves it to the game database */
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_zxpand", NULL );
+    bool zxpand = option == 2;
+    reset = reset || state.cfg.ZXpand != zxpand;
+    state.cfg.ZXpand = zxpand;
   }
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
@@ -444,6 +454,15 @@ static void autotype( void )
     static const char ringokeys[] = { 'A', '"', '"', '\n', 0 };
     const char* keys = zx81keys;
 
+    /* ZXpand: LOAD "NAME" loads NAME.P from the card */
+    static char zxpandkeys[ 24 ];
+
+    if ( state.cfg.ZXpand && state.zxpname[ 0 ] && state.cfg.machine != MACHINER470 )
+    {
+      snprintf( zxpandkeys, sizeof( zxpandkeys ), "J\"%s\"\n", state.zxpname );
+      keys = zxpandkeys;
+    }
+
 
     if ( state.cfg.machine == MACHINER470 )
     {
@@ -592,6 +611,45 @@ bool retro_load_game( const struct retro_game_info* info )
     {
       strncpy( eo_system_dir, dir, sizeof( eo_system_dir ) - 1 );
     }
+
+    dir = NULL;
+
+    if ( env_cb( RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, (void*)&dir ) && dir )
+    {
+      strncpy( eo_save_dir, dir, sizeof( eo_save_dir ) - 1 );
+    }
+  }
+
+  {
+    /* ZXpand's SD card is the folder the file was loaded from (the
+       archive's folder for a file inside one), and the file is loaded from
+       it by name: LOAD "NAME" for NAME.P */
+    std::string path = info->path ? info->path : "";
+    size_t hash = path.find( '#' );
+    if ( hash != std::string::npos ) path = path.substr( 0, hash );
+    size_t slash = path.find_last_of( "/\\" );
+    eo_zxpand_base = slash != std::string::npos ? path.substr( 0, slash + 1 ) : "";
+
+    std::string name = info->path ? info->path : "";
+    slash = name.find_last_of( "/\\#" );
+    if ( slash != std::string::npos ) name = name.substr( slash + 1 );
+    size_t dot = name.rfind( '.' );
+    std::string ext = dot != std::string::npos ? name.substr( dot ) : "";
+    if ( dot != std::string::npos ) name = name.substr( 0, dot );
+
+    state.zxpname[ 0 ] = 0;
+
+    if ( name.size() < sizeof( state.zxpname ) && ( ext == ".p" || ext == ".P" ) )
+    {
+      size_t i;
+
+      for ( i = 0; i < name.size() && isalnum( (unsigned char)name[ i ] ); i++ )
+      {
+        state.zxpname[ i ] = (char)toupper( (unsigned char)name[ i ] );
+      }
+
+      state.zxpname[ i == name.size() ? i : 0 ] = 0;
+    }
   }
 
   update_variables();
@@ -612,6 +670,14 @@ bool retro_load_game( const struct retro_game_info* info )
     if ( state.cfg.machine == MACHINELAMBDA && eo_rom_exists( rom ) )
     {
       rom = "lambda8300characterset.bin";
+    }
+
+    /* ZXpand needs EightyOne's overlay of the machine's ROM */
+    if ( !rom && state.cfg.ZXpand )
+    {
+      if ( state.cfg.machine == MACHINEZX80 ) rom = "zx80.zxpand.ovl";
+      else if ( state.cfg.machine == MACHINETS1500 ) rom = "ts1500.zxpand.ovl";
+      else if ( state.cfg.machine == MACHINEZX81 || state.cfg.machine == MACHINETS1000 ) rom = "zx81.zxpand.ovl";
     }
 
     if ( rom && !eo_rom_exists( rom ) )

@@ -27,6 +27,10 @@ extern int lineCounter;
 
 /* RetroArch's system folder, set by retro_load_game */
 char eo_system_dir[ 1024 ];
+char eo_save_dir[ 1024 ];
+
+/* ZXpand's SD card: the folder of the loaded file (dirlib.cpp) */
+std::string eo_zxpand_base;
 
 /* The Sinclair ROMs are built in (Amstrad allows them to be distributed);
    the other machines' ROMs are read from system/EightyOne/ or system/,

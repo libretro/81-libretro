@@ -30,18 +30,8 @@ extern EoLiveMemoryWindow* LiveMemoryWindow;
 struct EoBasicLister { bool Visible; void Refresh( bool ) {} };
 extern EoBasicLister* BasicLister;
 
-/* ZXpand (stage 2) */
-enum { CFG_BIT_LOW, CFG_BIT_DISABLED };
-class ZXpand
-{
-public:
-  static void SetSDCardPath() {}
-  void GetConfig( int& a ) { a = 0; }
-  void Update( int ) {}
-  void IO_Write( int, int ) {}
-  int  IO_Read( int ) { return 0xff; }
-  int  IO_ReadStatus( void ) { return 0; }
-};
+/* ZXpand: eo/zxpand */
+#include "../zxpand/ZXpand_emu.h"
 
 /* ROM cartridges */
 extern int RomCartridgeCapacity;
@@ -137,6 +127,8 @@ void LarkenSaveTrack( int Drive, int TrackNo, unsigned char* buf );
 }
 void InitPatches( int machineType );
 extern char eo_system_dir[ 1024 ];
+extern char eo_save_dir[ 1024 ];
+extern std::string eo_zxpand_base;
 bool eo_rom_exists( const char* filename );
 int load_snap( const char* filename );
 

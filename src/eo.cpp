@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "zx81config.h"
 #include "zx81.h"
@@ -78,6 +79,9 @@ static int internal_init( CONFIG* cfg )
 
   zx81.chromaColourSwitchOn = machine.colour == COLOURCHROMA;
 
+  /* ZXpand: on the ZX80, ZX81 and TS1500 only, as zx81_initialise does */
+  zx81.zxpand = cfg->ZXpand;
+
   machine.protectROM = cfg->ProtectROM;
   machine.zxprinter  = cfg->ZXPrinter;
   machine.NTSC       = cfg->NTSC;
@@ -150,6 +154,13 @@ int eo_init( CONFIG* cfg )
 {
   sound_init();
   load_config();
+
+  /* where EightyOne keeps nvMemoryFolder: ZXpand's EEPROM goes to
+     RetroArch's save folder */
+  if ( *eo_save_dir )
+  {
+    snprintf( emulator.cwd, sizeof( emulator.cwd ), "%s/", eo_save_dir );
+  }
   return internal_init( cfg );
 }
 

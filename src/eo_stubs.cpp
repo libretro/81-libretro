@@ -49,6 +49,9 @@ void LogOutAccess( int, BYTE ) {}
 void LogInAccess( int, BYTE ) {}
 void ResetLastIOAccesses( void ) {}
 
+/* ZXpand+'s joystick port: not connected (all lines high) */
+unsigned char readJoy( void ) { return 0xff; }
+
 extern "C" int LarkenLoadTrack( int, int, unsigned char* ) { return 0; }
 extern "C" void LarkenSaveTrack( int, int, unsigned char* ) {}
 
@@ -59,3 +62,6 @@ int RetExecuted = 0;
 
 /* ZX97 Lite banked memory (not one of this core's machines) */
 unsigned char zx97bankmem[ 16 * 16384 ];
+
+/* the debugger's symbol files, which ZXpand offers to load */
+void loadFileSymbolsProxy( const char* ) {}

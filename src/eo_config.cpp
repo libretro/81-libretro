@@ -21,6 +21,7 @@ int lastMemoryReadValueHi, lastMemoryWriteValueHi;
 bool directMemoryAccess;
 
 const char* romsFolder            = "";
+const char* nvMemoryFolder        = "";
 const char* fdcRomsFolder         = "";
 const char* ideRomsFolder         = "";
 const char* replacementRomsFolder = "";
