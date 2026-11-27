@@ -11,6 +11,7 @@
 #include <keys.h>
 #include <snap.h>
 #include <zx81.h>
+#include <z80.h>
 #include <tzx/TZXFILE.h>
 #include <kbstatus.h>
 
@@ -45,6 +46,9 @@ typedef struct
   int      zx80;      // the content is a ZX80 program (.o, .80)
   int      autotype;  // frames since reset, while LOAD (and RUN) are typed
   int      tapeseen;  // ZX80: the tape has started playing
+  int      ready;      // frame the ROM was found ready for keys (0: not yet)
+  int      lastframes; // FRAMES at the previous frame
+  int      framesrun;  // frames FRAMES has been counting
 }
 state_t;
 
@@ -82,6 +86,7 @@ static state_t state;
 
 static const struct retro_variable core_vars[] =
 {
+  { "81_machine",        "Machine (Restart); auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85" },
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
   { "81_border_size",    "Size Video Border; normal|small|none" },
@@ -114,6 +119,27 @@ static int update_variables()
 {
   int reset = 0;
   int old_scaled = state.scaled;
+  int old_ntsc = state.cfg.NTSC;
+
+  {
+    /* auto: the ZX80 for .o and .80 files, else the ZX81. The machines other
+       than these two read their ROM from the system folder (eo_files.cpp). */
+    static const int machines[] = { -1, MACHINEZX81, MACHINEZX80, MACHINETS1000,
+      MACHINETS1500, MACHINELAMBDA, MACHINER470, MACHINETK85 };
+    int option = coreopt( env_cb, core_vars, state.sha1, "81_machine", NULL );
+    int m = option > 0 && option < 8 ? machines[ option ] : -1;
+
+    if ( m < 0 )
+    {
+      m = state.zx80 ? MACHINEZX80 : MACHINEZX81;
+    }
+
+    /* the US, Brazilian and Hong Kong machines are 60 Hz, as in EightyOne */
+    int ntsc = m != MACHINEZX80 && m != MACHINEZX81;
+    reset = reset || state.cfg.machine != m || state.cfg.NTSC != ntsc;
+    state.cfg.machine = (CFGBYTE)m;
+    state.cfg.NTSC = ntsc;
+  }
 
   TZXFile.FlashLoad = coreopt( env_cb, core_vars, state.sha1, "81_fast_load", NULL ) != 1;
   
@@ -291,7 +317,7 @@ static int update_variables()
   }
   
   state.scaled = ( WinR - WinL ) == 640;
-  return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled ? UPDATE_AV : 0 );
+  return ( reset ? UPDATE_RESET : 0 ) | ( old_scaled != state.scaled || old_ntsc != state.cfg.NTSC ? UPDATE_AV : 0 );
 }
 
 #define VERSION "1.41"
@@ -377,8 +403,10 @@ static void autotype( void )
   }
   
   int t = state.autotype++;
+
+
   
-  if ( state.zx80 )
+  if ( state.cfg.machine == MACHINEZX80 )
   {
     switch ( t )
     {
@@ -390,23 +418,76 @@ static void autotype( void )
   }
   else
   {
-    switch ( t )
+    /* The ROM is ready for keys once it waits in the editor: the edit line
+       at E_LINE (0x4014) holds the cursor (0x7F) and NEW LINE. The machines
+       boot in 2-6 s; after 15 s the keys go in anyway. */
+    if ( state.ready == 0 )
     {
-    case 200: PCKeyDown( 'J' ); break;
-    case 205: PCKeyUp( 'J' ); break;
-    case 210: PCKeyDown( VK_SHIFT ); break;
-    case 212: PCKeyDown( 'P' ); break;
-    case 217: PCKeyUp( 'P' ); break;
-    case 222: PCKeyDown( 'P' ); break;
-    case 227: PCKeyUp( 'P' ); break;
-    case 229: PCKeyUp( VK_SHIFT ); break;
-    case 235: PCKeyDown( VK_RETURN ); break;
-    case 240: PCKeyUp( VK_RETURN ); state.autotype = -1; break;
+      int eline = memory[ 0x4014 ] | memory[ 0x4015 ] << 8;
+      int editing = eline > 0x4000 && eline < 0xffff && memory[ eline ] == 0x7f && memory[ eline + 1 ] == 0x76;
+      state.framesrun = editing ? state.framesrun + 1 : 0;
+
+      if ( state.framesrun >= 25 || t >= 900 )
+      {
+        state.ready = t;
+      }
+
+      return;
     }
-    
+
+    t -= state.ready;
+
+    /* LOAD "" and NEW LINE, in the keys of each keyboard: J gives LOAD on
+       the ZX81 and its relatives, A on the Ringo R470 (its keywords are in
+       alphabetical order); "" is SHIFT P on both. */
+    static const char zx81keys[] = { 'J', '"', '"', '\n', 0 };
+    static const char ringokeys[] = { 'A', '"', '"', '\n', 0 };
+    const char* keys = zx81keys;
+
+
+    if ( state.cfg.machine == MACHINER470 )
+    {
+      keys = ringokeys;
+    }
+    else if ( state.cfg.machine == MACHINELAMBDA )
+    {
+      /* where the Lambda has " isn't known here (SHIFT P isn't it): the
+         user types LOAD "" */
+      state.autotype = -1;
+      return;
+    }
+
+    /* one key every 16 frames: down at 0, up at 8 (SHIFT around it) */
+    int k = t / 16 - 1;
+    int phase = t % 16;
+
+    if ( k < 0 )
+    {
+      return;
+    }
+
+    if ( !keys[ k ] )
+    {
+      state.autotype = -1;
+      return;
+    }
+
+    int key = keys[ k ] == '"' ? 'P' : keys[ k ] == '\n' ? VK_RETURN : keys[ k ];
+
+    if ( phase == 0 )
+    {
+      if ( keys[ k ] == '"' ) PCKeyDown( VK_SHIFT );
+      PCKeyDown( key );
+    }
+    else if ( phase == 8 )
+    {
+      PCKeyUp( key );
+      if ( keys[ k ] == '"' ) PCKeyUp( VK_SHIFT );
+    }
+
     return;
   }
-  
+
   if ( t < 66 )
   {
     return;
@@ -480,12 +561,11 @@ bool retro_load_game( const struct retro_game_info* info )
     state.zx80 = ext && ( ( tolower( ext[ 1 ] ) == 'o' && !ext[ 2 ] ) || !strcmp( ext, ".80" ) );
   }
   
-  state.cfg.machine = state.zx80 ? MACHINEZX80 : MACHINEZX81;
+  state.cfg.machine = state.zx80 ? MACHINEZX80 : MACHINEZX81; /* update_variables() may change it */
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
   state.cfg.ProtectROM = 1;
   state.cfg.ZXPrinter = 0;
-  state.cfg.NTSC = 0;
   state.cfg.M1Not = 0;
   state.cfg.TS2050 = 0;
   state.cfg.ChrGen = CHRGENSINCLAIR;
@@ -505,7 +585,49 @@ bool retro_load_game( const struct retro_game_info* info )
   SHA1Result( &sha1 );
   memcpy( state.sha1, sha1.Message_Digest, sizeof(state.sha1) );
   
+  {
+    const char* dir = NULL;
+
+    if ( env_cb( RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, (void*)&dir ) && dir )
+    {
+      strncpy( eo_system_dir, dir, sizeof( eo_system_dir ) - 1 );
+    }
+  }
+
   update_variables();
+
+  {
+    /* every machine but the ZX80 and the ZX81 needs its ROM in the system
+       folder */
+    const char* rom = NULL;
+
+    switch ( state.cfg.machine )
+    {
+    case MACHINETS1500: rom = "ts1500.rom"; break;
+    case MACHINELAMBDA: rom = "lambda8300.rom"; break;
+    case MACHINER470:   rom = "ringo470.rom"; break;
+    case MACHINETK85:   rom = "tk85.rom"; break;
+    }
+
+    if ( state.cfg.machine == MACHINELAMBDA && eo_rom_exists( rom ) )
+    {
+      rom = "lambda8300characterset.bin";
+    }
+
+    if ( rom && !eo_rom_exists( rom ) )
+    {
+      static char msg_text[ 256 ];
+      struct retro_message msg;
+
+      snprintf( msg_text, sizeof( msg_text ), "%s is missing in system/EightyOne", rom );
+      msg.msg = msg_text;
+      msg.frames = 360;
+      env_cb( RETRO_ENVIRONMENT_SET_MESSAGE, &msg );
+      log_cb( RETRO_LOG_ERROR, "%s\n", msg_text );
+      return false;
+    }
+  }
+
   retro_reset();
   keybovl_set( &zx81ovl );
   return true;
@@ -564,7 +686,7 @@ void retro_get_system_av_info( struct retro_system_av_info* info )
   info->geometry.max_width = WinR - WinL;
   info->geometry.max_height = WinB - WinT;
   info->geometry.aspect_ratio = 0.0f;
-  info->timing.fps = 50.0;
+  info->timing.fps = state.cfg.NTSC ? 60.0 : 50.0;
   info->timing.sample_rate = 44100.0;
 }
 
@@ -653,6 +775,9 @@ void retro_reset( void )
     
     state.autotype = 0;
     state.tapeseen = 0;
+    state.ready = 0;
+    state.framesrun = 0;
+    state.lastframes = -1;
   }
 }
 

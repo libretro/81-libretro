@@ -3,6 +3,10 @@
    Replaces snap.c's memory_load/load_snap of the old core. */
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "zx81config.h"
 #include "zx81.h"
@@ -21,12 +25,62 @@ extern retro_log_printf_t log_cb;
 extern BOOL nmiGeneratorEnabled, syncOutputWhite;
 extern int lineCounter;
 
+/* RetroArch's system folder, set by retro_load_game */
+char eo_system_dir[ 1024 ];
+
+/* The Sinclair ROMs are built in (Amstrad allows them to be distributed);
+   the other machines' ROMs are read from system/EightyOne/ or system/,
+   under the names EightyOne gives them (its Source/ROMs folder). */
 static const unsigned char* rom_data( const char* filename, int* len )
 {
   if ( !strcmp( filename, "zx81.rom" ) ) { *len = bin_ROM_zx81_rom_len; return bin_ROM_zx81_rom; }
   if ( !strcmp( filename, "zx80.rom" ) ) { *len = bin_ROM_zx80_rom_len; return bin_ROM_zx80_rom; }
   if ( !strcmp( filename, "dkchr.rom" ) ) { *len = bin_ROM_dkchr_rom_len; return bin_ROM_dkchr_rom; }
-  return NULL;
+
+  static std::map< std::string, std::vector< unsigned char > > loaded;
+  std::map< std::string, std::vector< unsigned char > >::iterator it = loaded.find( filename );
+
+  if ( it == loaded.end() )
+  {
+    std::vector< unsigned char > data;
+    const char* subdirs[] = { "/EightyOne/", "/" };
+
+    for ( int i = 0; i < 2 && data.empty() && *eo_system_dir; i++ )
+    {
+      std::string path = std::string( eo_system_dir ) + subdirs[ i ] + filename;
+      FILE* f = fopen( path.c_str(), "rb" );
+
+      if ( f )
+      {
+        unsigned char buf[ 4096 ];
+        size_t n;
+
+        while ( ( n = fread( buf, 1, sizeof( buf ), f ) ) > 0 )
+        {
+          data.insert( data.end(), buf, buf + n );
+        }
+
+        fclose( f );
+        log_cb( RETRO_LOG_INFO, "Loaded \"%s\"\n", path.c_str() );
+      }
+    }
+
+    if ( data.empty() )
+    {
+      return NULL;
+    }
+
+    it = loaded.insert( std::make_pair( std::string( filename ), data ) ).first;
+  }
+
+  *len = (int)it->second.size();
+  return &it->second[ 0 ];
+}
+
+bool eo_rom_exists( const char* filename )
+{
+  int len;
+  return rom_data( filename, &len ) != NULL;
 }
 
 int memoryLoadToAddress( char* filename, void* destAddress, int length )
@@ -61,8 +115,7 @@ extern "C" int memory_device_rom_load( const char* filename, int address, int le
 
 int font_load( const char* filename, char* dest, int length )
 {
-  (void)filename; (void)dest; (void)length;
-  return 0;
+  return memoryLoadToAddress( (char*)filename, dest, length );
 }
 
 /* CRC32Block: Utils.cpp */

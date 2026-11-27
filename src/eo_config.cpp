@@ -47,6 +47,12 @@ void load_config( void )
 
   strcpy( emulator.ROM80, "zx80.rom" );
   strcpy( emulator.ROM81, "zx81.rom" );
+  strcpy( emulator.ROMTS1000, "zx81.rom" );
+  strcpy( emulator.ROMTS1500, "ts1500.rom" );
+  strcpy( emulator.ROMLAMBDA, "lambda8300.rom" );
+  strcpy( emulator.ROMR470, "ringo470.rom" );
+  strcpy( emulator.ROMTK85, "tk85.rom" );
+  strcpy( emulator.ROMACE, "jupiterace.rom" );
   strcpy( emulator.ROMDKTRONICS, "dkchr.rom" );
   strcpy( emulator.ROMG007, "g007hrg.rom" );
   strcpy( emulator.ROMMEMOTECH, "memohrg.rom" );

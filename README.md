@@ -19,9 +19,9 @@ EightyOne emulates a number of ZX80, ZX81, clones, and other computers based on 
 * MicroDigital TK85
 * Jupiter ACE
 
-**81-libretro** emulates the Sinclair ZX81 with 16Kb RAM, and the Sinclair ZX80 for `o` and `80` files (LOAD and RUN are typed in after the ZX80 has booted, as a ZX80 program doesn't start itself). Other machines will be added as time permits. Push requests are welcome.
+**81-libretro** emulates the Sinclair ZX81 with 16Kb RAM and the Sinclair ZX80, and, with their ROMs in the system folder, the Timex TS1000 and TS1500, the Lambda 8300, the Ringo R470 and the MicroDigital TK85 (see the Machine option below). The Jupiter ACE isn't emulated yet. Push requests are welcome.
 
-The ZX80 and ZX81 emulation is EightyOne 1.41's ([github.com/charlierobson/EightyOne](https://github.com/charlierobson/EightyOne)), in `eo/`: the Z80, the ZX80/ZX81 machine with its separate ZX80 display timing (flicker-free ZX80 games), Chroma 81 and the ROM patches for fast tape loading. The parts of the Windows program it calls but this core doesn't have (ZXpand, ROM cartridges, IDE, floppies, speech, the debugger) are no-ops in `eo/shim` and `src/eo_stubs.cpp`. A tape is loaded by typing `LOAD ""` once the ZX81 has booted, about four seconds after the start.
+The ZX80 and ZX81 emulation is EightyOne 1.41's ([github.com/charlierobson/EightyOne](https://github.com/charlierobson/EightyOne)), in `eo/`: the Z80, the ZX80/ZX81 machine with its separate ZX80 display timing (flicker-free ZX80 games), Chroma 81 and the ROM patches for fast tape loading. The parts of the Windows program it calls but this core doesn't have (ZXpand, ROM cartridges, IDE, floppies, speech, the debugger) are no-ops in `eo/shim` and `src/eo_stubs.cpp`. A tape is loaded the way a user would load it: once the machine waits in its editor, the core types `LOAD ""` and NEW LINE, which takes two to six seconds depending on the machine. On the ZX80, `LOAD` and NEW LINE are typed, and `RUN` and NEW LINE follow once the tape has played, as a ZX80 program doesn't start itself. On the Lambda 8300 nothing is typed yet: type `LOAD ""` yourself.
 
 The port correctly loads and runs ~~some~~ many games I have around in the `p` format. `tzx` format is also supported.
 
@@ -29,8 +29,9 @@ EightyOne also emulates some ZX Spectrum machines, but those were left out of th
 
 ## Core Options
 
-The only core option available on the frontend is:
+The core options available on the frontend are:
 
+* Machine (auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85): The machine to emulate, after a restart. `auto` runs `o` and `80` files on the ZX80 and everything else on the ZX81. The TS1000, the TS1500, the Lambda, the Ringo and the TK85 run at 60 Hz. The ZX80, ZX81 and TS1000 ROMs are built into the core. The others are read from `EightyOne` in the frontend's system folder (or from the system folder itself), under the names EightyOne gives them: `ts1500.rom`, `lambda8300.rom` with `lambda8300characterset.bin`, `ringo470.rom` and `tk85.rom`. The core says which file is missing if one is.
 * Tape Fast Load (enabled|disabled): Instantly loads files if enabled, or disabled it to see the moving horizontal lines while the game loads
 * 8K-16K Contents (ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM): Selects the contents of memory addresses between 8192 and 16383, a shadow copy of the ROM, 8K of RAM, or [dK'tronics 4K ROM plus 4K of RAM](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_CharacterSetROM.htm)
 * Size Video Border (normal|small|none): Select the size of video border
@@ -48,11 +49,11 @@ A keyboard and a cursor joystick are configured and should work out-of-the-box.
 
 ## Supported Formats
 
-The `p` and the `tzx` formats are supported.
+The `p`, `t81` and `tzx` formats are supported, and `o` and `80` for the ZX80.
 
 ## Save States
 
-Save states are supported, but the format is likely to change when more machines are emulated.
+Save states are supported, but the format is likely to change when more machines are emulated. States saved by versions before the EightyOne 1.41 update may not load.
 
 ## Setup
 
@@ -67,6 +68,11 @@ Since configuring the core for each game can be a tedious task, **81-libretro** 
 Currently, there's no way to change the auto-configuration settings short of recompiling the core after making the changes. If you feel the provided auto-configuration could be better or has bugs, please open an issue and I'll take a look.
 
 The core comes with auto-configuration for all homebrew games from [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html), and some of the games available at [Paul Farrow's collection of colorized games](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_Colourised.htm) (namely the ones available for download here in the `colorized` subfolder). If you want to add auto-configuration for a missing game, please submit a push request with changes only to the `gamedb.json` file.
+
+## Known Issues
+
+* Panic HR and Missile Command, written for the TK85, show their title text with the game's graphics font on the ZX81. They change the I register line by line, timed for the TK85 ROM's display routine. On the TK85 they load, but the picture rolls.
+* The Lambda 8300's `"` key hasn't been found, so a tape isn't loaded on its own there.
 
 ## Thanks
 

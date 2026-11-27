@@ -136,6 +136,8 @@ int  LarkenLoadTrack( int Drive, int TrackNo, unsigned char* buf );
 void LarkenSaveTrack( int Drive, int TrackNo, unsigned char* buf );
 }
 void InitPatches( int machineType );
+extern char eo_system_dir[ 1024 ];
+bool eo_rom_exists( const char* filename );
 int load_snap( const char* filename );
 
 /* sound: upstream's CSound on top of the core's sound.c */

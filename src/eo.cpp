@@ -34,8 +34,18 @@ static SCANLINE BuildLine;
    1.41, for the ZX80 and the ZX81 */
 static int internal_init( CONFIG* cfg )
 {
-  emulator.machine = cfg->machine == MACHINEZX80 ? MACHINEZX80 : MACHINEZX81;
-  strcpy( machine.CurRom, emulator.machine == MACHINEZX80 ? emulator.ROM80 : emulator.ROM81 );
+  emulator.machine = cfg->machine;
+
+  switch ( emulator.machine )
+  {
+  case MACHINEZX80:    strcpy( machine.CurRom, emulator.ROM80 ); break;
+  case MACHINETS1000:  strcpy( machine.CurRom, emulator.ROMTS1000 ); break;
+  case MACHINETS1500:  strcpy( machine.CurRom, emulator.ROMTS1500 ); break;
+  case MACHINELAMBDA:  strcpy( machine.CurRom, emulator.ROMLAMBDA ); break;
+  case MACHINER470:    strcpy( machine.CurRom, emulator.ROMR470 ); break;
+  case MACHINETK85:    strcpy( machine.CurRom, emulator.ROMTK85 ); break;
+  default:             emulator.machine = MACHINEZX81; strcpy( machine.CurRom, emulator.ROM81 ); break;
+  }
 
   if ( cfg->Chroma81 )
   {
@@ -54,11 +64,17 @@ static int internal_init( CONFIG* cfg )
   zx81.RAM816k    = cfg->LowRAMContents == LOWRAM_8KRAM || cfg->HiRes == HIRESG007;
   zx81.chrgen     = cfg->LowRAMContents == LOWRAM_DK ? CHRGENDK : cfg->ChrGen;
 
+  /* the Lambda has its own character set (THW::ConfigureCharacterGenerator) */
+  if ( emulator.machine == MACHINELAMBDA && zx81.chrgen == CHRGENSINCLAIR )
+  {
+    zx81.chrgen = CHRGENLAMBDA;
+  }
+
   zx81.extfont    = zx81.chrgen == CHRGENLAMBDA;
   zx81.maxireg    = ( zx81.chrgen == CHRGENDK || zx81.chrgen == CHRGENCHR128 ) ? 0x3f : 0x1f;
   zx81.truehires  = cfg->HiRes;
-  zx81.m1not      = cfg->M1Not ? 49152 : 32768;
-  zx81.vsyncsound = 0;
+  zx81.m1not      = ( cfg->M1Not || emulator.machine == MACHINETS1500 ) ? 49152 : 32768;
+  zx81.vsyncsound = emulator.machine == MACHINELAMBDA;
 
   zx81.chromaColourSwitchOn = machine.colour == COLOURCHROMA;
 
@@ -94,6 +110,11 @@ static int internal_init( CONFIG* cfg )
   if ( emulator.machine == MACHINEZX80 )
   {
     machine.tperframe -= 3;
+  }
+
+  if ( emulator.machine == MACHINELAMBDA )
+  {
+    machine.tperscanline = 208;
   }
 
   machine.initialise = zx81_initialise;
