@@ -21,7 +21,7 @@ EightyOne emulates a number of ZX80, ZX81, clones, and other computers based on 
 
 **81-libretro** emulates the Sinclair ZX81 with 16Kb RAM and the Sinclair ZX80, and, with their ROMs in the system folder, the Timex TS1000 and TS1500, the Lambda 8300, the Ringo R470, the MicroDigital TK85 and the Jupiter ACE (see the Machine option below). Push requests are welcome.
 
-The ZX80 and ZX81 emulation is EightyOne 1.41's ([github.com/charlierobson/EightyOne](https://github.com/charlierobson/EightyOne)), in `eo/`: the Z80, the ZX80/ZX81 machine with its separate ZX80 display timing (flicker-free ZX80 games), Chroma 81 and the ROM patches for fast tape loading. ZXpand is in `eo/zxpand`. The parts of the Windows program it calls but this core doesn't have (ROM cartridges, IDE, floppies, speech, the debugger) are no-ops in `eo/shim` and `src/eo_stubs.cpp`. A tape is loaded the way a user would load it: once the machine waits in its editor, the core types `LOAD ""` and NEW LINE, which takes two to six seconds depending on the machine. On the ZX80, `LOAD` and NEW LINE are typed, and `RUN` and NEW LINE follow once the tape has played, as a ZX80 program doesn't start itself. On the Lambda 8300 nothing is typed yet: type `LOAD ""` yourself.
+The ZX80 and ZX81 emulation is EightyOne 1.41's ([github.com/charlierobson/EightyOne](https://github.com/charlierobson/EightyOne)), in `eo/`: the Z80, the ZX80/ZX81 machine with its separate ZX80 display timing (flicker-free ZX80 games), Chroma 81 and the ROM patches for fast tape loading. ZXpand is in `eo/zxpand`. The parts of the Windows program it calls but this core doesn't have (ROM cartridges, IDE, floppies, speech, the debugger) are no-ops in `eo/shim` and `src/eo_stubs.cpp`. A tape is loaded the way a user would load it: once the machine waits in its editor, the core types `LOAD ""` and NEW LINE, which takes two to six seconds depending on the machine. On the ZX80, `LOAD` and NEW LINE are typed, and `RUN` and NEW LINE follow once the tape has played, as a ZX80 program doesn't start itself. The Ringo R470 has LOAD on A (its keywords are in alphabetical order), and the Lambda 8300 takes the word letter by letter, with `"` on SHIFT 5.
 
 The port correctly loads and runs ~~some~~ many games I have around in the `p` format. `tzx` format is also supported.
 
@@ -50,7 +50,7 @@ A keyboard and a cursor joystick are configured and should work out-of-the-box.
 
 ## Supported Formats
 
-The `p`, `t81` and `tzx` formats are supported, `o` and `80` for the ZX80, and `ace` snapshots and `tap` tapes for the Jupiter ACE. An `ace` snapshot runs straight away. From a `tap`, the core types `LOAD` and the dictionary's name from the tape's header; the word that starts the program is different for each one and is left to the user (`LIST` or `VLIST` show it). The ACE uses the ZX81's keyboard overlay for now.
+The `p`, `t81` and `tzx` formats are supported, `o` and `80` for the ZX80, and `ace` snapshots and `tap` tapes for the Jupiter ACE. An `ace` snapshot runs straight away. From a `tap`, the core types `LOAD` and the dictionary's name from the tape's header; the word that starts the program is different for each one and is left to the user (`LIST` or `VLIST` show it). The ACE has its own keyboard overlay, with SHIFT and SYMBOL SHIFT in the bottom row.
 
 ## Save States
 
@@ -72,8 +72,8 @@ The core comes with auto-configuration for all homebrew games from [Bob's Stuff]
 
 ## Known Issues
 
-* Panic HR and Missile Command, written for the TK85, show their title text with the game's graphics font on the ZX81. They change the I register line by line, timed for the TK85 ROM's display routine. On the TK85 they load, but the picture rolls.
-* The Lambda 8300's `"` key hasn't been found, so a tape isn't loaded on its own there.
+* Panic HR and Missile Command, written for the TK85, show their title text with the game's graphics font on the ZX81. They change the I register line by line, timed for the TK85 ROM's display routine. On the TK85 they load, but the picture rolls: the TK85's 10K ROM covers 8K-10K, where these games put their characters.
+* With ZXpand on, the RetroPad of port 1 is also the ZXpand+ joystick (directions and A/B as fire), on top of its key mappings.
 
 ## Thanks
 

@@ -17,7 +17,6 @@ bool WriteRomCartridge( int, BYTE* ) { return false; }
 
 KeyInfo JoystickLeft1, JoystickRight1, JoystickUp1, JoystickDown1, JoystickFire1;
 void InitialiseJoysticks( void ) {}
-BYTE ReadJoystick1( void ) { return 0xff; }
 BYTE ReadJoystick1_Left( void ) { return 0xff; }
 BYTE ReadJoystick1_Right( void ) { return 0xff; }
 BYTE ReadJoystick1_Up( void ) { return 0xff; }

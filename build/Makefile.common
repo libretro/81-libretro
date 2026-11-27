@@ -52,6 +52,7 @@ SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandclass.cpp
 SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandcom.cpp
 SOURCES_CXX += $(CORE_DIR)/eo/zxpand/zxpandcore.cpp
 SOURCES_C += $(CORE_DIR)/src/kbds/zx81kbd.c
+SOURCES_C += $(CORE_DIR)/src/kbds/acekbd.c
 SOURCES_C += $(CORE_DIR)/src/version.c
 SOURCES_C += $(CORE_DIR)/src/gamedb/sha1.c
 SOURCES_CXX += $(CORE_DIR)/src/compat.cpp

@@ -82,6 +82,7 @@ extern int WinR, WinL, WinT, WinB, WinRSM, WinLSM, WinTSM, WinBSM, WinRBN, WinLB
 
 extern WORD* TVFB;
 extern keybovl_t zx81ovl;
+extern keybovl_t aceovl;
 
 static state_t state;
 
@@ -326,6 +327,9 @@ static int update_variables()
     
     option = coreopt( env_cb, core_vars, state.sha1, "81_joypad_start", &value );
     zx81ovl.joymap[ RETRO_DEVICE_ID_JOYPAD_START ] = option < 0 || option == 1 ? '0' : option < 6 ? keys[ option ] : toupper( *value );
+
+    /* the Jupiter ACE's overlay maps the pad the same way */
+    memcpy( aceovl.joymap, zx81ovl.joymap, sizeof( aceovl.joymap ) );
   }
   
   state.scaled = ( WinR - WinL ) == 640;
@@ -403,6 +407,32 @@ void retro_init( void )
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
+/* ZXpand+'s joystick port (zxpandcore.cpp, GETJS): the RetroPad of port 1,
+   in EightyOne's JOYSTICK_ZXPAND bits, 0 = pressed. The pad's buttons keep
+   their keyboard mappings too. */
+BYTE ReadJoystick1( void )
+{
+  BYTE result = 0xff;
+
+  if ( !input_state_cb || !state.cfg.ZXpand )
+  {
+    return result;
+  }
+
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP ) )    result &= 0x7f;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN ) )  result &= 0xbf;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT ) )  result &= 0xdf;
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT ) ) result &= 0xef;
+
+  if ( input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A )
+    || input_state_cb( 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B ) )
+  {
+    result &= 0xf7;
+  }
+
+  return result;
+}
+
 /* The tape is loaded the way a user would: once the ROM has booted, type
    LOAD (ZX80: W; ZX81: J, then "" with SHIFT P twice) and NEW LINE. A ZX81
    program usually starts itself; a ZX80 one never does, so RUN (R) and NEW
@@ -439,7 +469,7 @@ static void autotype( void )
 
         for ( int i = 3; i < 13 && d[ i ] != ' ' && isalnum( d[ i ] ); i++ )
         {
-          acekeys[ n++ ] = (char)toupper( d[ i ] );
+          acekeys[ n++ ] = (char)d[ i ];
         }
 
         acekeys[ n++ ] = '\n';
@@ -468,10 +498,21 @@ static void autotype( void )
       return;
     }
 
-    int key = acekeys[ k ] == '\n' ? VK_RETURN : acekeys[ k ] == ' ' ? VK_SPACE : acekeys[ k ];
+    /* the Ace types small letters; a capital is SHIFT and the letter */
+    int c = acekeys[ k ];
+    int key = c == '\n' ? VK_RETURN : c == ' ' ? VK_SPACE : toupper( c );
+    bool shift = c >= 'A' && c <= 'Z';
 
-    if ( phase == 0 ) PCKeyDown( key );
-    else if ( phase == 8 ) PCKeyUp( key );
+    if ( phase == 0 )
+    {
+      if ( shift ) PCKeyDown( VK_SHIFT );
+      PCKeyDown( key );
+    }
+    else if ( phase == 8 )
+    {
+      PCKeyUp( key );
+      if ( shift ) PCKeyUp( VK_SHIFT );
+    }
 
     return;
   }
@@ -509,9 +550,11 @@ static void autotype( void )
 
     /* LOAD "" and NEW LINE, in the keys of each keyboard: J gives LOAD on
        the ZX81 and its relatives, A on the Ringo R470 (its keywords are in
-       alphabetical order); "" is SHIFT P on both. */
+       alphabetical order), and the Lambda 8300 takes the word letter by
+       letter. " is SHIFT P, but SHIFT 5 on the Lambda (KBLAMBDA). */
     static const char zx81keys[] = { 'J', '"', '"', '\n', 0 };
     static const char ringokeys[] = { 'A', '"', '"', '\n', 0 };
+    static const char lambdakeys[] = { 'L', 'O', 'A', 'D', '"', '"', '\n', 0 };
     const char* keys = zx81keys;
 
     /* ZXpand: LOAD "NAME" loads NAME.P from the card */
@@ -530,10 +573,7 @@ static void autotype( void )
     }
     else if ( state.cfg.machine == MACHINELAMBDA )
     {
-      /* where the Lambda has " isn't known here (SHIFT P isn't it): the
-         user types LOAD "" */
-      state.autotype = -1;
-      return;
+      keys = lambdakeys;
     }
 
     /* one key every 16 frames: down at 0, up at 8 (SHIFT around it) */
@@ -551,7 +591,8 @@ static void autotype( void )
       return;
     }
 
-    int key = keys[ k ] == '"' ? 'P' : keys[ k ] == '\n' ? VK_RETURN : keys[ k ];
+    int quote = state.cfg.machine == MACHINELAMBDA ? '5' : 'P';
+    int key = keys[ k ] == '"' ? quote : keys[ k ] == '\n' ? VK_RETURN : keys[ k ];
 
     if ( phase == 0 )
     {
@@ -760,7 +801,6 @@ bool retro_load_game( const struct retro_game_info* info )
   }
 
   retro_reset();
-  keybovl_set( &zx81ovl );
   return true;
 }
 
@@ -888,6 +928,7 @@ void retro_set_controller_port_device( unsigned port, unsigned device )
 void retro_reset( void )
 {
   eo_init( &state.cfg );
+  keybovl_set( state.cfg.machine == MACHINEACE ? &aceovl : &zx81ovl );
   
   if ( state.size )
   {
