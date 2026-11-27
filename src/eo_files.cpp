@@ -276,3 +276,55 @@ int load_snap( const char* filename )
 
   return 1;
 }
+
+/* load_snap_ace of EightyOne's snap.cpp, from memory: memory from 0x2000,
+   run-length packed as ED <count> <byte>, ED 00 at the end; the registers
+   are kept at 0x2100. (Upstream writes BC''s high byte into BC; here it
+   goes to BC'.) */
+void load_snap_ace( const unsigned char* data, size_t size )
+{
+  size_t pos = 0;
+  int memptr = 0x2000;
+
+  while ( pos < size && memptr < 0x10000 )
+  {
+    unsigned char c = data[ pos++ ];
+
+    if ( c != 0xed )
+    {
+      memory[ memptr++ ] = c;
+      continue;
+    }
+
+    if ( pos >= size ) break;
+    int len = data[ pos++ ];
+    if ( !len || pos >= size ) break;
+    c = data[ pos++ ];
+    while ( len-- && memptr < 0x10000 ) memory[ memptr++ ] = c;
+  }
+
+  zx81.RAMTOP = memory[ 0x2081 ] * 256 - 1;
+  if ( zx81.RAMTOP == -1 ) zx81.RAMTOP = 65535;
+
+  memptr = 0x2100;
+
+  z80.af.b.l = memory[ memptr ]; z80.af.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.bc.b.l = memory[ memptr ]; z80.bc.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.de.b.l = memory[ memptr ]; z80.de.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.hl.b.l = memory[ memptr ]; z80.hl.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.ix.b.l = memory[ memptr ]; z80.ix.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.iy.b.l = memory[ memptr ]; z80.iy.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.sp.b.l = memory[ memptr ]; z80.sp.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.pc.b.l = memory[ memptr ]; z80.pc.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.af_.b.l = memory[ memptr ]; z80.af_.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.bc_.b.l = memory[ memptr ]; z80.bc_.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.de_.b.l = memory[ memptr ]; z80.de_.b.h = memory[ memptr + 1 ]; memptr += 4;
+  z80.hl_.b.l = memory[ memptr ]; z80.hl_.b.h = memory[ memptr + 1 ]; memptr += 4;
+
+  z80.im = memory[ memptr ]; memptr += 4;
+  z80.iff1 = memory[ memptr ]; memptr += 4;
+  z80.iff2 = memory[ memptr ]; memptr += 4;
+  z80.i = memory[ memptr ]; memptr += 4;
+  z80.r = memory[ memptr ];
+  z80.r7 = memory[ memptr ] & 128;
+}

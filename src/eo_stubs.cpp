@@ -48,6 +48,7 @@ void ZXPrinterReset( void ) {}
 void LogOutAccess( int, BYTE ) {}
 void LogInAccess( int, BYTE ) {}
 void ResetLastIOAccesses( void ) {}
+void TZXWriteByte( unsigned char ) {}
 
 /* ZXpand+'s joystick port: not connected (all lines high) */
 unsigned char readJoy( void ) { return 0xff; }

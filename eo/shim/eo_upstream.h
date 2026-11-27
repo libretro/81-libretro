@@ -30,6 +30,13 @@ extern EoLiveMemoryWindow* LiveMemoryWindow;
 struct EoBasicLister { bool Visible; void Refresh( bool ) {} };
 extern EoBasicLister* BasicLister;
 
+/* Borland C++'s random(n): 0 .. n-1 */
+#include <stdlib.h>
+static inline int random( int n ) { return rand() % n; }
+
+/* tape saving, not done by the core */
+void TZXWriteByte( unsigned char Byte );
+
 /* ZXpand: eo/zxpand */
 #include "../zxpand/ZXpand_emu.h"
 
@@ -131,6 +138,7 @@ extern char eo_save_dir[ 1024 ];
 extern std::string eo_zxpand_base;
 bool eo_rom_exists( const char* filename );
 int load_snap( const char* filename );
+void load_snap_ace( const unsigned char* data, size_t size );
 
 /* sound: upstream's CSound on top of the core's sound.c */
 #define AY_TYPE_NONE       0
@@ -138,6 +146,7 @@ int load_snap( const char* filename );
 #define AY_TYPE_ZONX       2
 #define AY_TYPE_FULLER     3
 #define AY_TYPE_ACE_USER   4
+#define AY_TYPE_BOLDFIELD  8
 extern "C" { void sound_beeper( int on ); void sound_ay_write( int reg, int val ); int sound_ay_read( int reg ); }
 class CSound
 {

@@ -44,6 +44,8 @@ typedef struct
   unsigned devices[ 2 ];
   uint32_t sha1[ 5 ];
   int      zx80;      // the content is a ZX80 program (.o, .80)
+  int      ace;       // the content is for the Jupiter Ace (.ace, .tap)
+  int      acesnap;   // ... and an .ace snapshot
   int      autotype;  // frames since reset, while LOAD (and RUN) are typed
   int      tapeseen;  // ZX80: the tape has started playing
   int      ready;      // frame the ROM was found ready for keys (0: not yet)
@@ -87,7 +89,7 @@ static state_t state;
 
 static const struct retro_variable core_vars[] =
 {
-  { "81_machine",        "Machine (Restart); auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85" },
+  { "81_machine",        "Machine (Restart); auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85|Jupiter Ace" },
   { "81_zxpand",         "ZXpand (Restart); auto|disabled|enabled" },
   { "81_fast_load",      "Tape Fast Load; enabled|disabled" },
   { "81_8_16_contents",  "8K-16K Contents; auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM" },
@@ -127,17 +129,17 @@ static int update_variables()
     /* auto: the ZX80 for .o and .80 files, else the ZX81. The machines other
        than these two read their ROM from the system folder (eo_files.cpp). */
     static const int machines[] = { -1, MACHINEZX81, MACHINEZX80, MACHINETS1000,
-      MACHINETS1500, MACHINELAMBDA, MACHINER470, MACHINETK85 };
+      MACHINETS1500, MACHINELAMBDA, MACHINER470, MACHINETK85, MACHINEACE };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_machine", NULL );
-    int m = option > 0 && option < 8 ? machines[ option ] : -1;
+    int m = option > 0 && option < 9 ? machines[ option ] : -1;
 
     if ( m < 0 )
     {
-      m = state.zx80 ? MACHINEZX80 : MACHINEZX81;
+      m = state.ace ? MACHINEACE : state.zx80 ? MACHINEZX80 : MACHINEZX81;
     }
 
     /* the US, Brazilian and Hong Kong machines are 60 Hz, as in EightyOne */
-    int ntsc = m != MACHINEZX80 && m != MACHINEZX81;
+    int ntsc = m != MACHINEZX80 && m != MACHINEZX81 && m != MACHINEACE;
     reset = reset || state.cfg.machine != m || state.cfg.NTSC != ntsc;
     state.cfg.machine = (CFGBYTE)m;
     state.cfg.NTSC = ntsc;
@@ -347,7 +349,7 @@ void retro_get_system_info( struct retro_system_info* info )
   info->library_version = version;
   info->need_fullpath = false;
   info->block_extract = false;
-  info->valid_extensions = "p|tzx|t81|o|80";
+  info->valid_extensions = "p|tzx|t81|o|80|ace|tap";
 }
 
 void retro_set_environment( retro_environment_t cb )
@@ -416,6 +418,64 @@ static void autotype( void )
 
 
   
+  if ( state.cfg.machine == MACHINEACE )
+  {
+    /* FORTH has no LOAD "": LOAD takes the name from the tape's header
+       (2 bytes of length, the type, 10 of name; 0 = a dictionary) once the
+       Ace has booted, about a second; the dictionary's own word that starts
+       it is the user's to type */
+    static char acekeys[ 24 ];
+
+    if ( t == 0 )
+    {
+      const unsigned char* d = (const unsigned char*)state.data;
+      int n = 0;
+
+      acekeys[ 0 ] = 0;
+
+      if ( state.size > 13 && d[ 0 ] == 26 && d[ 2 ] == 0 )
+      {
+        n = snprintf( acekeys, sizeof( acekeys ), "LOAD " );
+
+        for ( int i = 3; i < 13 && d[ i ] != ' ' && isalnum( d[ i ] ); i++ )
+        {
+          acekeys[ n++ ] = (char)toupper( d[ i ] );
+        }
+
+        acekeys[ n++ ] = '\n';
+        acekeys[ n ] = 0;
+      }
+
+      if ( !acekeys[ 0 ] )
+      {
+        state.autotype = -1;
+      }
+
+      return;
+    }
+
+    int k = ( t - 100 ) / 16;
+    int phase = ( t - 100 ) % 16;
+
+    if ( t < 100 )
+    {
+      return;
+    }
+
+    if ( !acekeys[ k ] )
+    {
+      state.autotype = -1;
+      return;
+    }
+
+    int key = acekeys[ k ] == '\n' ? VK_RETURN : acekeys[ k ] == ' ' ? VK_SPACE : acekeys[ k ];
+
+    if ( phase == 0 ) PCKeyDown( key );
+    else if ( phase == 8 ) PCKeyUp( key );
+
+    return;
+  }
+
   if ( state.cfg.machine == MACHINEZX80 )
   {
     switch ( t )
@@ -578,6 +638,10 @@ bool retro_load_game( const struct retro_game_info* info )
     // the same bytes the ZX80 puts on tape, with no name in front.
     const char* ext = info->path ? strrchr( info->path, '.' ) : NULL;
     state.zx80 = ext && ( ( tolower( ext[ 1 ] ) == 'o' && !ext[ 2 ] ) || !strcmp( ext, ".80" ) );
+    std::string lext = ext ? ext : "";
+    for ( size_t i = 0; i < lext.size(); i++ ) lext[ i ] = (char)tolower( (unsigned char)lext[ i ] );
+    state.ace = lext == ".ace" || lext == ".tap";
+    state.acesnap = lext == ".ace";
   }
   
   state.cfg.machine = state.zx80 ? MACHINEZX80 : MACHINEZX81; /* update_variables() may change it */
@@ -665,6 +729,7 @@ bool retro_load_game( const struct retro_game_info* info )
     case MACHINELAMBDA: rom = "lambda8300.rom"; break;
     case MACHINER470:   rom = "ringo470.rom"; break;
     case MACHINETK85:   rom = "tk85.rom"; break;
+    case MACHINEACE:    rom = "jupiterace.rom"; break;
     }
 
     if ( state.cfg.machine == MACHINELAMBDA && eo_rom_exists( rom ) )
@@ -830,7 +895,20 @@ void retro_reset( void )
     // The tape starts when the ROM asks for its first byte (rompatch.cpp).
     emulator.TZXin = 1;
     
-    if ( state.zx80 )
+    state.autotype = 0;
+
+    if ( state.cfg.machine == MACHINEACE && state.acesnap )
+    {
+      // an .ace snapshot is the machine's memory and registers: it runs
+      load_snap_ace( (const unsigned char*)state.data, state.size );
+      state.autotype = -1;
+    }
+    else if ( state.cfg.machine == MACHINEACE )
+    {
+      // an Ace .tap: autotype() types LOAD and the name in its header
+      TZXFile.LoadAceTAPFile( state.data, state.size, false );
+    }
+    else if ( state.zx80 )
     {
       TZXFile.LoadOFile( state.data, state.size, false );
     }
@@ -839,7 +917,6 @@ void retro_reset( void )
       TZXFile.LoadFile( state.data, state.size, false );
     }
     
-    state.autotype = 0;
     state.tapeseen = 0;
     state.ready = 0;
     state.framesrun = 0;

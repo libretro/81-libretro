@@ -9,6 +9,7 @@
 #include "zx81.h"
 #include "z80.h"
 #include "eo_upstream.h"
+#include "Ace/ace.h"
 #include <kbstatus.h>
 
 extern "C" {
@@ -45,6 +46,7 @@ static int internal_init( CONFIG* cfg )
   case MACHINELAMBDA:  strcpy( machine.CurRom, emulator.ROMLAMBDA ); break;
   case MACHINER470:    strcpy( machine.CurRom, emulator.ROMR470 ); break;
   case MACHINETK85:    strcpy( machine.CurRom, emulator.ROMTK85 ); break;
+  case MACHINEACE:     strcpy( machine.CurRom, emulator.ROMACE ); break;
   default:             emulator.machine = MACHINEZX81; strcpy( machine.CurRom, emulator.ROM81 ); break;
   }
 
@@ -121,6 +123,38 @@ static int internal_init( CONFIG* cfg )
     machine.tperscanline = 208;
   }
 
+  if ( emulator.machine == MACHINEACE )
+  {
+    /* THW::AceBtnClick and ConfigureRamTop: PAL, 3K inside, a 16K pack,
+       the top 3K the ACE's own video and character RAM */
+    machine.NTSC = 0;
+    machine.scanlines = 312;
+    machine.tperscanline = 208;
+    machine.tperframe = machine.tperscanline * machine.scanlines;
+    zx81.RAMTOP = ( 19 << 10 ) + 16383 - 3072;
+    machine.ace96k = 0;
+    machine.colour = COLOURDISABLED;
+    zx81.zxpand = 0;
+    zx81.vsyncsound = 1;
+
+    machine.initialise = ace_initialise;
+    machine.do_scanline = ace_do_scanline;
+    machine.writebyte = ace_writebyte;
+    machine.setbyte = ace_writebyte;
+    machine.readbyte = ace_readbyte;
+    machine.readoperandbyte = ace_readoperandbyte;
+    machine.getbyte = ace_readbyte;
+    machine.opcode_fetch = ace_opcode_fetch;
+    machine.readport = ace_readport;
+    machine.writeport = ace_writeport;
+    machine.contendmem = ace_contend;
+    machine.contendio = ace_contend;
+    machine.fps = 50;
+    machine.reset = ace_reset;
+    machine.exit = NULL;
+  }
+  else
+  {
   machine.initialise = zx81_initialise;
   machine.do_scanline = emulator.machine == MACHINEZX80 ? zx80_do_scanline : zx81_do_scanline;
   machine.writebyte = zx81_writebyte;
@@ -136,6 +170,7 @@ static int internal_init( CONFIG* cfg )
   machine.fps = machine.NTSC ? 60 : 50;
   machine.reset = zx81_reset;
   machine.exit = NULL;
+  }
 
   AccurateInit( cfg, false );
   emulator.speedup = 0;
@@ -146,6 +181,14 @@ static int internal_init( CONFIG* cfg )
   machine.initialise();
   InitPatches( emulator.machine );
   sound_ay_init();
+
+  if ( emulator.machine == MACHINEACE )
+  {
+    /* the colour of each character cell, which the ROM sets as it clears
+       the screen; an .ace snapshot is loaded before it has run */
+    extern BYTE acelatch;
+    memset( acecolour, acelatch, 1024 );
+  }
 
   return 0;
 }
