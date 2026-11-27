@@ -14,6 +14,13 @@ extern "C" {
  */
 int coreopt( retro_environment_t env_cb, const struct retro_variable* vars, uint32_t* sha1, const char* opt_name, const char** opt_value );
 
+/* Reads the user's game database (src/gamedb/gamedb.json's format), whose
+ * settings take precedence over the built-in ones for options set to "auto".
+ * A missing file leaves it empty.
+ */
+void coreopt_load_user( const char* path );
+void coreopt_free_user( void );
+
 #ifdef __cplusplus
 }
 #endif

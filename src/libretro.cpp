@@ -717,6 +717,12 @@ bool retro_load_game( const struct retro_game_info* info )
       strncpy( eo_system_dir, dir, sizeof( eo_system_dir ) - 1 );
     }
 
+    /* the user's additions to the game database (#23) */
+    if ( *eo_system_dir )
+    {
+      coreopt_load_user( ( std::string( eo_system_dir ) + "/EightyOne/gamedb.json" ).c_str() );
+    }
+
     dir = NULL;
 
     if ( env_cb( RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, (void*)&dir ) && dir )
@@ -1005,6 +1011,7 @@ void retro_unload_game( void )
 {
   free( state.data );
   state.data = NULL;
+  coreopt_free_user();
 }
 
 unsigned retro_get_region( void )

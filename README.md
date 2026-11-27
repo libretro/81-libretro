@@ -66,7 +66,24 @@ Save states are supported, but the format is likely to change when more machines
 
 Since configuring the core for each game can be a tedious task, **81-libretro** now features auto-configuration. Games support auto-configuration are listed in the `src/gamedb/gamedb.json` file, along with some information and the configuration required to play them.
 
-Currently, there's no way to change the auto-configuration settings short of recompiling the core after making the changes. If you feel the provided auto-configuration could be better or has bugs, please open an issue and I'll take a look.
+The settings can be changed or added without recompiling the core: put a `gamedb.json` in the `EightyOne` folder of the frontend's system folder, in the same format as `src/gamedb/gamedb.json`. Each entry needs the game's `sha1` (of the file as loaded, upper or lower case) and its `settings`; the other fields are optional. For options set to `auto`, a game's settings there are used before the built-in ones, so an entry can also correct a built-in one. A value an option doesn't have is ignored, and a file with a syntax error is ignored as a whole (the frontend's log says where). For example, to map the joypad's Up to `7` and A to `0` for one game:
+
+```json
+{
+  "games": [
+    {
+      "name": "My Game",
+      "sha1": "98ef4e7a24f87c9d253da0dc68698850dcd2752f",
+      "settings": {
+        "81_joypad_up": "7",
+        "81_joypad_a": "0"
+      }
+    }
+  ]
+}
+```
+
+If you feel the provided auto-configuration could be better or has bugs, please open an issue and I'll take a look.
 
 The core comes with auto-configuration for all homebrew games from [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html), and some of the games available at [Paul Farrow's collection of colorized games](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_Colourised.htm) (namely the ones available for download here in the `colorized` subfolder). If you want to add auto-configuration for a missing game, please submit a push request with changes only to the `gamedb.json` file.
 
