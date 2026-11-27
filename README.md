@@ -32,11 +32,11 @@ EightyOne also emulates some ZX Spectrum machines, but those were left out of th
 The core options available on the frontend are:
 
 * Machine (auto|ZX81|ZX80|Timex TS1000|Timex TS1500|Lambda 8300|Ringo R470|Microdigital TK85|Jupiter Ace): The machine to emulate, after a restart. `auto` runs `o` and `80` files on the ZX80, `ace` and `tap` files on the Jupiter ACE, and everything else on the ZX81. The TS1000, the TS1500, the Lambda, the Ringo and the TK85 run at 60 Hz. The ZX80, ZX81 and TS1000 ROMs are built into the core. The others are read from `EightyOne` in the frontend's system folder (or from the system folder itself), under the names EightyOne gives them: `ts1500.rom`, `lambda8300.rom` with `lambda8300characterset.bin`, `ringo470.rom`, `tk85.rom` and `jupiterace.rom` (the ACE's two 4K ROMs in one 8K file). The core says which file is missing if one is.
-* ZXpand (auto|disabled|enabled): Adds the [ZXpand](https://github.com/charlierobson/ZXpand-Vitamins/wiki) SD card interface to the ZX80, ZX81, TS1000 and TS1500, after a restart. Its SD card is the folder the loaded file is in, and a `p` file is then loaded from it with `LOAD "NAME"` instead of from tape, so games and the files they load next to them work as on a real card. ZXpand needs EightyOne's overlay of the machine's ROM in the system folder's `EightyOne` folder: `zx81.zxpand.ovl` (ZX81, TS1000), `zx80.zxpand.ovl` or `ts1500.zxpand.ovl`. Its settings memory is kept in `zxpand-eeprom.bin` in the save folder. `auto` leaves it off unless the game database turns it on.
+* ZXpand (auto|disabled|enabled): Adds the [ZXpand](https://github.com/charlierobson/ZXpand-Vitamins/wiki) SD card interface to the ZX80, ZX81, TS1000 and TS1500, after a restart. Its SD card is the folder the loaded file is in, and a `p` file is then loaded from it with `LOAD "NAME"` instead of from tape, so games and the files they load next to them work as on a real card. ZXpand needs EightyOne's overlay of the machine's ROM in the system folder's `EightyOne` folder: `zx81.zxpand.ovl` (ZX81, TS1000), `zx80.zxpand.ovl` or `ts1500.zxpand.ovl`. Its settings memory is kept in `zxpand-eeprom.bin` in the save folder. With ZXpand on, the RetroPad of port 1 is also the ZXpand+ joystick (directions, and A or B as fire) for games that read it through the ZXpand, on top of its key mappings. `auto` leaves it off unless the game database turns it on.
 * Tape Fast Load (enabled|disabled): Instantly loads files if enabled, or disabled it to see the moving horizontal lines while the game loads
-* 8K-16K Contents (ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM): Selects the contents of memory addresses between 8192 and 16383, a shadow copy of the ROM, 8K of RAM, or [dK'tronics 4K ROM plus 4K of RAM](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_CharacterSetROM.htm)
+* 8K-16K Contents (auto|ROM shadow|RAM|dK'tronics 4K Graphics ROM + 4K RAM): Selects the contents of memory addresses between 8192 and 16383, a shadow copy of the ROM, 8K of RAM, or [dK'tronics 4K ROM plus 4K of RAM](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_CharacterSetROM.htm). `auto` takes the game database's value, else the ROM shadow
 * Size Video Border (normal|small|none): Select the size of video border
-* High Resolution (auto|none|WRX): Enables WRX high resolution
+* High Resolution (auto|none|WRX): Enables WRX high resolution. `auto` takes the game database's value, else none
 * Emulate Chroma 81 (auto|disabled|enabled): Enable the [Chroma 81](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface.htm) interface
 * Video Presets (clean|tv|noisy): Change how the video is emulated (if Chroma 81 is enabled, the video is set to "clean" regardless of this option)
 * Sound emulation (none|auto|Zon X-81): Enables sound emulation
@@ -46,7 +46,7 @@ The core options available on the frontend are:
 
 ## Keyboard and Controllers
 
-A keyboard and a cursor joystick are configured and should work out-of-the-box.
+A keyboard and a cursor joystick are configured and should work out-of-the-box. Port 1 is the RetroPad, whose buttons press the keys set in the joypad mapping options; Select shows the virtual keyboard. To type on a real keyboard, set port 2 to "Sinclair Keyboard". With ZXpand on, the RetroPad of port 1 is also the ZXpand+ joystick.
 
 ## Supported Formats
 
@@ -87,10 +87,6 @@ If you feel the provided auto-configuration could be better or has bugs, please 
 
 The core comes with auto-configuration for all homebrew games from [Bob's Stuff](http://www.bobs-stuff.co.uk/zx81.html), and some of the games available at [Paul Farrow's collection of colorized games](http://www.fruitcake.plus.com/Sinclair/ZX81/Chroma/ChromaInterface_Software_Colourised.htm) (namely the ones available for download here in the `colorized` subfolder). If you want to add auto-configuration for a missing game, please submit a push request with changes only to the `gamedb.json` file.
 
-## Known Issues
-
-* With ZXpand on, the RetroPad of port 1 is also the ZXpand+ joystick (directions and A/B as fire), on top of its key mappings.
-
 ## Thanks
 
 Erik Olofsen for help with:
@@ -106,7 +102,7 @@ See also the `colorized` subfolder.
 
 Versions that are being used to build and test **81-libretro**:
 
-* EightyOne version 1.0 (test a)
+* EightyOne version 1.41
 
 ## TODO
 
