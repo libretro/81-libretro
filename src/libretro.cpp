@@ -99,7 +99,7 @@ static const struct retro_variable core_vars[] =
   { "81_highres",        "High Resolution; auto|none|WRX" },
   { "81_chroma_81",      "Emulate Chroma 81; auto|disabled|enabled" },
   { "81_video_presets",  "Video Presets; clean|tv|noisy" },
-  { "81_sound",          "Sound emulation; none|auto|Zon X-81" },
+  { "81_sound",          "Sound emulation; auto|none|Zon X-81|Quicksilva" },
   { "81_joypad_left",    "Joypad Left mapping; " ZX81KEYS },
   { "81_joypad_right",   "Joypad Right mapping; " ZX81KEYS },
   { "81_joypad_up",      "Joypad Up mapping; " ZX81KEYS },
@@ -285,9 +285,13 @@ static int update_variables()
   }
   
   {
-    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_ENABLED, AY_TYPE_ZONX };
+    /* auto (0, the default, so the game database's sound applies), none
+       (1), Zon X-81 (2), Quicksilva (3); auto without a game database
+       entry is none. It was the Quicksilva board, which takes writes to
+       0x7FFE-0x7FFF, the top of 16K RAM, as sound. */
+    static int sound[] = { AY_TYPE_DISABLED, AY_TYPE_DISABLED, AY_TYPE_ZONX, AY_TYPE_QUICKSILVA };
     int option = coreopt( env_cb, core_vars, state.sha1, "81_sound", NULL );
-    option += option < 0;
+    option = option >= 0 && option < 4 ? option : 0;
     reset = reset || state.cfg.SoundCard != sound[ option ];
     state.cfg.SoundCard = sound[ option ];
   }
