@@ -779,6 +779,22 @@ bool TTZXFile::LoadPFile( const void* data, size_t size, bool insert )
   return true;
 }
 
+// A ZX80 .o/.80 file is what the ZX80 writes to tape: no name block in
+// front, unlike a ZX81 .p file.
+bool TTZXFile::LoadOFile( const void* data, size_t size, bool insert )
+{
+  if ( !insert )
+  {
+    NewTZX();
+  }
+  
+  MoveBlock( AddGeneralBlock( (char*)data, size ), CurBlock );
+  Tape[ CurBlock ].Pause = 3000;
+  GroupCount();
+  
+  return true;
+}
+
 bool TTZXFile::LoadT81File(const void* data, size_t size, bool Insert)
 {
         RWMEM m;

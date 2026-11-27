@@ -43,6 +43,7 @@ SOURCES_C += $(CORE_DIR)/src/gamedb/sha1.c
 SOURCES_CXX += $(CORE_DIR)/src/compat.cpp
 
 ROMS += $(CORE_DIR)/bin/ROM/zx81.rom
+ROMS += $(CORE_DIR)/bin/ROM/zx80.rom
 ROMS += $(CORE_DIR)/bin/ROM/dkchr.rom
 
 SNAPS += $(CORE_DIR)/src/snaps/zx81_16k.z81

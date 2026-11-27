@@ -12,6 +12,7 @@
 #include <snap.h>
 #include <zx81.h>
 #include <tzx/TZXFILE.h>
+#include <kbstatus.h>
 
 extern "C"
 {
@@ -41,6 +42,9 @@ typedef struct
   int      ms;
   unsigned devices[ 2 ];
   uint32_t sha1[ 5 ];
+  int      zx80;      // the content is a ZX80 program (.o, .80)
+  int      autotype;  // ZX80: frames since reset, while LOAD and RUN are typed
+  int      tapeseen;  // ZX80: the tape has started playing
 }
 state_t;
 
@@ -307,7 +311,7 @@ void retro_get_system_info( struct retro_system_info* info )
   info->library_version = version;
   info->need_fullpath = false;
   info->block_extract = false;
-  info->valid_extensions = "p|tzx|t81";
+  info->valid_extensions = "p|tzx|t81|o|80";
 }
 
 void retro_set_environment( retro_environment_t cb )
@@ -361,6 +365,63 @@ void retro_init( void )
   memset( (void*)&state, 0, sizeof( state ) );
 }
 
+/* ZX80: a program on tape doesn't start itself, so type LOAD (the W key
+   gives the keyword) and NEW LINE once the ROM has booted, and RUN (R) and
+   NEW LINE after the tape has played and stopped. -1 = done. */
+static void zx80_autotype( void )
+{
+  if ( !state.zx80 || state.autotype < 0 )
+  {
+    return;
+  }
+  
+  int t = state.autotype++;
+  
+  switch ( t )
+  {
+  case 50: PCKeyDown( 'W' ); break;
+  case 55: PCKeyUp( 'W' ); break;
+  case 60: PCKeyDown( VK_RETURN ); break;
+  case 65: PCKeyUp( VK_RETURN ); break;
+  }
+  
+  if ( t < 66 )
+  {
+    return;
+  }
+  
+  if ( TZXFile.Playing )
+  {
+    state.tapeseen = 1;
+    return;
+  }
+  
+  if ( !state.tapeseen )
+  {
+    if ( t > 50 * 60 )
+    {
+      state.autotype = -1; // the tape never started: leave it to the user
+    }
+    
+    return;
+  }
+  
+  // the tape has played and stopped: count again from here
+  if ( t < 100000 )
+  {
+    state.autotype = 100000;
+    return;
+  }
+  
+  switch ( t - 100000 )
+  {
+  case 25: PCKeyDown( 'R' ); break;
+  case 30: PCKeyUp( 'R' ); break;
+  case 35: PCKeyDown( VK_RETURN ); break;
+  case 40: PCKeyUp( VK_RETURN ); state.autotype = -1; break;
+  }
+}
+
 bool retro_load_game( const struct retro_game_info* info )
 {
   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
@@ -390,7 +451,14 @@ bool retro_load_game( const struct retro_game_info* info )
   
   memcpy( state.data, info->data, state.size );
   
-  state.cfg.machine = MACHINEZX81;
+  {
+    // ZX80 programs come as .o or .80 files: a memory image from 0x4000,
+    // the same bytes the ZX80 puts on tape, with no name in front.
+    const char* ext = info->path ? strrchr( info->path, '.' ) : NULL;
+    state.zx80 = ext && ( ( tolower( ext[ 1 ] ) == 'o' && !ext[ 2 ] ) || !strcmp( ext, ".80" ) );
+  }
+  
+  state.cfg.machine = state.zx80 ? MACHINEZX80 : MACHINEZX81;
   state.cfg.LambdaColour = COLOURDISABLED;
   state.cfg.LowRAMContents = LOWRAM_ROMSHADOW;
   state.cfg.ProtectROM = 1;
@@ -518,6 +586,7 @@ void retro_run( void )
 
   uint16_t* fb = TVFB + WinL + WinT * TVP / 2;
   uint16_t* fbKeyb = TVFB + WinL + WinT * TVPKEYB / 2;  
+  zx80_autotype();
   eo_tick();
   keybovl_update( input_state_cb, state.devices, fbKeyb, TVP / 2, state.transp, state.scaled, state.ms, 20 );
   video_cb( (void*)fb, WinR - WinL, WinB - WinT, TVP );
@@ -545,7 +614,17 @@ void retro_reset( void )
 {
   eo_init( &state.cfg );
   
-  if ( state.size )
+  if ( state.size && state.zx80 )
+  {
+    // There is no ZX80 snapshot sitting at LOAD: the ROM boots, and
+    // zx80_autotype() types LOAD and RUN. The tape starts when the ROM
+    // asks for its first byte (rompatch.c).
+    zx81.TZXin = 1;
+    TZXFile.LoadOFile( state.data, state.size, false );
+    state.autotype = 0;
+    state.tapeseen = 0;
+  }
+  else if ( state.size )
   {
     load_snap( "zx81_16k.z81" );
     
